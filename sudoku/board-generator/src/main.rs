@@ -1,3 +1,5 @@
+
+use time::PreciseTime;
 use rand::Rng;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
@@ -5,6 +7,7 @@ use std::{fs::OpenOptions, fs::File, io::prelude::*};
 use std::io::{BufWriter, Write};
 use rand::prelude::*;
 use std::fs;
+use std::collections::HashMap;
 
 #[derive(Clone, Copy)]
 struct Square {
@@ -59,11 +62,11 @@ fn isValidBox(board: &Vec<Square>, index: usize, option: i32) -> bool {
     for other_square in board.iter() {
         let other_square_cordinates: (i32, i32) = find_box_x(board, other_square);
         if other_square_cordinates == square_cordinates && (other_square.value == option && other_square.value != 0) && !(square.x == other_square.x && square.y == other_square.y) {
-            //print!("\nbox {} {} {} {} {} {} {} {}", option, other_square.x, other_square.y, other_square_cordinates == square_cordinates, other_square.value == option, option != 0, square.x == other_square.x, square.y == other_square.y);
+            //println!("\nbox {} {} {} {} {} {} {} {}", option, other_square.x, other_square.y, other_square_cordinates == square_cordinates, other_square.value == option, option != 0, square.x == other_square.x, square.y == other_square.y);
             return false;
         }
     }
-    //print!("\nbox true");
+    //println!("\nbox true");
     return true;
 
 }
@@ -72,11 +75,11 @@ fn isValidRow(board: &Vec<Square>, index: usize, option: i32) -> bool {
     let square = board[index];
     for other_square in board.iter() {
         if (other_square.y == square.y && other_square.x != square.x)  && (other_square.value == option && option != 0) {
-            //print!("\nrow {} {} {} {} {}", option, other_square.y == square.y, other_square.x != square.x, other_square.value == option, option != 0);
+            //println!("\nrow {} {} {} {} {}", option, other_square.y == square.y, other_square.x != square.x, other_square.value == option, option != 0);
             return false;
         }
     }
-    //print!("\nrow true");
+    //println!("\nrow true");
     return true;
 }
 
@@ -87,7 +90,7 @@ fn isValidColumn(board: &Vec<Square>, index: usize, option: i32) -> bool {
             return false;
         }
     }
-   // print!("\ncol true");
+   // println!("\ncol true");
     return true;
 } 
 
@@ -96,10 +99,10 @@ fn isValidColumn(board: &Vec<Square>, index: usize, option: i32) -> bool {
 fn isValid(board: &Vec<Square>, index: usize, option: i32) -> bool {
     for square in board.iter() {
         if isValidColumn(&board, index, option) && isValidRow(&board, index, option) && isValidBox(&board, index, option) { 
-            //print!("\n{} is valid", option.to_string());
+            //println!("\n{} is valid", option.to_string());
             return true; 
         } else {
-            //print!("\n{} is not valid", option.to_string());
+            //println!("\n{} is not valid", option.to_string());
             return false;
         }
     }
@@ -108,9 +111,9 @@ fn isValid(board: &Vec<Square>, index: usize, option: i32) -> bool {
 
 fn random_print(vec: &Vec<i32>) {
     for num in vec.iter() {
-        print!("{}", num);
+        println!("{}", num);
     }
-    print!("\n");
+    println!("\n");
 }
 
 //PICK RANDOM FROM INDEX
@@ -119,7 +122,6 @@ fn random_print(vec: &Vec<i32>) {
 //IF MORE THAN ONE POSSIBLE, BACK TRACK
 //
 /*remove_square() {
-
 }*/
 
 fn find_open_squares(board: &Vec<Square>) -> Option<Vec<usize>> {
@@ -132,10 +134,10 @@ fn find_open_squares(board: &Vec<Square>) -> Option<Vec<usize>> {
     }
 
     if open_squares.len() > 0 {
-        //print!("index: {}", open_squares[0]);
+        //println!("index: {}", open_squares[0]);
         return Some(open_squares);
     } else {
-        //print!("\nNone Found");
+        //println!("\nNone Found");
         return None; 
     }
     
@@ -159,41 +161,87 @@ fn find_open_squares(board: &Vec<Square>) -> Option<Vec<usize>> {
 //
 //if loop is exhausted return true
 
-
-fn one_solution(board: &mut Vec<Square>) -> bool {
+fn find_valid_values(board: &Vec<Square>) -> Option<HashMap<usize, Vec<i32>>> {
+    let mut valid_values = HashMap::new();
     let result = find_open_squares(&board);
-    let mut index: usize = usize::MIN;
-    let mut solutions: i32 = 0;
+    let mut empty_squares: Vec<usize> = Vec::new();
 
-    if solutions > 1 {
-        return false;
-    }
 
     match result {
-        Some(zero_index) => index = zero_index[0],
-        None => return true,
-    }
-
-    for option in 1..10 {
-        if isValid(&board, index, option) {
-            board[index].value = option;
-            if (one_solution(board)) {
-                //print!("\nfound");
-                solutions += 1;
-            }
-            board[index].value = 0;
+        Some(zero_index) => empty_squares = zero_index,
+        None => {
+            return None;
         }
     }
 
-    if solutions == 0 {
-        return false
+    for index in &empty_squares {
+        //println!("{}",  index);
+        let mut options = Vec::new();
+        for option in 1..10 {
+            if isValid(&board, *index, option) {
+                options.push(option);
+            }
+            
+        }
+        
+        valid_values.insert(*index, options);
+        
+    }
+
+    return Some(valid_values);
+
+
+}
+
+
+fn one_solution_muscle(board: &mut Vec<Square>, solutions: &mut i32, valid_values: &HashMap<usize, Vec<i32>>) -> bool {
+    let result = find_open_squares(&board);
+    let mut empty_squares: Vec<usize> = Vec::new();
+
+
+    match result {
+        Some(zero_index) => empty_squares = zero_index,
+        None => {
+           
+            *solutions = *solutions + 1;
+            //println!("\n\n S:{} \n\n", solutions);
+            return true;
+        }
+    }
+    //println!("{:?}", &empty_squares);
+    for index in &empty_squares {
+        //println!("{}",  index);
+        for option in valid_values[index].iter() {
+            if isValid(&board, *index, *option) {
+                board[*index].value = *option;
+                one_solution_muscle(board, solutions, valid_values);
+                board[*index].value = 0;
+            }
+            
+        }
+        return false;
+        
+    }
+    return false;
+}
+
+fn one_solution(board: &mut Vec<Square>) -> bool {
+    let mut solutions: i32 = 0;
+    let valid_values = find_valid_values(&board);
+
+    match valid_values {
+        Some(values) => one_solution_muscle(board, &mut solutions, &values),
+        None => return false,
+    };
+    
+    if solutions == 1 {
+        return true;
     } else {
-        return true
+        return false;
     }
 }
 
 fn find_random_squares(board: &Vec<Square>) -> Vec<usize> {
-    print!("b");
     let mut random_squares: Vec<usize> = Vec::new();
     let mut rng = StdRng::from_entropy();
 
@@ -213,31 +261,26 @@ fn find_random_squares(board: &Vec<Square>) -> Vec<usize> {
 //if not than put square back
 //
 
-fn remove_squares(board: &mut Vec<Square>) {
-    print!("t");
+fn remove_squares(board: &mut Vec<Square>) -> bool {
     let available_squares: Vec<usize> = find_random_squares(&board);
-    print!("e");
+    let mut solutions: i32 = 0;
+
     let mut option: i32 = 0;
     let result = find_open_squares(&board);
-    print!("o");
-    let mut open_squares: Vec<usize> = Vec::new();
 
-    print!("!");
+    let mut open_squares: Vec<usize> = Vec::new();
 
     match result {
         Some(open_squares_r) => open_squares = open_squares_r,
         None => (),
     }
 
-    print!("1");
-    if open_squares.len() > 54 {
-        print!("e");
-        return;
+    if open_squares.len() > 45 {
+        //std::process::exit(0x100);
+        return true;
     } 
 
     for index in available_squares.iter() {
-        print!("he");
-        print!("{}", index.to_string());    
         option = board[*index].value;
         board[*index].value = 0;
         
@@ -245,11 +288,13 @@ fn remove_squares(board: &mut Vec<Square>) {
             board[*index].value = option;
         }
     
-        remove_squares(board);
+        if remove_squares(board) {
+            return true;
+        }
     }
 
     
-
+    return false;
 
 }
 
@@ -322,13 +367,10 @@ impl Default for Board {
                 });
             }   
         }
-        print!("o");
         create_board(&mut board, 0);
-        print!("p");
+
         let mut solution = board.clone();
-        print!("f");
         remove_squares(&mut board);
-        print!("d");
         return Board { squares: board.clone(), solution: solution };
     }
 }
@@ -340,7 +382,7 @@ impl PartialEq for Square {
 }
 
 fn print_vec(board: &Vec<Square>) {
-    print!("\n");
+    println!("");
     for square in board.iter() {
 
         if (square.y) % 3 == 0 && square.y != 0{
@@ -359,6 +401,7 @@ fn print_vec(board: &Vec<Square>) {
        
 
     }
+    println!("");
 
 
 }
@@ -366,10 +409,10 @@ fn print_vec(board: &Vec<Square>) {
 impl Board {
     fn print(&self) {
         for i in 0..=self.squares.len() {
-            print!("{}",  self.squares[i].value.to_string());
+            println!("{}",  self.squares[i].value.to_string());
 
             if i+1 % 9 == 0 {
-                print!("\n");
+                println!("\n");
             }
         }
 
@@ -384,19 +427,46 @@ impl Board {
         
         let mut f = BufWriter::new(f);
         
-        write!(f, "{}\n{}", squares_to_string(&self.squares), squares_to_string(&self.solution));
+        write!(f, "{}{},", squares_to_string(&self.squares), squares_to_string(&self.solution));
 
     }
-
-
 
 }
 
 fn main() {
-    print!("u");
-    //let mut squares: Vec<Square> = string_to_squares("534678912602195348198324567859761423426053791713924856961527284287419635345286179");
+    //println!("u"); // 716548923205173846384096175000000000000000000000000000163482597972635481548917632
+    //                                                716548923295173846384296175629754318437861259851329764163482597972635481548917632
+    //let mut squares: Vec<Square> = string_to_squares("146027583070600900900183406501209340009000600760308209690402105000500890350801764");
+    
+    //let result: bool = one_solution(&mut squares);
    
-    let mut count: i32 = 0;
+    //let mut count: i32 = 0;
+
+    let mut counter = 0;
+    let mut total = 0;
+
+    loop {
+        if counter == 100 {
+            break;
+        }
+        let start = PreciseTime::now();
+
+        let board = Board::default();
+
+        let end = PreciseTime::now();
+        board.save_text();
+        print_vec(&board.solution);
+        print_vec(&board.squares);
+        
+        let board_str = squares_to_string(&board.squares);
+        println!("{}", board_str);
+        println!("Completed in {:?} seconds.", start.to(end));
+        counter += 1;
+        total += start.to(end).num_milliseconds() ;
+    }
+
+    println!("AVERAGE {}", total / counter);
+
     
     //board.generate_puzzle();
 
@@ -405,13 +475,8 @@ fn main() {
         create_board(&mut board.squares, 0);
         board.save();
     }*/
-    let mut board = Board::default();
-
-    loop {
-        
-        print_vec(&board.squares);
-        print_vec(&board.solution);
-    }
+    //let mut board = Board::default();
+    //println!("done");
 
     
     
