@@ -1,4 +1,9 @@
 pub mod help {
+    use futures::{
+        future::FutureExt, // for `.fuse()`
+        pin_mut,
+        select,
+    };
 
     use crate::square::square::Square;
 
@@ -8,7 +13,7 @@ pub mod help {
     use std::io::{BufWriter, Write};
     use rand::prelude::*;
     use std::collections::HashMap;
-    
+
     fn find_box_y(square: &Square, base_unit: i32) -> i32 {
         if square.y <= base_unit-1 {
             return 1;
@@ -41,7 +46,6 @@ pub mod help {
         return (0, 0);
     }
     
-    //Validating the 3x3 sub-grid in the sudoku board
     fn isValidBox(board: &Vec<Square>, index: usize, option: i32) -> bool {
         let square = &board[index];
         let square_cordinates: (i32, i32) = find_box_x(board, square);
@@ -76,18 +80,19 @@ pub mod help {
         }
         return true;
     } 
-    
-    pub fn isValid(board: &Vec<Square>, index: usize, option: i32) -> bool {
-        for square in board.iter() {
-            if isValidColumn(&board, index, option) && isValidRow(&board, index, option) && isValidBox(&board, index, option) { 
-                return true; 
-            } else {
-                return false;
-            }
+
+    pub async fn isValid(board: &Vec<Square>, index: usize, option: i32) -> bool {
+        
+        if isValidColumn(board, index, option) && isValidRow(board, index, option) && isValidBox(board, index, option) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
+
     }
     
+
+
     pub fn print_vec(board: &Vec<Square>) {
         println!("");
         for square in board.iter() {

@@ -9,3 +9,7 @@ edition = "2018"
 [dependencies]
 rand = "0.8"
 time = "*"
+futures = "0.3"
+tokio = { version = "*", features = ["full"] }
+async-recursion = "0.3.2"
+rusqlite = "0.25.3"

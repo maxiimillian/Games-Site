@@ -4,7 +4,9 @@ pub mod board {
 
     use crate::square::square::Square;
     use crate::help::help;
-    
+
+    use rusqlite::{params, Connection, Result, OpenFlags};
+    use futures::executor::block_on;
     use time::PreciseTime;
     use rand::Rng;
     use rand::thread_rng;
@@ -21,8 +23,11 @@ pub mod board {
     }
     
     impl Default for Board {
-        fn default() -> Board {
+        #[tokio::main]
+        async fn default() -> Board {
             let mut board: Vec<Square> = Vec::new();
+            let mut solution = board.clone();
+
             for x in 0..9 {
                 for y in 0..9 {
                     board.push(Square {
@@ -32,20 +37,20 @@ pub mod board {
                     });
                 }   
             }
-            let start = PreciseTime::now();
             
-            create_board(&mut board, 0);
-    
-            let end = PreciseTime::now();
-    
-            let mut solution = board.clone();
-    
-            let start_two = PreciseTime::now();
-            remove_squares(&mut board);
-            let end_two = PreciseTime::now();
-    
-            println!("{}",start.to(end).num_milliseconds() as f64);
-            println!("{}",start_two.to(end_two).num_milliseconds() as f64);
+            loop {
+                println!("Calling...");
+                create_board(&mut board, 0);
+        
+                solution = board.clone();
+                
+                let result: bool = remove_squares(&mut board);
+                if result {
+                    break;
+                }
+            }
+
+
             return Board { squares: board.clone(), solution: solution };
         }
     }
@@ -55,6 +60,25 @@ pub mod board {
             help::print_vec(&self.squares);
         }
     
+        pub fn save_db(&self, path: &str) -> Result<()> {
+            let conn = Connection::open_with_flags(path, OpenFlags::SQLITE_OPEN_CREATE)?;
+
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS boards (
+                    id INT PRIMARY KEY,
+                    unsolved TEXT UNIQUE,
+                    solved TEXT
+                )", [],
+            )?;
+
+            conn.execute(
+                "INSERT INTO boards (unsolved, solved) VALUES (?1, ?2)",
+                params![help::squares_to_string(&self.squares), help::squares_to_string(&self.solution)],
+            )?;
+
+            Ok(())
+        }
+
         pub fn save_text(&self)     {
             let f = OpenOptions::new()
             .write(true)
@@ -97,7 +121,8 @@ pub mod board {
             return true;
         }
         for option in square_options.iter() {
-            if help::isValid(&board, index, *option) {
+            let future = help::isValid(&board, index, *option);
+            if block_on(future) {
                 board[index].value = *option;
                 if create_board(board, index+1) {
                     return true;
@@ -109,7 +134,7 @@ pub mod board {
         return false;
     }
     
-    fn find_random_squares(board: &Vec<Square>) -> Vec<usize> {
+    fn find_random_filled_squares(board: &Vec<Square>) -> Vec<usize> {
         let mut random_squares: Vec<usize> = Vec::new();
         let mut rng = StdRng::from_entropy();
     
@@ -122,43 +147,38 @@ pub mod board {
         random_squares.shuffle(&mut rng);
         return random_squares;
     }
-    
-    
+
     pub fn remove_squares(board: &mut Vec<Square>) -> bool {
-        let available_squares: Vec<usize> = find_random_squares(&board);
-        let mut solutions: i32 = 0;
-    
+        let random_index: Vec<usize> = find_random_filled_squares(&board);
+
         let mut option: i32 = 0;
-        let result = find_open_squares(&board);
-    
-        let mut open_squares: Vec<usize> = Vec::new();
-    
-        match result {
-            Some(open_squares_r) => open_squares = open_squares_r,
-            None => (),
-        }
-    
-        if open_squares.len() > 45 {
+        let mut solutions: i32 = 0;
+        
+        println!("{}", random_index.len());
+        if random_index.len() < 26 {
             return true;
         } 
-    
-        for index in available_squares.iter() {
+
+        for index in random_index.iter() {
             option = board[*index].value;
+
             board[*index].value = 0;
-    
+
             if !one_solution(board) {
                 board[*index].value = option;
+                continue
             }
-    
+            
             if remove_squares(board) {
                 return true;
+            } else {
+                board[*index].value = option;
             }
+
         }
-    
-        
         return false;
-    
     }
+        
     
     //Finds all combinations that the current unsolved board allows
     fn find_valid_values(board: &Vec<Square>) -> Option<HashMap<usize, Vec<i32>>> {
@@ -177,7 +197,9 @@ pub mod board {
         for index in &empty_squares {
             let mut options = Vec::new();
             for option in 1..10 {
-                if help::isValid(&board, *index, option) {
+                //println!("find valid");
+                let future = help::isValid(&board, *index, option);
+                if block_on(future) {
                     options.push(option);
                 }
                 
@@ -192,7 +214,7 @@ pub mod board {
     
     }
     
-    fn one_solution_muscle(board: &mut Vec<Square>, solutions: &mut i32, valid_values: &HashMap<usize, Vec<i32>>) {
+    fn one_solution_muscle(board: &mut Vec<Square>, solutions: &mut i32, valid_values: &HashMap<usize, Vec<i32>>) -> bool {
         let result = find_open_squares(&board);
         let mut empty_squares: Vec<usize> = Vec::new();
     
@@ -203,38 +225,43 @@ pub mod board {
                
                 *solutions = *solutions + 1;
                 //println!("\n\n S:{} \n\n", solutions);
-                return;
+                return true;
             }
         }
         //println!("{:?}", &empty_squares);
         for index in &empty_squares {
             //println!("{}",  index);
             for option in valid_values[index].iter() {
-                if help::isValid(&board, *index, *option) {
+                //println!("one sol");
+                let future = help::isValid(&board, *index, *option);
+                if block_on(future) {
+                    //println!("its valid!");
                     board[*index].value = *option;
                     one_solution_muscle(board, solutions, valid_values);
                     board[*index].value = 0;
                 }
                 
             }
-            return;
+            return false;
             
         }
-        return;
+        return false;
     }
     
     pub fn one_solution(board: &mut Vec<Square>) -> bool {
         let mut solutions: i32 = 0;
         let valid_values = find_valid_values(&board);
-    
+        let mut board_to_solve: Vec<Square> = board.clone();
+
         match valid_values {
-            Some(values) => one_solution_muscle(board, &mut solutions, &values),
+            Some(values) => one_solution_muscle(&mut board_to_solve, &mut solutions, &values),
             None => return false,
         };
-        
         if solutions == 1 {
+            //println!("only 1");
             return true;
         } else {
+            //println!("more than 1");
             return false;
         }
     }
