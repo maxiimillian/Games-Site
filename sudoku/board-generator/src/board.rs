@@ -12,7 +12,7 @@ pub mod board {
     use rand::Rng;
     use rand::thread_rng;
     use rand::seq::SliceRandom;
-    use std::{fs::OpenOptions, fs::File, io::prelude::*};
+    use std::{fs::OpenOptions, fs::File, io::prelude::*, time::{SystemTime, UNIX_EPOCH}};
     use std::io::{BufWriter, Write};
     use rand::prelude::*;
     use std::collections::HashMap;
@@ -22,6 +22,7 @@ pub mod board {
         pub squares: Vec<Square>,
         pub solution: Vec<Square>,
         pub difficulty: Difficulty,
+        pub timestamp: SystemTime,
     }
     
     impl Default for Board {
@@ -53,7 +54,7 @@ pub mod board {
             }
 
             println!("here2");
-            return Board { squares: board.clone(), solution: solution, difficulty: Difficulty::MEDIUM() };
+            return Board { squares: board.clone(), solution: solution, difficulty: Difficulty::MEDIUM(), SystemTime::now() };
         }
     }
     
@@ -62,8 +63,8 @@ pub mod board {
             help::print_vec(&self.squares);
         }
     
-        pub fn save_db(&self, path: &str) -> Result<()> {
-            let conn = Connection::open(path).expect("Could not connect");
+        pub fn save_db(&self) -> Result<()> {
+            let conn = Connection::open("./boards-"+self.timestamp.duration_since(UNIX_EPOCH)+".db").expect("Could not connect");
             conn.execute(
                 "CREATE TABLE IF NOT EXISTS boards (
                     id INT PRIMARY KEY,
@@ -92,8 +93,60 @@ pub mod board {
             write!(f, "{}{},", help::squares_to_string(&self.squares), help::squares_to_string(&self.solution));
     
         }
+
+        fn create_board(&self, board: &mut Vec<Square>, index: usize) -> bool {
+            let mut square_options: Vec<i32> = (1..10).collect();
+            let mut rng = StdRng::from_entropy();
+            square_options.shuffle(&mut rng);  
+        
+            if index == board.len() {
+                return true;
+            }
+            for option in square_options.iter() {
+                let future = help::isValid(&board, index, *option);
+                if block_on(future) {
+                    board[index].value = *option;
+                    if create_board(board, index+1) {
+                        return true;
+                    } else {
+                        board[index].value = 0;
+                    }
+                }
+            }
+            return false;
+        }
+
+        fn remove_squares(&self, board: &mut Vec<Square>) -> bool {
+            let random_index: Vec<usize> = find_random_filled_squares(&board);
     
+            let mut option: i32 = 0;
+            let mut solutions: i32 = 0;
+            
+            if random_index.len() < self.difficulty.filled_squares_count {
+                return true;
+            } 
+    
+            for index in random_index.iter() {
+                option = board[*index].value;
+    
+                board[*index].value = 0;
+    
+                if !one_solution(board) {
+                    board[*index].value = option;
+                    continue
+                }
+                
+                if remove_squares(board) {
+                    return true;
+                } else {
+                    board[*index].value = option;
+                }
+    
+            }
+            return false;
+        }
     }
+        
     
     fn find_open_squares(board: &Vec<Square>) -> Option<Vec<usize>> {
         let mut open_squares: Vec<usize> = Vec::new();
@@ -113,28 +166,7 @@ pub mod board {
     
     }
     
-    fn create_board(board: &mut Vec<Square>, index: usize) -> bool {
-        let mut square_options: Vec<i32> = (1..10).collect();
-        let mut rng = StdRng::from_entropy();
-        square_options.shuffle(&mut rng);  
-    
-        if index == board.len() {
-            return true;
-        }
-        for option in square_options.iter() {
-            let future = help::isValid(&board, index, *option);
-            if block_on(future) {
-                board[index].value = *option;
-                if create_board(board, index+1) {
-                    return true;
-                } else {
-                    board[index].value = 0;
-                }
-            }
-        }
-        return false;
-    }
-    
+
     fn find_random_filled_squares(board: &Vec<Square>) -> Vec<usize> {
         let mut random_squares: Vec<usize> = Vec::new();
         let mut rng = StdRng::from_entropy();
@@ -149,35 +181,7 @@ pub mod board {
         return random_squares;
     }
 
-    pub fn remove_squares(board: &mut Vec<Square>) -> bool {
-        let random_index: Vec<usize> = find_random_filled_squares(&board);
 
-        let mut option: i32 = 0;
-        let mut solutions: i32 = 0;
-        
-        if random_index.len() < 28 {
-            return true;
-        } 
-
-        for index in random_index.iter() {
-            option = board[*index].value;
-
-            board[*index].value = 0;
-
-            if !one_solution(board) {
-                board[*index].value = option;
-                continue
-            }
-            
-            if remove_squares(board) {
-                return true;
-            } else {
-                board[*index].value = option;
-            }
-
-        }
-        return false;
-    }
         
     
     //Finds all combinations that the current unsolved board allows
