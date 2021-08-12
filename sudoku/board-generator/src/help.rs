@@ -143,7 +143,7 @@ pub mod help {
     }
     
     pub fn squares_to_string(board: &Vec<Square>) -> String {
-        let mut board_string: String = "\n".to_string(); 
+        let mut board_string: String = "".to_string(); 
     
         for square in board.iter() {
             board_string = board_string + &square.value.to_string();

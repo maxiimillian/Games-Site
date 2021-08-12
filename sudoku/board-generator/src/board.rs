@@ -61,8 +61,7 @@ pub mod board {
         }
     
         pub fn save_db(&self, path: &str) -> Result<()> {
-            let conn = Connection::open_with_flags(path, OpenFlags::SQLITE_OPEN_CREATE)?;
-
+            let conn = Connection::open(path).expect("Could not connect");
             conn.execute(
                 "CREATE TABLE IF NOT EXISTS boards (
                     id INT PRIMARY KEY,
@@ -154,8 +153,7 @@ pub mod board {
         let mut option: i32 = 0;
         let mut solutions: i32 = 0;
         
-        println!("{}", random_index.len());
-        if random_index.len() < 26 {
+        if random_index.len() < 25 {
             return true;
         } 
 
