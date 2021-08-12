@@ -4,7 +4,7 @@ pub mod board {
 
     use crate::square::square::Square;
     use crate::help::help;
-    use create::difficulty::difficulty::Difficulty;
+    use crate::difficulty::difficulty::Difficulty;
 
     use rusqlite::{params, Connection, Result, OpenFlags};
     use futures::executor::block_on;
@@ -26,7 +26,7 @@ pub mod board {
     
     impl Default for Board {
         #[tokio::main]
-        async fn default(difficulty: Difficulty) -> Board {
+        async fn default() -> Board {
             let mut board: Vec<Square> = Vec::new();
             let mut solution = board.clone();
 
@@ -43,7 +43,7 @@ pub mod board {
             loop {
                 println!("Calling...");
                 create_board(&mut board, 0);
-        
+                println!("here"); 
                 solution = board.clone();
                 
                 let result: bool = remove_squares(&mut board);
@@ -52,8 +52,8 @@ pub mod board {
                 }
             }
 
-
-            return Board { squares: board.clone(), solution: solution, difficulty: difficulty };
+            println!("here2");
+            return Board { squares: board.clone(), solution: solution, difficulty: Difficulty::MEDIUM() };
         }
     }
     
@@ -155,7 +155,7 @@ pub mod board {
         let mut option: i32 = 0;
         let mut solutions: i32 = 0;
         
-        if random_index.len() < 25 {
+        if random_index.len() < 28 {
             return true;
         } 
 

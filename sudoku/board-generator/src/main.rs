@@ -6,12 +6,14 @@ use futures::executor::block_on;
 
 fn main() {
     loop {
+        println!("yep");
         let start = PreciseTime::now();
-        let board = Board::default(Difficulty::EASY());
+        let board = Board::default();
         let end = PreciseTime::now();
         board.print();
         println!("{} miliseconds to generate", start.to(end).num_milliseconds());
         board.save_db("./db.db");
-        std::process::exit();
+        std::process::exit(0x123);
     }
 }
+
