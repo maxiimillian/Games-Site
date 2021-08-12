@@ -4,6 +4,7 @@ pub mod board {
 
     use crate::square::square::Square;
     use crate::help::help;
+    use create::difficulty::difficulty::Difficulty;
 
     use rusqlite::{params, Connection, Result, OpenFlags};
     use futures::executor::block_on;
@@ -20,11 +21,12 @@ pub mod board {
     pub struct Board {
         pub squares: Vec<Square>,
         pub solution: Vec<Square>,
+        pub difficulty: Difficulty,
     }
     
     impl Default for Board {
         #[tokio::main]
-        async fn default() -> Board {
+        async fn default(difficulty: Difficulty) -> Board {
             let mut board: Vec<Square> = Vec::new();
             let mut solution = board.clone();
 
@@ -51,7 +53,7 @@ pub mod board {
             }
 
 
-            return Board { squares: board.clone(), solution: solution };
+            return Board { squares: board.clone(), solution: solution, difficulty: difficulty };
         }
     }
     
