@@ -108,7 +108,6 @@ pub mod board {
                     id INT PRIMARY KEY,
                     unsolved TEXT UNIQUE,
                     solved TEXT,
-                    difficulty TEXT,
                 )", [],
             )?;
 
