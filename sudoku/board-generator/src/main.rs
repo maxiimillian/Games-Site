@@ -39,6 +39,8 @@ fn main() {
             boards_to_create.insert("medium", get_amount());
         } else if input == "hard" {
             boards_to_create.insert("hard", get_amount());
+        } else if input == "extreme" {
+            boards_to_create.insert("extreme", get_amount());
         } else if input == "done" {
             break;
         } else {
@@ -48,10 +50,18 @@ fn main() {
     }
 
     for (difficulty, amount) in boards_to_create {
+        let mut d: Difficulty = Difficulty::EASY();
+        match difficulty {
+            "easy" => d = Difficulty::EASY(),
+            "medium" => d = Difficulty::MEDIUM(),
+            "hard" => d = Difficulty::HARD(),
+            "extreme" => d = Difficulty::EXTREME(),
+            x => panic!("Unexpected difficulty!"),
+        }
         for _ in 0..amount {
             let start = PreciseTime::now();
 
-            let board = Board::default();
+            let board = Board::custom(d.clone());
             board.save_db();
 
             let end = PreciseTime::now();

@@ -60,6 +60,36 @@ pub mod board {
     }
     
     impl Board {
+        pub fn custom(difficulty: Difficulty) -> Board {
+            let mut squares: Vec<Square> = Vec::new();
+            let mut solution: Vec<Square> = Vec::new();
+
+            for x in 0..9 {
+                for y in 0..9 {
+                    squares.push(Square {
+                        x,
+                        y,
+                        value: 0,
+                    });
+                }   
+            }
+            
+            let mut board = Board { squares: squares, solution: solution, difficulty: difficulty, timestamp: SystemTime::now()};
+
+            loop {
+                board.create_board(0);
+
+                board.solution = board.squares.clone();
+                
+                let result: bool = board.remove_squares();
+                if result {
+                    break;
+                }
+            }
+
+            return board;  
+        }
+
         pub fn print(&self) {
             help::print_vec(&self.squares);
         }
@@ -68,7 +98,7 @@ pub mod board {
             let mut path = "".to_string();
 
             match self.timestamp.duration_since(UNIX_EPOCH) {
-                Ok(n) => path = format!("./{}.db", n.as_secs().to_string()),
+                Ok(n) => path = format!("./db.db"),
                 Err(_) => panic!("Negative time"),
             }
 
