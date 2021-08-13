@@ -16,6 +16,7 @@ pub mod board {
     use std::io::{BufWriter, Write};
     use rand::prelude::*;
     use std::collections::HashMap;
+    use std::convert::TryInto;
 
     #[derive(Clone)]
     pub struct Board {
@@ -28,12 +29,12 @@ pub mod board {
     impl Default for Board {
         #[tokio::main]
         async fn default() -> Board {
-            let mut board: Vec<Square> = Vec::new();
-            let mut solution = board.clone();
+            let mut squares: Vec<Square> = Vec::new();
+            let mut solution: Vec<Square> = Vec::new();
 
             for x in 0..9 {
                 for y in 0..9 {
-                    board.push(Square {
+                    squares.push(Square {
                         x,
                         y,
                         value: 0,
@@ -41,20 +42,20 @@ pub mod board {
                 }   
             }
             
+            let mut board = Board { squares: squares, solution: solution, difficulty: Difficulty::MEDIUM(), timestamp: SystemTime::now()};
+
             loop {
-                println!("Calling...");
-                create_board(&mut board, 0);
-                println!("here"); 
-                solution = board.clone();
+                board.create_board(0);
+
+                board.solution = board.squares.clone();
                 
-                let result: bool = remove_squares(&mut board);
+                let result: bool = board.remove_squares();
                 if result {
                     break;
                 }
             }
 
-            println!("here2");
-            return Board { squares: board.clone(), solution: solution, difficulty: Difficulty::MEDIUM(), SystemTime::now() };
+            return board;
         }
     }
     
@@ -64,7 +65,14 @@ pub mod board {
         }
     
         pub fn save_db(&self) -> Result<()> {
-            let conn = Connection::open("./boards-"+self.timestamp.duration_since(UNIX_EPOCH)+".db").expect("Could not connect");
+            let mut path = "".to_string();
+
+            match self.timestamp.duration_since(UNIX_EPOCH) {
+                Ok(n) => path = format!("./{}.db", n.as_secs().to_string()),
+                Err(_) => panic!("Negative time"),
+            }
+
+            let conn = Connection::open(path).expect("Could not connect");
             conn.execute(
                 "CREATE TABLE IF NOT EXISTS boards (
                     id INT PRIMARY KEY,
@@ -94,52 +102,52 @@ pub mod board {
     
         }
 
-        fn create_board(&self, board: &mut Vec<Square>, index: usize) -> bool {
+        fn create_board(&mut self, index: usize) -> bool {
             let mut square_options: Vec<i32> = (1..10).collect();
             let mut rng = StdRng::from_entropy();
             square_options.shuffle(&mut rng);  
         
-            if index == board.len() {
+            if index == self.squares.len() {
                 return true;
             }
             for option in square_options.iter() {
-                let future = help::isValid(&board, index, *option);
+                let future = help::isValid(&self.squares, index, *option);
                 if block_on(future) {
-                    board[index].value = *option;
-                    if create_board(board, index+1) {
+                    self.squares[index].value = *option;
+                    if self.create_board(index+1) {
                         return true;
                     } else {
-                        board[index].value = 0;
+                        self.squares[index].value = 0;
                     }
                 }
             }
             return false;
         }
 
-        fn remove_squares(&self, board: &mut Vec<Square>) -> bool {
-            let random_index: Vec<usize> = find_random_filled_squares(&board);
+        fn remove_squares(&mut self) -> bool {
+            let random_index: Vec<usize> = find_random_filled_squares(&self.squares);
     
             let mut option: i32 = 0;
             let mut solutions: i32 = 0;
             
-            if random_index.len() < self.difficulty.filled_squares_count {
+            if random_index.len() < self.difficulty.filled_squares_count.try_into().unwrap()     {
                 return true;
             } 
     
             for index in random_index.iter() {
-                option = board[*index].value;
+                option = self.squares[*index].value;
     
-                board[*index].value = 0;
+                self.squares[*index].value = 0;
     
-                if !one_solution(board) {
-                    board[*index].value = option;
+                if !one_solution(&mut self.squares) {
+                    self.squares[*index].value = option;
                     continue
                 }
                 
-                if remove_squares(board) {
+                if self.remove_squares() {
                     return true;
                 } else {
-                    board[*index].value = option;
+                    self.squares[*index].value = option;
                 }
     
             }

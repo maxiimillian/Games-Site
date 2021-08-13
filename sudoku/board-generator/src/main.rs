@@ -6,7 +6,7 @@ use futures::executor::block_on;
 use std::collections::HashMap;
 use std::io;
 
-fn get_amount() {
+fn get_amount() -> i32 {
     loop {
         let mut input: String = String::new();
 
@@ -21,18 +21,25 @@ fn get_amount() {
 }
 
 fn main() {
-    let boards_to_create: HashMap = HashMap::new();
+    let mut boards_to_create: HashMap<&str, i32> = HashMap::new();
     let mut input: String = String::new();
 
     loop {
-        println!("Enter difficulty (easy, medium, or hard) and type done to continue.")
+        println!("Enter difficulty (easy, medium, or hard) and type done to continue.");
         io::stdin().read_line(&mut input).expect("Failed to read line");
 
-        match input.as_str().to_lowercase() {
-            "easy" => boards_to_create.insert("easy", get_amount()),
-            "medium" => boards_to_create.insert("medium", get_amount()),
-            "hard" => boards_to_create.insert("hard", get_amount()),
-            "done" => break,
+        input = input.to_lowercase().trim().to_string();
+
+        if input == "easy" {
+            boards_to_create.insert("easy", get_amount());
+        } else if input == "medium" {
+            boards_to_create.insert("medium", get_amount());
+        } else if input == "hard" {
+            boards_to_create.insert("hard", get_amount());
+        } else if input == "done" {
+            break;
+        } else {
+            println!("Invalid input");
         }
     }
 
