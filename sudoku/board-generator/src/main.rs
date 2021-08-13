@@ -44,6 +44,10 @@ fn main() {
                 let a = get_amount();
                 boards_to_create.insert("hard", a);
             },
+            "extreme" => {
+                let a = get_amount();
+                boards_to_create.insert("extreme", a);
+            },
             "done" => {
                 break;
             },
