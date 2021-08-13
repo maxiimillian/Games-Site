@@ -110,12 +110,12 @@ pub mod board {
                     solved TEXT,
                     difficulty TEXT
                 )", [],
-            )?;
+            );
 
             conn.execute(
                 "INSERT INTO boards (unsolved, solved, difficulty) VALUES (?1, ?2, ?3)",
                 params![help::squares_to_string(&self.squares), help::squares_to_string(&self.solution), self.difficulty.name],
-            )?;
+            );
 
             Ok(())
         }
