@@ -27,6 +27,7 @@ fn main() {
     loop {
         println!("Enter difficulty (easy, medium, or hard) and type done to continue.");
         io::stdin().read_line(&mut input).expect("Failed to read line");
+        io::stdout().flush().unwrap();
 
         input = input.to_lowercase().trim().to_string();
 
