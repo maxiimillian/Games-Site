@@ -107,14 +107,15 @@ pub mod board {
                 "CREATE TABLE IF NOT EXISTS boards (
                     id INT PRIMARY KEY,
                     unsolved TEXT UNIQUE,
-                    solved TEXT
+                    solved TEXT,
+                    difficulty TEXT
                 )", [],
             )?;
 
             conn.execute(
-                "INSERT INTO boards (unsolved, solved) VALUES (?1, ?2)",
-                params![help::squares_to_string(&self.squares), help::squares_to_string(&self.solution)],
-            );
+                "INSERT INTO boards (unsolved, solved, difficulty) VALUES (?1, ?2, ?3)",
+                params![help::squares_to_string(&self.squares), help::squares_to_string(&self.solution), self.difficulty],
+            )?;
 
             Ok(())
         }
