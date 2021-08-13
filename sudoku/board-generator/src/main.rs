@@ -30,22 +30,24 @@ fn main() {
         println!("Enter difficulty (easy, medium, or hard) and type done to continue.");
         io::stdin().read_line(&mut input).expect("Failed to read line");
         io::stdout().flush().unwrap();
-
-        input = input.to_lowercase().trim().to_string();
         
-        if input == "easy" {
-            boards_to_create.insert("easy", get_amount());
-        } else if input == "medium" {
-            boards_to_create.insert("medium", get_amount());
-        } else if input == "hard" {
-            boards_to_create.insert("hard", get_amount());
-        } else if input == "extreme" {
-            boards_to_create.insert("extreme", get_amount());
-        } else if input == "done" {
-            break;
-        } else {
-            println!("\ninput: {}", input);
-            println!("Invalid input");
+        match input.to_lowercase().trim() {
+            "easy" => {
+                let a = get_amount();
+                boards_to_create.insert("easy", a);
+            },
+            "medium" => {
+                let a = get_amount();
+                boards_to_create.insert("medium", a);
+            },
+            "hard" => {
+                let a = get_amount();
+                boards_to_create.insert("hard", a);
+            },
+            "done" => {
+                break;
+            },
+            _ => println!("Invalid input"),
         }
     }
 
