@@ -15,7 +15,7 @@ fn get_amount() -> i32 {
 
         match input.parse::<i32>() {
             Ok(n) => return n,
-            Err(e) => println!("That's not a valid number"),
+            Err(e) => println!("That's not a valid number {}", e),
         }
     }
 }
