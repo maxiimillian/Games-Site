@@ -5,6 +5,7 @@ use time::PreciseTime;
 use futures::executor::block_on;
 use std::collections::HashMap;
 use std::io;
+use std::io::Write;
 
 fn get_amount() -> i32 {
     loop {
