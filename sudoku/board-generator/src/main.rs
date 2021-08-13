@@ -31,7 +31,7 @@ fn main() {
         io::stdout().flush().unwrap();
 
         input = input.to_lowercase().trim().to_string();
-
+        
         if input == "easy" {
             boards_to_create.insert("easy", get_amount());
         } else if input == "medium" {
@@ -41,6 +41,7 @@ fn main() {
         } else if input == "done" {
             break;
         } else {
+            println!("\ninput: {}", input);
             println!("Invalid input");
         }
     }
