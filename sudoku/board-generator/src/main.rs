@@ -13,7 +13,7 @@ fn get_amount() -> i32 {
         println!("Enter number of boards for this difficulty");
         io::stdin().read_line(&mut input).expect("Failed to read line");
 
-        match input.parse::<i32>().unwrap() {
+        match input.trim().parse::<i32>() {
             Ok(n) => return n,
             Err(e) => println!("That's not a valid number {}", e),
         }
