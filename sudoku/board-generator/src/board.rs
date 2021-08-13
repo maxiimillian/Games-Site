@@ -107,7 +107,7 @@ pub mod board {
                 "CREATE TABLE IF NOT EXISTS boards (
                     id INT PRIMARY KEY,
                     unsolved TEXT UNIQUE,
-                    solved TEXT,
+                    solved TEXT
                 )", [],
             )?;
 
