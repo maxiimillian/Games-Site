@@ -26,6 +26,7 @@ fn main() {
     let mut input: String = String::new();
 
     loop {
+        input = "".to_string();
         println!("Enter difficulty (easy, medium, or hard) and type done to continue.");
         io::stdin().read_line(&mut input).expect("Failed to read line");
         io::stdout().flush().unwrap();
