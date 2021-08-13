@@ -105,7 +105,7 @@ pub mod board {
             let conn = Connection::open(path).expect("Could not connect");
             conn.execute(
                 "CREATE TABLE IF NOT EXISTS boards (
-                    id INT PRIMARY KEY,
+                    id INT AUTO INCREMENT PRIMARY KEY,
                     unsolved TEXT UNIQUE,
                     solved TEXT,
                     difficulty TEXT
