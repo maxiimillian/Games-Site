@@ -1,38 +1,70 @@
-.App {
-  text-align: center;
+body {
+  background: #121212;
+  height: 100%;
+  
+  margin: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body > * {
+  margin: 0 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.board-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.board {
+  background: #212121;
+  border-collapse: collapse;
+  table-layout: fixed;
+  flex: 2;
+  height: 100%;
+  margin: 0px 10px;
+  border-radius: 15px;
+}
+
+
+.board colgroup, .board tbody {
+  border: solid medium;
+}
+
+tr {
+  border: black solid thin;
+  height: 1.5em;
+  width: 1.4em;
+  text-align: center;
+  padding: 0;
   color: white;
+  font-size: 1.8em;
+  font-weight: 600;
 }
 
-.App-link {
-  color: #61dafb;
+td {
+  border: black solid thin;
+  height: 1.5em;
+  width: 1.4em;
+  text-align: center;
+  padding: 0;
+  color: white;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+.start-number {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+td:hover {
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.highlighted-adjacent {
+  background-color: #5a4135;
+}
+
+.highlighted-square {
+  background-color: #caa08d;
+}
+
+.base-number {
+  color: #eb6123;
 }
