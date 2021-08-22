@@ -1,6 +1,7 @@
 use board_generator::board::board::Board;
 use board_generator::help::help;
 use board_generator::difficulty::difficulty::Difficulty;
+use board_generator::solver::strategies;
 use time::PreciseTime;
 use futures::executor::block_on;
 use std::collections::HashMap;
@@ -26,6 +27,7 @@ fn main() {
     board.print();
     board.refresh_candidates();
     board.print_candidates();
+    strategies::naked_singles(&board.squares);
 
 
     //GENERATOR LOOP TEXT
