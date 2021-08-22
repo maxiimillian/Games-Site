@@ -38,6 +38,7 @@ pub mod board {
                         x,
                         y,
                         value: 0,
+                        candidates: Vec::new(),
                     });
                 }   
             }
@@ -70,6 +71,7 @@ pub mod board {
                         x,
                         y,
                         value: 0,
+                        candidates: Vec::new(),
                     });
                 }   
             }
@@ -130,7 +132,31 @@ pub mod board {
             let mut f = BufWriter::new(f);
             
             write!(f, "{}{},", help::squares_to_string(&self.squares), help::squares_to_string(&self.solution));
-    
+        }
+
+        pub fn print_candidates(&self) {
+            for square in self.squares.iter() {
+                println!("\nINDEX:({},{})", square.x, square.y);
+                for candidate in square.candidates.iter() {
+                    println!(" {}", candidate);
+                }
+            }
+        }
+
+        pub fn refresh_candidates(&mut self) {
+            for index in 0..self.squares.len() {
+                let mut candidates: Vec<i32> = Vec::new();
+
+                for option in 1..10 {
+                    let future = help::isValid(&self.squares, index, option);
+                    if block_on(future) {
+                        candidates.push(option);
+                    }
+                    
+                }
+                self.squares[index].candidates = candidates;
+            }
+
         }
 
         fn create_board(&mut self, index: usize) -> bool {

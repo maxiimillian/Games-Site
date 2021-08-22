@@ -22,7 +22,14 @@ fn get_amount() -> i32 {
 }
 
 fn main() {
-    let mut boards_to_create: HashMap<&str, i32> = HashMap::new();
+    let mut board = Board::custom(Difficulty::EASY());
+    board.print();
+    board.refresh_candidates();
+    board.print_candidates();
+
+
+    //GENERATOR LOOP TEXT
+    /*let mut boards_to_create: HashMap<&str, i32> = HashMap::new();
     let mut input: String = String::new();
 
     loop {
@@ -76,6 +83,6 @@ fn main() {
         }
     }
 
-    println!("All boards have been created and outputted to a database file!");
+    println!("All boards have been created and outputted to a database file!");*/
 }
 

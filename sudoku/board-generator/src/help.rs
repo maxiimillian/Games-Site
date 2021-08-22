@@ -62,7 +62,7 @@ pub mod help {
     }
     
     fn isValidRow(board: &Vec<Square>, index: usize, option: i32) -> bool {
-        let square = board[index];
+        let square = &board[index];
         for other_square in board.iter() {
             if (other_square.y == square.y && other_square.x != square.x)  && (other_square.value == option && option != 0) {
                 return false;
@@ -72,7 +72,7 @@ pub mod help {
     }
     
     fn isValidColumn(board: &Vec<Square>, index: usize, option: i32) -> bool {
-        let square = board[index];
+        let square = &board[index];
         for other_square in board.iter() {
             if (other_square.x == square.x && other_square.y != square.y) && (other_square.value == option && option != 0) {
                 return false;
@@ -130,6 +130,7 @@ pub mod help {
                 x,
                 y,
                 value: value as i32 - 0x30,
+                candidates: Vec::new(),
             });
     
             x += 1;
