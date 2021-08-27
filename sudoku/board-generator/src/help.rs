@@ -14,6 +14,21 @@ pub mod help {
     use rand::prelude::*;
     use std::collections::HashMap;
 
+    pub fn isRow(square: &Square, other_square: &Square) -> bool {
+        return other_square.y == square.y && other_square.x != square.x;
+    }
+
+    pub fn isColumn(square: &Square, other_square: &Square) -> bool {
+        return other_square.x == square.x && other_square.y != square.y;
+    }
+
+    pub fn isBox(board: &Vec<Square>, square: &Square, other_square: &Square) -> bool {
+        let square_cordinates: (i32, i32) = find_box_x(board, square);
+        let other_square_cordinates: (i32, i32) = find_box_x(board, other_square);
+
+        return !(square.x == other_square.x && square.y == other_square.y) && other_square_cordinates == square_cordinates;
+    }
+
     fn find_box_y(square: &Square, base_unit: i32) -> i32 {
         if square.y <= base_unit-1 {
             return 1;
@@ -48,12 +63,9 @@ pub mod help {
     
     fn isValidBox(board: &Vec<Square>, index: usize, option: i32) -> bool {
         let square = &board[index];
-        let square_cordinates: (i32, i32) = find_box_x(board, square);
-        
-    
+
         for other_square in board.iter() {
-            let other_square_cordinates: (i32, i32) = find_box_x(board, other_square);
-            if other_square_cordinates == square_cordinates && (other_square.value == option && other_square.value != 0) && !(square.x == other_square.x && square.y == other_square.y) {
+            if  isBox(board, square, &other_square) && other_square.value == option && other_square.value != 0  {
                 return false;
             }
         }
@@ -64,7 +76,7 @@ pub mod help {
     fn isValidRow(board: &Vec<Square>, index: usize, option: i32) -> bool {
         let square = &board[index];
         for other_square in board.iter() {
-            if (other_square.y == square.y && other_square.x != square.x)  && (other_square.value == option && option != 0) {
+            if isRow(square, &other_square)  && (other_square.value == option && option != 0) {
                 return false;
             }
         }
@@ -74,7 +86,7 @@ pub mod help {
     fn isValidColumn(board: &Vec<Square>, index: usize, option: i32) -> bool {
         let square = &board[index];
         for other_square in board.iter() {
-            if (other_square.x == square.x && other_square.y != square.y) && (other_square.value == option && option != 0) {
+            if isColumn(square, &other_square) && (other_square.value == option && option != 0) {
                 return false;
             }
         }

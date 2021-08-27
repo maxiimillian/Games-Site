@@ -1,6 +1,6 @@
 pub mod difficulty {
 
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub struct Difficulty {
         pub filled_squares_count: i32,
         pub name: String,

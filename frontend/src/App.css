@@ -1,3 +1,8 @@
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: white;
+}
+
 body {
   background: #121212;
   height: 100%;
@@ -14,7 +19,7 @@ body > * {
 }
 
 .board {
-  background: #212121;
+  background: #8DAA91;
   border-collapse: collapse;
   table-layout: fixed;
   flex: 2;
@@ -25,11 +30,11 @@ body > * {
 
 
 .board colgroup, .board tbody {
-  border: solid medium;
+  border: #344636 solid medium;
 }
 
 tr {
-  border: black solid thin;
+  border: #344636 solid thin;
   height: 1.5em;
   width: 1.4em;
   text-align: center;
@@ -40,14 +45,17 @@ tr {
 }
 
 td {
-  border: black solid thin;
+  border: #344636 solid thin;
+  
   height: 1.5em;
   width: 1.4em;
   text-align: center;
   padding: 0;
-  color: white;
+  color: #FEFDEB;
   font-size: 1.8em;
   font-weight: 600;
+  position: relative;
+  background-clip: padding-box;
 }
 .start-number {
   color: rgba(255, 255, 255, 0.5);
@@ -57,14 +65,39 @@ td:hover {
   cursor: pointer;
 }
 
+
+
+
 .highlighted-adjacent {
-  background-color: #5a4135;
+  background-color: #729779;
+  color: #FEFDEB;
 }
 
 .highlighted-square {
-  background-color: #caa08d;
+  background-color: #688D6F;
+  color: #FEFDEB;
+
 }
 
 .base-number {
-  color: #eb6123;
+  color: rgba(61, 82, 65, 0.7);
+}
+
+
+.cell-overlay {
+  position: absolute;
+  
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.overlay-number {
+  font-size: 0.3em;
+  color: rgb(92, 70, 9);
+  width: 33%;
 }

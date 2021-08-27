@@ -12,13 +12,14 @@ pub mod board {
     use rand::Rng;
     use rand::thread_rng;
     use rand::seq::SliceRandom;
-    use std::{fs::OpenOptions, fs::File, io::prelude::*, time::{SystemTime, UNIX_EPOCH}};
+    use std::{fs::{ OpenOptions, File, canonicalize }, io::prelude::*, time::{SystemTime, UNIX_EPOCH}};
     use std::io::{BufWriter, Write};
     use rand::prelude::*;
     use std::collections::HashMap;
     use std::convert::TryInto;
+    use serde::{Deserialize, Serialize};
 
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub struct Board {
         pub squares: Vec<Square>,
         pub solution: Vec<Square>,
@@ -94,6 +95,18 @@ pub mod board {
 
         pub fn print(&self) {
             help::print_vec(&self.squares);
+        }
+
+        pub fn export_json(&self) -> Result<()> {
+            let mut f = OpenOptions::new()
+            .write(true)
+            .open("C:/Users/frogg/Desktop/code/Placeholdr/frontend/src/test.json")
+            .expect("unable to open file");
+            
+            let j = serde_json::to_string(&self.squares).unwrap();
+            write!(f, "{:?}", j);
+
+            Ok(())
         }
     
         pub fn save_db(&self) -> Result<()> {

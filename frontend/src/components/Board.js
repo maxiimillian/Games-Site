@@ -1,50 +1,87 @@
 import { React, useState, Component, useEffect } from "react";
 
+let DEFAULT_BOARD = "0".repeat(81);
 
-class Square {
-    constructor(x, y, value) {
-        this.x = x;
-        this.y = y;
+class Cell {
+    constructor(value, annotations) {
         this.value = value;
-    } 
+        this.annotations = annotations;
+    }
 }
 
 export default function Board(props) {
-    const [board, setBoard] = useState(createBoard(props.board_string));
+    const [board, setBoard] = useState(createBoardJson(props.board_json));
     const [highlightIndex, setHighlightIndex] = useState(82);
-    const baseIndexs = getBase(props.board_string);
+    const [annotate, setAnnotate] = useState(false);
+
+    const baseIndexs = getBaseJson(props.board_json);
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
+    
 
     function handleEventInput({key}) {
-        console.log("base", baseIndexs, highlightIndex, baseIndexs.includes("11"));
-        if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndexs.includes(highlightIndex))) {
+        if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndexs.includes(highlightIndex)) && !(annotate && key == 0)) {
             let cells = [...board];
-            cells[highlightIndex] = key;
+
+            if (annotate) {
+                let annotations = cells[highlightIndex].annotations;
+                if (annotations.includes(key)) {
+                    let index = annotations.indexOf(key);
+
+                    if (index > -1) {
+                        annotations.splice(index, 1);
+                    }
+                } else {
+                    annotations.push(...key);
+                }
+                
+            } else {
+                cells[highlightIndex].value = key;
+            }
+            
     
             setBoard(cells);
         }
  
     }
 
+    function createBoardJson(board_json) {
+        var board_create = [];
+
+        board_json.forEach(square => {
+            board_create.push(
+                new Cell(square.value, square.candidates)
+            );
+        })
+        return board_create;
+    }
+
     function createBoard(board_string) {
         var board_create = [];
-        var x = 0;
-        var y = 0;
+        console.log("hi", props.board_json);
+        createBoardJson(props.board_json);
 
         for (let i = 0; i < board_string.length; i++) {
 
             board_create.push(
-                board_string[i]
+                new Cell(board_string[i], [])
             );
-            x += 1;
-            if (x % 9 == 0) {
-                y += 1;
-                x = 0;
-            }
 
         }
         return board_create;
 
+    }
+
+    function getBaseJson(board_json) {
+        let indexs = [];
+
+        board_json.forEach((square, index) => {
+            if (square.value != 0) {
+                console.log(index, typeof index)
+                indexs.push(index.toString());
+            }
+        })
+
+        return indexs;
     }
 
     function getBase(board_string) {
@@ -68,22 +105,9 @@ export default function Board(props) {
 
 
     function handleCellClick(e) {
-        let index = e.target.getAttribute("data-index")
-
+        let index = e.currentTarget.getAttribute("data-index")
+        console.log(index, e);
         setHighlightIndex(index);
-
-    }
-
-    function handleCellChange(e, index) {
-        let new_input = e.nativeEvent.data
-        
-        if (ALLOWED_INPUTS.includes(parseInt(new_input))) {
-            let cells = [...board];
-            cells[index] = new_input;
-    
-            setBoard(cells);
-        }
-
 
     }
 
@@ -157,7 +181,7 @@ export default function Board(props) {
             return [3, adjacentY(index)];
         }
     }
-    
+
     function isAdjacentBox(index) {
         let test = adjacentX(index);
         let highlight = adjacentX(highlightIndex);
@@ -166,7 +190,9 @@ export default function Board(props) {
     }
 
     function isAdjacent(index) {
-        if (highlightIndex < 0 || highlightIndex > 81) return false; 
+        if (highlightIndex < 0 || highlightIndex > 81 || highlightIndex == null) {
+            return false;
+        }
         let row = searchSquare("y", index);
         let col = searchSquare("x", index);
         let box = isAdjacentBox(index);
@@ -180,7 +206,7 @@ export default function Board(props) {
     function createRow(limit) {
         return (
             <tr>
-            {board.map((value, index) => {
+            {board.map((cell, index) => {
                 //console.log(limit-9, limit-1)
                 if (index >= limit-9 && index <= limit-1) {
 
@@ -191,7 +217,12 @@ export default function Board(props) {
 
                     return (
                         <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base}`}>
-                            {value == "0" ? "" : value}
+                            {cell.value == "0" ? "" : cell.value}
+                            <div class="cell-overlay">
+                                {cell.annotations.map((annotation) => {
+                                    return <div class="overlay-number">{annotation}</div>
+                                })}
+                            </div>
                         </td>
                     )
                 }
@@ -201,26 +232,32 @@ export default function Board(props) {
     }
 
     return (
-        <table className="board">
-        <colgroup><col></col><col></col><col></col></colgroup>
-        <colgroup><col></col><col></col><col></col></colgroup>
-        <colgroup><col></col><col></col><col></col></colgroup>
+        <div>
+            <div style={{display: "flex", flexDirection: "column", width: "10%"}}>
+                <span>{annotate ? "on" : "off"}</span>
+                <button onClick={() => setAnnotate(!annotate)}>Annotate</button>
+            </div>
+            <table className="board">
+            <colgroup><col></col><col></col><col></col></colgroup>
+            <colgroup><col></col><col></col><col></col></colgroup>
+            <colgroup><col></col><col></col><col></col></colgroup>
 
-        <tbody>
-        {createRow(9)}
-        {createRow(18)}
-        {createRow(27)}
-        </tbody>
-        <tbody>
-        {createRow(36)}
-        {createRow(45)}
-        {createRow(54)}
-        </tbody>
-        <tbody>
-        {createRow(63)}
-        {createRow(72)}
-        {createRow(81)}
-        </tbody>
-        </table>
+            <tbody>
+            {createRow(9)}
+            {createRow(18)}
+            {createRow(27)}
+            </tbody>
+            <tbody>
+            {createRow(36)}
+            {createRow(45)}
+            {createRow(54)}
+            </tbody>
+            <tbody>
+            {createRow(63)}
+            {createRow(72)}
+            {createRow(81)}
+            </tbody>
+            </table>
+        </div>
     )
 }

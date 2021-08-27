@@ -1,5 +1,7 @@
 pub mod square {
-    #[derive(Clone)]
+    use serde::{Serialize};
+
+    #[derive(Clone, Serialize, Debug)]
     pub struct Square {
         pub x: i32,
         pub y: i32,
