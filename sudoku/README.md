@@ -54,5 +54,5 @@ As a library the code implements:
 - Pattern Overlay Method		 
 - Quad Forcing Chains	
 https://www.sudokuwiki.org/sudoku.htm	 
-
+    
 

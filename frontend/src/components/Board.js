@@ -71,6 +71,10 @@ export default function Board(props) {
 
     }
 
+    function resetBoard() {
+        setBoard(createBoardJson(props.board_json))
+    }
+
     function getBaseJson(board_json) {
         let indexs = [];
 
@@ -232,32 +236,32 @@ export default function Board(props) {
     }
 
     return (
-        <div>
-            <div style={{display: "flex", flexDirection: "column", width: "10%"}}>
-                <span>{annotate ? "on" : "off"}</span>
-                <button onClick={() => setAnnotate(!annotate)}>Annotate</button>
-            </div>
+        <div className="board-container">
             <table className="board">
-            <colgroup><col></col><col></col><col></col></colgroup>
-            <colgroup><col></col><col></col><col></col></colgroup>
-            <colgroup><col></col><col></col><col></col></colgroup>
+                <colgroup><col></col><col></col><col></col></colgroup>
+                <colgroup><col></col><col></col><col></col></colgroup>
+                <colgroup><col></col><col></col><col></col></colgroup>
 
-            <tbody>
-            {createRow(9)}
-            {createRow(18)}
-            {createRow(27)}
-            </tbody>
-            <tbody>
-            {createRow(36)}
-            {createRow(45)}
-            {createRow(54)}
-            </tbody>
-            <tbody>
-            {createRow(63)}
-            {createRow(72)}
-            {createRow(81)}
-            </tbody>
+                <tbody>
+                    {createRow(9)}
+                    {createRow(18)}
+                    {createRow(27)}
+                </tbody>
+                <tbody>
+                    {createRow(36)}
+                    {createRow(45)}
+                    {createRow(54)}
+                </tbody>
+                <tbody>
+                    {createRow(63)}
+                    {createRow(72)}
+                    {createRow(81)}
+                </tbody>
             </table>
+            <div className="control-bar">
+                <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
+                <button onClick={() => resetBoard()} className="control-button off">Reset</button>
+            </div>
         </div>
     )
 }

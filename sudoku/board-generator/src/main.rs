@@ -8,6 +8,8 @@ use std::collections::HashMap;
 use std::io;
 use std::io::Write;
 use std::{fs::{ OpenOptions, File, canonicalize }, io::prelude::*, time::{SystemTime, UNIX_EPOCH}};
+
+
 fn get_amount() -> i32 {
     loop {
         let mut input: String = String::new();
@@ -22,33 +24,9 @@ fn get_amount() -> i32 {
     }
 }
 
-fn find_power_set(set: &mut Vec<i32>) {
-    let mut subset = 0 as i32;
-    let mut subsets = Vec::new();
-
-    find_power_set_muscle(set, &mut subset, &mut subsets);
-    println!("{:?}", subsets);
-}
-
-fn find_power_set_muscle(set: &mut Vec<i32>, subset: &mut i32, subsets: &mut Vec<i32>) {
-
-    if set.len() == 0 {
-        return;
-    }
-    println!("{:?} {:?}",set, subsets);
-    for element in set.iter() {
-        let mut temp_subset = (*subset * 10) + *element;
-        subsets.push(temp_subset);
-        let mut temp_set = set.clone();
-        temp_set.remove(0 as usize);
-        find_power_set_muscle(&mut temp_set, &mut temp_subset, subsets);
-    }
-    return;
-}
-
 fn main() {
-    let mut set = vec![1, 2, 3];
-    find_power_set(&mut set);
+    let mut it = (1..10).combinations(2).collect::<Vec<_>>();
+    println!("{:?}", it);
     //                                        002193000000007000700040019803000600045000230007000504370080006000600000000534100
     /*let mut square = help::string_to_squares("002193000000007000700040019803000600045000230007000504370080006000600000000534100");
     let mut board = Board { squares: square, difficulty: Difficulty::EASY(), solution: Vec::new(), timestamp: SystemTime::now()};

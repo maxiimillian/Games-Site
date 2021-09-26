@@ -1,16 +1,52 @@
-import logo from './logo.svg';
+
 import './App.css';
 import Board from "./components/Board";
-import { useCallback } from 'react';
-import data from "./test.json";
+import React from 'react';
+import { useState } from "react";
+
+
+import Authenticated from "./components/Authenticated";
+import Unauthenticated from './components/Unauthenticated';
+import Loading from "./components/Loading";
+
+
+
+async function attemptLogIn() {
+  console.log("fetching...")
+  const response = await fetch("http://localhost:3001", {
+    method: "GET",
+    mode: "cors",
+    headers: {
+        "Content-Type": "application/json",
+    }
+  })
+  .then(data => {
+    console.log("here3");
+      let data_json = data.json();
+      console.log(data_json)
+      if (data_json["response"] == "success") {
+        console.log("here");
+        return true;
+      } else {
+        console.log("here2");
+        return false;
+      }
+  })
+
+  }
+
 
 function App() {
-  console.log(data);
+  //True for now, eventually will be authtication check
+  const [authenticated, setAuthenticated] = useState(true);
+
   return (
-    <div className="App">
-      <Board board_string={"050000002001000600968000004090010000015000940000900073100350090006001800000004000"} board_json={JSON.parse(data)}/>
-    </div>
-  );
+  
+    <React.Suspense fallback={<Loading/>}>
+      {authenticated == true ? <Authenticated /> : <Unauthenticated handleLogin={attemptLogIn}/>}
+    </React.Suspense>
+  )
 }
 
 export default App;
+

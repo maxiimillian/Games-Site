@@ -3,6 +3,11 @@ pub mod strategies {
     use crate::help::help;
     use crate::board::board;
     use std::collections::HashMap;
+    use itertools::Itertools;
+
+    pub fn naked_doubles(board: &Vec<Square>) {
+        
+    }
 
     pub fn check_adjacent_candidates(board: &Vec<Square> , index: usize, candidate: i32) -> bool {
         let square = &board[index];
