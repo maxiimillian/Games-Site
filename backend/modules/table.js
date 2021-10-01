@@ -6,9 +6,10 @@ var player = require("./player");
 
 module.exports = 
     class Table {
-        constructor(host) {
+        constructor(code, host) {
             this.id = crypto.randomBytes(20).toString('hex');
             this.host = host;
+            this.code = code;
             this.players = [];
             this.deck = this.create_deck();
         }

@@ -30,6 +30,7 @@ function CenterControl(props) {
 
     return (
         <div>
+            <button onClick={() => setOption("options")}>switch</button>
             {center}
         </div>
     )

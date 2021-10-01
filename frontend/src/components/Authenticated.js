@@ -28,7 +28,7 @@ function Authenticated() {
     }
 
     async function getToken() {
-        const response = await fetch("http://localhost:3001/auth/refresh", {
+        const response = await fetch(`${process.env.API_URL}/auth/refresh`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -52,7 +52,7 @@ function Authenticated() {
     };
 
     async function getData(callback) {
-        const response = await fetch("http://localhost:3001/auth/profile", {
+        const response = await fetch(`${process.env.API_URL}/auth/profile`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -99,9 +99,6 @@ function Authenticated() {
             </div>
             
             <div className="page-container">
-                <head>
-                <script src="https://kit.fontawesome.com/a055bc908e.js" crossorigin="anonymous"></script>
-                </head>
                 
                 <div className="left-container">
                     <div className="main-user-info">
