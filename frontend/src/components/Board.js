@@ -1,6 +1,9 @@
 import { React, useState, Component, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { io } from "socket.io-client";
 
-let DEFAULT_BOARD = "0".repeat(81);
+const BOARD_DEFAULT = "0".repeat(81);
+const BOARD_DEFAULT_INDEX = [];
 
 class Cell {
     constructor(value, annotations) {
@@ -10,16 +13,47 @@ class Cell {
 }
 
 export default function Board(props) {
-    const [board, setBoard] = useState(createBoardJson(props.board_json));
+    const [board, setBoard] = useState(createBoard(props.board));
+    const [baseIndex, setBaseIndex] = useState(getBase(props.board));
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
+    const [opponenet, setOpponent] = useState(null);
+    const [socket, setSocket] = useState(null);
 
-    const baseIndexs = getBaseJson(props.board_json);
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
-    
+
+    let { room_code } = useParams();
+
+    useEffect(() => {
+        
+        let socket_return = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
+            auth: {
+                token: localStorage.getItem("token")
+            },
+            transports: ["websocket"],
+        });
+
+        setSocket(socket_return);
+
+        socket_return.emit("join", room_code);
+
+        socket_return.on("start", (board) => {
+            setBoard(createBoard(board));
+            setBaseIndex(getBase(board));
+        })
+
+        socket_return.on("joined", (user) => {
+            setOpponent(user);
+        })
+
+        return () => {
+            socket_return.disconnect();
+        }
+
+    }, [setSocket])
 
     function handleEventInput({key}) {
-        if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndexs.includes(highlightIndex)) && !(annotate && key == 0)) {
+        if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndex.includes(highlightIndex)) && !(annotate && key == 0)) {
             let cells = [...board];
 
             if (annotate) {
@@ -55,19 +89,25 @@ export default function Board(props) {
         return board_create;
     }
 
-    function createBoard(board_string) {
+    function createBoard(board) {
         var board_create = [];
-        console.log("hi", props.board_json);
-        createBoardJson(props.board_json);
+        
+        if (typeof board == "string") {
 
-        for (let i = 0; i < board_string.length; i++) {
+            for (let i = 0; i < board.length; i++) {
 
-            board_create.push(
-                new Cell(board_string[i], [])
-            );
-
+                board_create.push(
+                    new Cell(board[i], [])
+                );
+    
+            }
+            return board_create;
+    
+        } else if (typeof board == "object") {
+            return createBoardJson(board);
+        } else {
+            return createBoard(BOARD_DEFAULT);
         }
-        return board_create;
 
     }
 
@@ -76,6 +116,7 @@ export default function Board(props) {
     }
 
     function getBaseJson(board_json) {
+
         let indexs = [];
 
         board_json.forEach((square, index) => {
@@ -88,16 +129,26 @@ export default function Board(props) {
         return indexs;
     }
 
-    function getBase(board_string) {
-        let indexs = [];
+    function getBase(board) {
 
-        for (let i = 0; i < board_string.length; i++) {
-            if (board_string[i] != 0) {
-                indexs.push(i.toString());
+        if (typeof board == "string") {
+            let indexs = [];
+
+            for (let i = 0; i < board.length; i++) {
+                if (board[i] != 0) {
+                    indexs.push(i.toString());
+                }
             }
+    
+            return indexs;
+    
+        } else if (typeof board == "object") {
+            return getBaseJson(board);
+        } else {
+            return getBase(BOARD_DEFAULT_INDEX);
         }
 
-        return indexs;
+
     }
 
     useEffect(() => {
@@ -216,7 +267,7 @@ export default function Board(props) {
 
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
                     let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
-                    let is_base = (baseIndexs.includes(index.toString())) ? "base-number": "";
+                    let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
 
 
                     return (

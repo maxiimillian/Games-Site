@@ -15,6 +15,19 @@ module.exports = {
         });
     },
 
+    get_user_information: function(user_id, callback) {
+        UserModel.findOne({username: username}, (err, user) => {
+            if (err) {
+                callback(err)
+            }
+            else if (user == null) {
+                callback(new Error("User not found"));
+            } else {
+                callback(null, {"username": user.username, "user_id": user.user_id, "profile_url": user.profile_url});
+            }
+        })
+    },
+
     is_valid_email: function(email_string, callback) {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

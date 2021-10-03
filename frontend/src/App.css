@@ -2,6 +2,10 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+a {
+  text-decoration: None;
+}
+
 hr {
   border: solid rgba(255, 255, 255, 0.3) 1px;
 }
@@ -11,6 +15,12 @@ body {
   height: 100%;
   
   margin: 0;
+}
+
+select {
+  background-color: #3e7748;
+  border: 1px solid #2d5233;
+  color: white;
 }
 
 body > * {
@@ -291,6 +301,7 @@ td:hover {
   height: 100%;
   margin: 0px 10px;
   border-radius: 15px;
+  position: relative;
 }
 
 .options-container {
@@ -386,4 +397,27 @@ td:hover {
   color: rgba(255,255,255,0.7);
   align-self: center;
   padding: 0px 10px;
+}
+
+.block-container {
+  width: 100%;
+  position: fixed;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.create-container {
+  padding: 20px;
+  background-color: #688D6F;
+  display: flex;
+  justify-content: center;
+  width: 25%;
+  left: 0;
+  right: 0;
+  top: 25%;
+  margin: auto;
+  position: absolute;
 }

@@ -4,33 +4,56 @@ import Board from "./Board";
 import { useState } from "react";
 import data from "./test.json";
 
+import sudoku_logo from "../public/sudoku_board.png";
+import poker_logo from "../public/poker.png";
+
+
+
+
 function CenterControl(props) {
     const VALID_OPTIONS = ["options", "poker", "sudoku"]
     const [option, setOption] = useState(props.option)
     let center;
 
     if (!VALID_OPTIONS.includes(option)) setOption("options");
-
+    
     function changeOption(newOption) {
         if (VALID_OPTIONS.includes(newOption)) {
             setOption(newOption);
         }
     }
     
-    if (option == "options") {
-        center = <Options change_option={changeOption}/>
-    } else if (option == "poker") {
+    if (option == "poker") {
         center = <Table />
     } else if (option == "sudoku") {
-        center = <Board 
-                board_string={"050000002001000600968000004090010000015000940000900073100350090006001800000004000"} 
-                board_json={JSON.parse(data)}
-                />
+        center = (
+            <div class="block-container">
+                <div class="create-container">
+                    <div style={{dispaly: "flex", flexDirection: "column"}}>
+                        <h2>Create Game</h2>
+                        <select className="create-selector">
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        )
     }   
 
     return (
         <div>
-            <button onClick={() => setOption("options")}>switch</button>
+            <div className="options-container">
+                    <div onClick={() => changeOption("sudoku")} className="game-option">
+                        <img className="game-icon" src={sudoku_logo}></img>
+                        <span className="game-name">Sudoku</span>
+                    </div>
+                    <div onClick={() => changeOption("poker")}  className="game-option">
+                        <img className="game-icon"src={poker_logo}></img>
+                        <span className="game-name">Poker</span>
+                    </div>
+            </div>
             {center}
         </div>
     )

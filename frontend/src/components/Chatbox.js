@@ -4,7 +4,7 @@ import Message from "./Message";
 import wbfcru_profile from "../public/wbfrcu.png";
 
 function Chatbox() {
-    const [messages, setMessages] = useState([{"user": "Johnathon", "content": "Fukc you whor"}, {"user": "wenis", "content": ":("}]);
+    const [messages, setMessages] = useState([{"user": "Johnathon", "content": "hey"}, {"user": "wenis", "content": ":("}]);
 
     return (
         <div style={{display: "flex", flexDirection: "column", background: "#0f0f0f", padding: "20px", borderRadius: "15px"}}>

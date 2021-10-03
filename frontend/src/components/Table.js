@@ -1,25 +1,6 @@
 import { React, useState, Component, useEffect } from "react";
 import {io} from 'socket.io-client' 
 
-function TestThing({ socket }) {
-    const handleTest = (data) => {
-        console.log("DATA: ", data);
-    }
-    useEffect(() => {
-        socket.on("test", handleTest);
-
-        return () => {
-            socket.off("test", handleTest);
-        };
-    }, [socket]);
-
-    return (
-        <div>
-            
-        </div>
-    )
-}
-
 export default function Table(props) {
     const [players, setPlayers] = useState([]);
     const [actions, setActions] = useState([]);
@@ -27,7 +8,7 @@ export default function Table(props) {
 
     useEffect(()=> {
         
-        let socket_return = io(`${process.env.API_URL}/poker`, {
+        let socket_return = io(`${process.env.REACT_APP_API_URL}/poker`, {
             auth: {
                 token: localStorage.getItem("token")
             }
