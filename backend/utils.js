@@ -1,7 +1,13 @@
-var connection = require("./connection")
+const connection = require("./connection")
 const UserModel = require('./models/User');
-var crypto = require("crypto");
+const crypto = require("crypto");
 const TokenModel = require("./models/Token");
+const { devNull } = require("os");
+const sqlite3 = require('sqlite3').verbose();
+require('dotenv').config();
+
+console.log(process.env.BOARD_DB_PATH)
+let db = new sqlite3.Database(process.env.BOARD_DB_PATH);
 
 module.exports = {
     get_user_id: function(username) {
@@ -16,15 +22,16 @@ module.exports = {
     },
 
     get_user_information: function(user_id, callback) {
-        UserModel.findOne({username: username}, (err, user) => {
+        UserModel.findOne({user_id: user_id}, (err, user) => {
             if (err) {
                 callback(err)
             }
             else if (user == null) {
-                callback(new Error("User not found"));
+                callback(null, {"username": "Guest", "profile_url": "guest.png"});
             } else {
                 callback(null, {"username": user.username, "user_id": user.user_id, "profile_url": user.profile_url});
             }
+            return
         })
     },
 
@@ -80,7 +87,31 @@ module.exports = {
         }
 
         return code;
-    }	
+    },
+
+    get_board: function(difficulty) {
+        console.log("getting board");
+        db.all(`SELECT * FROM boards WHERE difficulty=? LIMIT 1`, [difficulty], (err, row) => {
+            if (err) {
+                console.log("DB ERR: ", err);
+                return null;
+            } else {
+                return row[0]
+            }
+        })
+        
+    },
+
+    get_user_id: function(token) {
+        return TokenModel.findOne({token: token}, function (err, tokenObj) {
+            if (err || tokenObj == null) {
+                return new Error("Invalid Token");
+            } else {
+                return tokenObj.user_id
+            }
+
+        });
+    }
 
 
 

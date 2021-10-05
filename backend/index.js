@@ -48,3 +48,5 @@ let io = require("socket.io")(server, {
   }
 });
 require("./connection.js")(io);
+
+export default app;

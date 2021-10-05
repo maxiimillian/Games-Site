@@ -80,7 +80,7 @@ router.post("/login", function(req, res) {
                     });
                 } else {    
 
-                    return res.json({success:false, message:"Unvalid Authentication"});
+                    return res.json({success:false, message:"invalid Authentication"});
                 }
             });
 

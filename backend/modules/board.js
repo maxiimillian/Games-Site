@@ -1,16 +1,29 @@
 const crypto = require("crypto");
 const utils = require("../utils");
 
+const DEFAULT_BOARD = {
+    id: null,
+    unsolved: '000260000190300000802509000328000060000080054000000000059003800700000000003605040',
+    solved: '537261498194378625862549173328457961671982354945136287459723816716894532283615749',
+    difficulty: 'easy'
+  };
 
 module.exports = 
     class Board {
-        constructor(code, host_id, difficulty) {
+        constructor(host_id, difficulty) {
             this.id = crypto.randomBytes(20).toString('hex');;
-            this.host = host;
-            this.code = code;
+            this.host = host_id;
             this.players = [host_id];
-            this.board = utils.get_board(difficulty);
-            this.boards = [{"user": host_id, "board": board.unsolved}];
+            this.difficulty = difficulty;
+            this.board = DEFAULT_BOARD;
+            this.boards = [{"user": host_id, "board": this.board.unsolved}];
+        }
+
+        async init(callback) {
+            let response = await utils.get_board(utils.get_board(this.difficulty))
+            console.log(response);
+            this.board = response;
+            callback(this.board);
         }
 
         add_player(user_id, callback) {
@@ -18,9 +31,11 @@ module.exports =
                 callback(new Error("Maximum two players")); 
             } else {
                 this.players.push(user_id);
-                this.boards.push({host_id: board.unsolved});
+                this.boards.push({"user": user_id, "board": this.board.unsolved});
                 try {
-                    callback(null, utils.get_user_information(user_id));
+                    utils.get_user_information(user_id, (user) => {
+                        callback(null, user)
+                    })
                 } catch (err) {
                     callback(err);
                 }
