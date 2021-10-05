@@ -92,44 +92,6 @@ button:hover {
   padding: 20px;
 }
 
-.board-container {
-  display: flex;
-}
-
-.board {
-  background: #8DAA91;
-  border-collapse: collapse;
-  table-layout: fixed;
-  height: 100%;
-  margin: 0px auto;
-  border-radius: 15px;
-  flex: 3;
-}
-
-
-.board colgroup, .board tbody {
-  border: #344636 solid medium;
-}
-
-.control-bar {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.control-button {
-  padding: 20px;
-  width: 40%;
-  border: None;
-  color: white;
-  border-radius: 15px;
-  font-size: 1em;
-  margin-top: 20px;
-}
-
-
-
 .off {
   background-color: #457a5e;
 }
@@ -138,79 +100,7 @@ button:hover {
   background-color: #6ca888;
 }
 
-.control-button:hover {
-  background-color: #6ca888;
-  cursor: pointer;
-}
 
-tr {
-  border: #344636 solid thin;
-  height: 1.5em;
-  width: 1.4em;
-  text-align: center;
-  padding: 0;
-  color: white;
-  font-size: 1.8em;
-  font-weight: 600;
-}
-
-td {
-  border: #344636 solid thin;
-  
-  height: 1.5em;
-  width: 1.4em;
-  text-align: center;
-  padding: 0;
-  color: #FEFDEB;
-  font-size: 1.8em;
-  font-weight: 600;
-  position: relative;
-  background-clip: padding-box;
-}
-.start-number {
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-}
-td:hover {
-  cursor: pointer;
-}
-
-
-
-
-.highlighted-adjacent {
-  background-color: #729779;
-  color: #FEFDEB;
-}
-
-.highlighted-square {
-  background-color: #688D6F;
-  color: #FEFDEB;
-
-}
-
-.base-number {
-  color: rgba(61, 82, 65, 0.7);
-}
-
-
-.cell-overlay {
-  position: absolute;
-  
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-
-}
-
-.overlay-number {
-  font-size: 0.3em;
-  color: rgb(92, 70, 9);
-  width: 33%;
-}
 
 .page-container {
   display: flex;

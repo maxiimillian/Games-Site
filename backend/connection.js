@@ -3,6 +3,7 @@ const utils = require("./utils");
 const Table = require("./modules/table");
 const Board = require("./modules/board");
 const { get_user_id, get_user_information } = require('./utils');
+
 module.exports = function(io) {
 	
 	function alreadyInRoom(socket) {
@@ -26,10 +27,12 @@ module.exports = function(io) {
 	const sudoku = io.of("/sudoku");
 
 	sudoku.use((socket, next) => {
+		console.log("sudoky called");
 		let token = socket.handshake.auth.token;
 
         TokenModel.findOne({token: token}, function (err, tokenObj) {
             if (err || tokenObj == null) {
+				console.log("sud invalid...	")
                 next(new Error("Invalid Token"));
             } else {
 				next();
@@ -39,19 +42,20 @@ module.exports = function(io) {
 	});
 
 	sudoku.on("connection", socket => {
-		setTimeout(() => {
-			console.log("now");
-			socket.emit("test");
-		}, 10000);
-		
+		console.log("connected to sudoku");
 		socket.on("create", (difficulty) => {
+			difficulty = difficulty.toLowerCase()
+			console.log(difficulty)
 			let room_code = utils.generate_room_code(6);
+			let token = socket.handshake.auth.token;
 
 			TokenModel.findOne({token: token}, function (err, tokenObj) {
 				if (err || tokenObj == null) {
+					console.log("12")
 					socket.emit("Unknown Token");
 
 				} else if (alreadyInRoom(socket)) {
+					console.log("1")
 					socket.emit("err", "Already in a room.") 
 
 				} else {
@@ -60,9 +64,10 @@ module.exports = function(io) {
 					room_track_sudoku[socket.id] = room_code;
 		
 					let board = new Board(tokenObj.user_id, difficulty);
+					console.log(board)
 					boards[room_code] = board;
-					
-					room.emit("created");
+					socket.emit("created", room_code);
+
 				}
 	
 			});
@@ -71,28 +76,47 @@ module.exports = function(io) {
 		});
 
 		socket.on("join", (room_code) => {
-			let room = io.sockets.adapter.room.room_code;
+			console.log("??")
+			let room = sudoku.adapter.rooms.get(room_code);
+			let token = socket.handshake.auth.token;
+			let user_id = utils.get_user_id(token);
+
 			if (room == null) {
+				console.log("1")
 				socket.emit("err", "Room not found");
 
 			} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
+				console.log("12")
 				socket.emit("err", "Room is full");
 
 			} else {
-				socket.join(room_code);
-
+				console.log("??2")
 				utils.get_user_information(user_id, (err, user) => {
 					if (err) {
+						console.log("15", err)
 						socket.emit("User Information Error");
 						socket.leave(room_code);
 
 					} else {
-						room.emit("joined", user);
+						console.log("??3")
+						let board = boards[room_code];
+						board.add_player(user_id, (err, user) => {
+							if (err) {
+								console.log("ERR", err, user);
+								socket.emit("error");
+							} else {
+								console.log("joininh...")
+								socket.join(room_code);
+								sudoku.to(room_code).emit("joined", user);
 
-						if (io.sockets.adapter.room.room_code.length == SUDOKU_PLAYER_LIMIT) {
-							let board = boards.room_code;
-							room.emit("start", {"unsolved": board.unsolved})
-						}
+								console.log("??6",sudoku.adapter.rooms.get(room_code).size, SUDOKU_PLAYER_LIMIT)
+								if (sudoku.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
+									console.log("??7", boards, boards[room_code])
+									sudoku.to(room_code).emit("start", {"board": board.board.unsolved})
+								}
+							}
+						})
+
 					}
 
 
@@ -115,12 +139,14 @@ module.exports = function(io) {
 		});
 
 		socket.on("disconnect", () => {
+			console.log("disconnecting")
 			sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", {});
 			delete room_track_sudoku[socket.id];
 		})
 	});
 
 	poker.use((socket, next) => {
+		console.log("poker called");
 		let token = socket.handshake.auth.token;
 
         TokenModel.findOne({token: token}, function (err, tokenObj) {
@@ -166,7 +192,7 @@ module.exports = function(io) {
 
 		socket.on("disconnect", () => {
 			console.log(socket.id);
-			console.log(room_track[socket.id]);
+			console.log(room_track_poker[socket.id]);
 		})
 	});
 

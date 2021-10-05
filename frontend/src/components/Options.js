@@ -6,7 +6,7 @@ function Option({ change_option }) {
         change_option(clicked_option);
     }
     return (
-        <div className="options-container">
+    <div className="options-container">
         <div onClick={() => handleClick("sudoku")} className="game-option">
             <img className="game-icon" src={sudoku_logo}></img>
             <span className="game-name">Sudoku</span>

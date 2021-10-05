@@ -3,7 +3,7 @@ import Options from "./Options";
 import Board from "./Board";
 import { useState } from "react";
 import data from "./test.json";
-
+import { Link } from "react-router-dom";
 import sudoku_logo from "../public/sudoku_board.png";
 import poker_logo from "../public/poker.png";
 
@@ -13,10 +13,15 @@ import poker_logo from "../public/poker.png";
 function CenterControl(props) {
     const VALID_OPTIONS = ["options", "poker", "sudoku"]
     const [option, setOption] = useState(props.option)
+    const [difficulty, setDifficulty] = useState("easy")
     let center;
 
     if (!VALID_OPTIONS.includes(option)) setOption("options");
-    
+
+    function handleDifficulty(e) {
+        setDifficulty(e.target.value);
+    }
+
     function changeOption(newOption) {
         if (VALID_OPTIONS.includes(newOption)) {
             setOption(newOption);
@@ -31,11 +36,13 @@ function CenterControl(props) {
                 <div class="create-container">
                     <div style={{dispaly: "flex", flexDirection: "column"}}>
                         <h2>Create Game</h2>
-                        <select className="create-selector">
+                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className="create-selector">
                             <option>Easy</option>
                             <option>Medium</option>
                             <option>Hard</option>
+                            <option>Extreme</option>
                         </select>
+                        <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button>Create</button></Link>
                     </div>
                 </div>
             </div>

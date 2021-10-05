@@ -1,6 +1,8 @@
 import { React, useState, Component, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
+
+import "../styles/board.scss"
 
 const BOARD_DEFAULT = "0".repeat(81);
 const BOARD_DEFAULT_INDEX = [];
@@ -18,39 +20,63 @@ export default function Board(props) {
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
     const [opponenet, setOpponent] = useState(null);
-    const [socket, setSocket] = useState(null);
+    const [waiting, setWaiting] = useState(true);
+    const [created, setCreated] = useState(false);
+    const [room_code, setRoomCode] = useState(useParams().room_code);
 
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
+    
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+    }
 
-    let { room_code } = useParams();
+    let query = useQuery();
 
     useEffect(() => {
-        
-        let socket_return = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
+        console.log("useeffect");
+        let socket = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
             auth: {
                 token: localStorage.getItem("token")
-            },
-            transports: ["websocket"],
+            }
         });
 
-        setSocket(socket_return);
-
-        socket_return.emit("join", room_code);
-
-        socket_return.on("start", (board) => {
-            setBoard(createBoard(board));
-            setBaseIndex(getBase(board));
+        socket.on("connect", () => {
+            console.log("connected");
         })
 
-        socket_return.on("joined", (user) => {
-            setOpponent(user);
-        })
-
-        return () => {
-            socket_return.disconnect();
+        if (query.get("create")) {
+            let difficulty = query.get("difficulty")
+            socket.emit("create", difficulty)
+        } else {
+            socket.emit("join", room_code);
         }
 
-    }, [setSocket])
+        socket.on("created", (code) => {
+            setRoomCode(code)
+            setWaiting(true)
+            setCreated(true)
+            console.log(code, room_code);
+        })
+
+        socket.on("start", (data) => {
+            console.log("started", data, data.board);
+            setBaseIndex(getBase(data.board))
+            setBoard(createBoard(data.board))
+            setWaiting(false);
+        });
+
+        return () => {
+            console.log("disconnecting")
+            socket.disconnect();
+        }
+    }, [])
+
+    useEffect(() => {
+        window.addEventListener("keydown", handleEventInput);
+        return () => {
+            window.removeEventListener("keydown", handleEventInput);
+        };
+    }, [highlightIndex]);
 
     function handleEventInput({key}) {
         if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndex.includes(highlightIndex)) && !(annotate && key == 0)) {
@@ -151,18 +177,11 @@ export default function Board(props) {
 
     }
 
-    useEffect(() => {
-        window.addEventListener("keydown", handleEventInput);
-        return () => {
-            window.removeEventListener("keydown", handleEventInput);
-        };
-    });
-
-
     function handleCellClick(e) {
         let index = e.currentTarget.getAttribute("data-index")
         console.log(index, e);
         setHighlightIndex(index);
+        console.log(highlightIndex)
 
     }
 
@@ -287,32 +306,37 @@ export default function Board(props) {
     }
 
     return (
-        <div className="board-container">
-            <table className="board">
-                <colgroup><col></col><col></col><col></col></colgroup>
-                <colgroup><col></col><col></col><col></col></colgroup>
-                <colgroup><col></col><col></col><col></col></colgroup>
+        <div className="center-container">
+            {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
+            <div className="board-container">
 
-                <tbody>
-                    {createRow(9)}
-                    {createRow(18)}
-                    {createRow(27)}
-                </tbody>
-                <tbody>
-                    {createRow(36)}
-                    {createRow(45)}
-                    {createRow(54)}
-                </tbody>
-                <tbody>
-                    {createRow(63)}
-                    {createRow(72)}
-                    {createRow(81)}
-                </tbody>
-            </table>
-            <div className="control-bar">
-                <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
-                <button onClick={() => resetBoard()} className="control-button off">Reset</button>
+                <table className={`board ${waiting ? "fade-out": null}`}>
+                    <colgroup><col></col><col></col><col></col></colgroup>
+                    <colgroup><col></col><col></col><col></col></colgroup>
+                    <colgroup><col></col><col></col><col></col></colgroup>
+
+                    <tbody>
+                        {createRow(9)}
+                        {createRow(18)}
+                        {createRow(27)}
+                    </tbody>
+                    <tbody>
+                        {createRow(36)}
+                        {createRow(45)}
+                        {createRow(54)}
+                    </tbody>
+                    <tbody>
+                        {createRow(63)}
+                        {createRow(72)}
+                        {createRow(81)}
+                    </tbody>
+                </table>
+                <div className={`control-bar ${waiting ? "fade-out": null}`}>
+                    <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
+                    <button onClick={() => resetBoard()} className="control-button off">Reset</button>
+                </div>
             </div>
+            
         </div>
     )
 }
