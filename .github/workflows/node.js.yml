@@ -22,6 +22,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
+        mongodb-version: ['4.0', '4.2', '4.4']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -31,12 +32,19 @@ jobs:
         touch .env
         echo BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH}} >> .env
         echo API_URL=${{ secrets.API_URL}} >> .env
+        
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: ./backend/package-lock.json
+        
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.6.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+
     - name: Test
       working-directory: backend
       run: | 
