@@ -30,6 +30,7 @@ jobs:
       run: |
         touch .env
         echo BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH}} >> .env
+        echo API_URL=${{ secrets.API_URL}} >> .env
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
