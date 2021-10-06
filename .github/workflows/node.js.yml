@@ -25,6 +25,10 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - name: create env file
+      run: |
+        touch .env
+        echo BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH}} >> .env
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
