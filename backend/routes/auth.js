@@ -1,17 +1,10 @@
 var express = require('express')
 var connection = require("../connection")
-var mongoose = require("mongoose");
-var crypto = require("crypto");
-const bcrypt = require('bcrypt');
-const utils = require("../utils");
 
 const createUser = require("../database/createUser");
 const refreshToken = require("../database/refreshToken");
 const loginUser = require("../database/loginUser");
 const getProfile = require("../database/getProfile");
-
-const UserModel = require('../models/User');
-const TokenModel = require('../models/Token');
 
 var router = express.Router()
 
@@ -27,14 +20,18 @@ router.post("/profile", function (req, res) {
     getProfile(token, user_id , (err, profile) => {
         if (err) {
             res.json({success: false, message:"failed"});
+            return;
         } else if (!profile) {
             res.json({success: false, message: "Unknown User"});
+            return;
         } else {
             res.json({success: true, profile: profile});
+            return;
         }
 
-        res.end();
+       
     });
+
 });
 
 router.post("/login", function(req, res) {
@@ -43,32 +40,36 @@ router.post("/login", function(req, res) {
 
     loginUser(username, password, (err, user) => {
         if (err) {
+            console.log("LOGIN ERR: ", err);
             res.json({success: false, message:"failed"});
         } else if (!user) {
             res.json({success: false, message:"Unvalid Authentication"});
         } else {
             res.json({success:true, token:user.token})
         }
-
-        res.end();
+        res.end()
     });
 });
 
 router.post('/refresh', function (req, res) {
   let token = req.body.token;
+  console.log("Refreshing...");
 
   refreshToken(token, (err, new_token) => {
     if (err) {
+        console.log("ERR", err);
         res.status(400).json({success:false, message:"failed"});
     }
-    else if (!new_token) {
+    else if (new_token == null) {
+        console.log("token is null")
         res.status(400).json({success:false, message:"failed"});
     } else {
-        res.status(200).send({"token": new_token});
+        console.log("No refresh err");
+        res.status(200).send({success:true, "token": new_token});
     }
+    res.end()
   });
 
-  res.end()
 
 })
 

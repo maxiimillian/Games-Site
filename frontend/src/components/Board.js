@@ -23,6 +23,8 @@ export default function Board(props) {
     const [waiting, setWaiting] = useState(true);
     const [created, setCreated] = useState(false);
     const [room_code, setRoomCode] = useState(useParams().room_code);
+    const [socket, setSocket] = useState(null);
+    const [opponentScore, setOpponentScore] = useState(0);
 
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
     
@@ -39,6 +41,8 @@ export default function Board(props) {
                 token: localStorage.getItem("token")
             }
         });
+
+        setSocket(socket);
 
         socket.on("connect", () => {
             console.log("connected");
@@ -65,11 +69,26 @@ export default function Board(props) {
             setWaiting(false);
         });
 
+        socket.on("Filled square", () => {
+            console.log("filled, ", opponentScore);
+            let score = opponentScore + 1;
+            console.log(score);
+            setOpponentScore(state => state + 1);
+        })
+
+        socket.on("err", (message) => {
+            console.log("ERR: ", message);
+        });
+
         return () => {
             console.log("disconnecting")
             socket.disconnect();
         }
     }, [])
+
+    useEffect(() => {
+        console.log("UPDATING!!!", opponenet);
+    })
 
     useEffect(() => {
         window.addEventListener("keydown", handleEventInput);
@@ -96,6 +115,8 @@ export default function Board(props) {
                 
             } else {
                 cells[highlightIndex].value = key;
+                console.log("socket, ", highlightIndex, key);
+                socket.emit("move", highlightIndex, key)
             }
             
     
@@ -309,7 +330,7 @@ export default function Board(props) {
         <div className="center-container">
             {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
             <div className="board-container">
-
+                <span>{opponentScore}/81</span>
                 <table className={`board ${waiting ? "fade-out": null}`}>
                     <colgroup><col></col><col></col><col></col></colgroup>
                     <colgroup><col></col><col></col><col></col></colgroup>

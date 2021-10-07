@@ -8,6 +8,13 @@ const DEFAULT_BOARD = {
     difficulty: 'easy'
   };
 
+const DEFAULT_INDEX = [1, 4, 8, 10, 80]
+
+function setCharAt(str,index,chr) {
+    if(index > str.length-1) return str;
+    return str.substring(0,index) + chr + str.substring(index+1);
+}
+
 module.exports = 
     class Board {
         constructor(host_id, difficulty) {
@@ -16,7 +23,8 @@ module.exports =
             this.players = [host_id];
             this.difficulty = difficulty;
             this.board = DEFAULT_BOARD;
-            this.boards = [{"user": host_id, "board": this.board.unsolved}];
+            this.boards = {host_id: this.board.unsolved};
+            this.started = false;
         }
 
         async init(callback) {
@@ -31,9 +39,12 @@ module.exports =
                 callback(new Error("Maximum two players")); 
             } else {
                 this.players.push(user_id);
-                this.boards.push({"user": user_id, "board": this.board.unsolved});
+                this.boards[user_id] = this.board.unsolved;
                 try {
-                    utils.get_user_information(user_id, (user) => {
+                    utils.get_user_information(user_id, (err, user) => {
+                        if (err) {
+                            throw err;
+                        }
                         callback(null, user)
                     })
                 } catch (err) {
@@ -52,23 +63,34 @@ module.exports =
         }
 
         make_move(user_id, index, value, callback) {
-            if (this.board.base_numbers.includes(index)) {
+            if (DEFAULT_INDEX.includes(index)) {
                 callback(new Error("Cannot change base number"));
 
             } else if (value < 0 || value > 9) {
                 callback(new Error("Invalid value"));
 
             } else if (!this.players.includes(user_id)){
+                console.log("CANT FIND ", user_id, this.players);
                 callback(new Error("Unknown Player"));
 
             } else {
-                this.boards.user_id[index] = "value";
-                if (this.board.user_id[index] == this.board.solved) {
+                let current_board = this.boards[user_id];
+                this.boards[user_id] = setCharAt(current_board, index, value);
+
+                if (this.boards[user_id][index] == this.board.solved) {
                     callback(null, true);
                 } else {
-                    callback();
+                    callback(null, null);
                 }
                 
             }
+        }
+
+        start() {
+            this.started = true;
+        }
+
+        end() {
+            this.started = false;
         }
     }

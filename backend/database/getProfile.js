@@ -9,8 +9,10 @@ module.exports = async function refreshToken(token, user_id, callback) {
                 if (err) {
                     throw err;
                 }
+
                 if (tokenObj == null) {
                     callback(null, null);
+                    return;
                 }
 
                 UserModel.findOne({user_id: user_id}, function(err, user) {
@@ -22,12 +24,14 @@ module.exports = async function refreshToken(token, user_id, callback) {
                         callback(null, null);
                     } else {
                         callback(null, {"user": user.username, "bio": user.bio, "profile": user.profile});
+                        return;
                     }
                 });
             });
         }
     } catch (err) {
         callback(err, null);
+        return;
     }
 
 }

@@ -25,9 +25,4 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get("/test", (req, res) => {
-    console.log("called2");
-    res.status(200).json({test: "Test"});
-})
-
 module.exports = app;

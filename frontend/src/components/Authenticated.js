@@ -58,9 +58,11 @@ function Authenticated() {
             return data.json();
         })
         .then((resp) => {
+            console.log(resp);
             if (resp.success) {
                 localStorage.setItem("token", resp.token);
             } else {
+                
                 localStorage.setItem("token", "nope");
             }
         } )

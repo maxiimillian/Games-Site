@@ -16,6 +16,7 @@ module.exports = async function loginUser(username, password, callback) {
 
                 if (user == null) {
                     callback(null, null)
+                    return
                 }
     
                 bcrypt.compare(password, user.password, (err, result) => {
@@ -40,6 +41,7 @@ module.exports = async function loginUser(username, password, callback) {
                                         throw err;
                                     }
                                     callback(null, new_token);
+                                    return
                                 });  
                             } else {
     
@@ -52,18 +54,21 @@ module.exports = async function loginUser(username, password, callback) {
                                     }
                             
                                     callback(null, token.token);
+                                    return
                                 });
                             }
                         });
                     } else {    
     
                         callback(null, null)
+                        return
                     }
                 });
     
             });
         } else {
-            return null;
+            callback(null, null);
+            return
         }
     } catch (err) {
         callback(err, null);

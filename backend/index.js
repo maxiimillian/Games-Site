@@ -3,7 +3,7 @@ const connection = require("./connection")
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-const app = require("app.js");
+const app = require("./app");
 
 const port = 3001;
 
