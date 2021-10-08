@@ -118,47 +118,6 @@ button:hover {
   flex-direction: column;
 }
 
-.right-container {
-  flex: 1.1;
-}
-
-.opponent-percent {
-  align-self: center;
-  color: #eb6123;
-  font-weight: 600;
-}
-.chat-container {
-  background: #212121;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 5px;
-  border-radius: 15px;
-  margin-top: 10px;
-  min-height: 200px;
-}
-.chat-input {
-  background: none;
-  outline: none;
-  color: white;
-  padding: 5px;
-  border: none;
-  border-radius: 15px;
-
-}
-.chat-messages > ul {
-  list-style-type: none;
-  padding: 5px;
-  margin: 0;
-}
-.chat-user {
-  color:rgba(255, 255, 255, 0.7);
-  font-weight: 600;
-  padding-right:5px;
-}
-.message {
-  color: white;
-}
 
 .right-sub-container {
   padding: 10px;
@@ -187,7 +146,7 @@ button:hover {
 }
 
 .center-container {
-  flex: 3;
+  flex: 5;
   height: 100%;
   margin: 0px 10px;
   border-radius: 15px;
@@ -310,4 +269,13 @@ button:hover {
   top: 25%;
   margin: auto;
   position: absolute;
+}
+
+.board-top-container {
+  display: flex;
+  flex: 5;
+  height: 100%;
+  margin: 0px 10px;
+  border-radius: 15px;
+  position: relative;
 }

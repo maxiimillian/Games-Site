@@ -91,14 +91,15 @@ module.exports = {
         return code;
     },
 
-    get_board: function(difficulty) {
+    get_board: function(difficulty, callback) {
         console.log("getting board");
-        db.all(`SELECT * FROM boards WHERE difficulty=? LIMIT 1`, [difficulty], (err, row) => {
+        db.all(`SELECT * FROM boards WHERE difficulty=? ORDER BY RANDOM() LIMIT 1`, [difficulty], (err, row) => {
             if (err) {
                 console.log("DB ERR: ", err);
-                return null;
+                callback(err, null);
             } else {
-                return row[0]
+                console.log(row);
+                callback(null, row[0]);
             }
         })
         

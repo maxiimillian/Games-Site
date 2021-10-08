@@ -45,16 +45,21 @@
     padding: 20px;
     width: 40%;
     border: None;
-    color: white;
+    color: black;
     border-radius: 15px;
     font-size: 1em;
     margin-top: 20px;
+    background: $control-buttons;
+}
+
+.on {
+    background: $control-buttons-on;
 }
 
 .control-button:hover {
-    background-color: #6ca888;
+    background: $control-buttons-on;
     cursor: pointer;
-  }
+}
   
 tr {
     border: $board-border solid thin;
@@ -89,8 +94,24 @@ td {
 td:hover {
     cursor: pointer;
 }
+
+.opponent-score-text {
+    color: $board-base-index;
+    font-size: 1.3em;
+}
   
-  
+.opponent-score {
+    color: $board-base-index;
+    font-size: 1.3em;
+}
+
+.win {
+    color: #32a852;
+}
+
+.lose {
+    color: #eb4034;
+}
   
   
 .highlighted-adjacent {

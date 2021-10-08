@@ -16,7 +16,7 @@ mongoose.connect("mongodb://localhost/PlaceholdrDB", {
 let server = app.listen(port, () => console.log('App listening on port ' + port));
 let io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://10.0.0.124:3000",
     methods: ["GET", "POST"]
   }
 });

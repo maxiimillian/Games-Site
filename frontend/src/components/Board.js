@@ -2,7 +2,10 @@ import { React, useState, Component, useEffect } from "react";
 import { useParams, useLocation, Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
 
+import Chatbox from "./Chatbox";
+
 import "../styles/board.scss"
+import "../styles/chatbox.scss"
 
 const BOARD_DEFAULT = "0".repeat(81);
 const BOARD_DEFAULT_INDEX = [];
@@ -19,12 +22,20 @@ export default function Board(props) {
     const [baseIndex, setBaseIndex] = useState(getBase(props.board));
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
-    const [opponenet, setOpponent] = useState(null);
+
+    const [opponent, setOpponent] = useState(null);
+
     const [waiting, setWaiting] = useState(true);
     const [created, setCreated] = useState(false);
+
     const [room_code, setRoomCode] = useState(useParams().room_code);
     const [socket, setSocket] = useState(null);
-    const [opponentScore, setOpponentScore] = useState(0);
+
+    const [opponentScore, setOpponentScore] = useState(baseIndex.length);
+    const [result, setResult] = useState(null);
+
+    const [messages, setMessages] = useState([]);
+    const [chatInput, setChatInput] = useState("");
 
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
     
@@ -61,6 +72,10 @@ export default function Board(props) {
             setCreated(true)
             console.log(code, room_code);
         })
+        
+        socket.on("joined", (userInformation) => {
+            setOpponent(userInformation);
+        });
 
         socket.on("start", (data) => {
             console.log("started", data, data.board);
@@ -76,6 +91,14 @@ export default function Board(props) {
             setOpponentScore(state => state + 1);
         })
 
+        socket.on("Winner", (result) => {
+            setResult(result);
+        })
+
+        socket.on("chat", (message) => {
+            setMessages(prevMessages => [...prevMessages, message]);
+        });
+
         socket.on("err", (message) => {
             console.log("ERR: ", message);
         });
@@ -87,15 +110,21 @@ export default function Board(props) {
     }, [])
 
     useEffect(() => {
-        console.log("UPDATING!!!", opponenet);
-    })
-
-    useEffect(() => {
         window.addEventListener("keydown", handleEventInput);
         return () => {
             window.removeEventListener("keydown", handleEventInput);
         };
     }, [highlightIndex]);
+
+    function handleChatInput(e) {
+        setChatInput(e.target.value);
+    }
+
+    function handleChatSubmit(e) {
+        e.preventDefault();
+        socket.emit("chat", chatInput);
+        setChatInput("");
+    }
 
     function handleEventInput({key}) {
         if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndex.includes(highlightIndex)) && !(annotate && key == 0)) {
@@ -326,38 +355,78 @@ export default function Board(props) {
         )
     }
 
-    return (
-        <div className="center-container">
-            {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
-            <div className="board-container">
-                <span>{opponentScore}/81</span>
-                <table className={`board ${waiting ? "fade-out": null}`}>
-                    <colgroup><col></col><col></col><col></col></colgroup>
-                    <colgroup><col></col><col></col><col></col></colgroup>
-                    <colgroup><col></col><col></col><col></col></colgroup>
+    let scoreText;
 
-                    <tbody>
-                        {createRow(9)}
-                        {createRow(18)}
-                        {createRow(27)}
-                    </tbody>
-                    <tbody>
-                        {createRow(36)}
-                        {createRow(45)}
-                        {createRow(54)}
-                    </tbody>
-                    <tbody>
-                        {createRow(63)}
-                        {createRow(72)}
-                        {createRow(81)}
-                    </tbody>
-                </table>
-                <div className={`control-bar ${waiting ? "fade-out": null}`}>
-                    <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
-                    <button onClick={() => resetBoard()} className="control-button off">Reset</button>
+    if (result == null) {
+        scoreText = <span className="opponent-score">Opponent: {opponentScore}/81</span> 
+    } else if (result == "win") {
+        scoreText = 
+        <div style={{display:"flex", flexDirection: "column"}}>
+            <span className="opponent-score win">Opponent: {opponentScore}/81</span> 
+            <span className="opponent-score win">You Won!</span> 
+        </div>
+    } else {
+        scoreText = <span className="opponent-score lose">Opponent: Won</span> 
+    }
+
+    return (
+        <div className="board-top-container">
+            <div className="center-container">
+                {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
+                <div className="board-container">
+                    <table className={`board ${waiting ? "fade-out": null}`}>
+                        <colgroup><col></col><col></col><col></col></colgroup>
+                        <colgroup><col></col><col></col><col></col></colgroup>
+                        <colgroup><col></col><col></col><col></col></colgroup>
+
+                        <tbody>
+                            {createRow(9)}
+                            {createRow(18)}
+                            {createRow(27)}
+                        </tbody>
+                        <tbody>
+                            {createRow(36)}
+                            {createRow(45)}
+                            {createRow(54)}
+                        </tbody>
+                        <tbody>
+                            {createRow(63)}
+                            {createRow(72)}
+                            {createRow(81)}
+                        </tbody>
+                    </table>
+                    <div className={`control-bar ${waiting ? "fade-out": null}`}>
+                        {scoreText}   
+                        <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
+                        <button onClick={() => resetBoard()} className="control-button">Reset</button>
+                    </div>
                 </div>
+                
             </div>
-            
+            <div className="right-container">
+                <div className="chat-top-container">
+                    <div class="opponent-container">
+                        <div class="user-info">
+                            <div class="user">
+                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-container">
+                        <Chatbox messages={messages} />
+                        <form onSubmit={(e) => handleChatSubmit(e)}>
+                            <input class="chat-input" 
+                                onSubmit={(e) => handleChatSubmit(e)} 
+                                placeholder="Start typing here..." value={chatInput} 
+                                onChange={(e) => handleChatInput(e)}>
+                            </input>
+                            <input type="submit" style={{display: "none"}}></input>
+                        </form>
+
+                    </div>
+                </div>
+                
+            </div>
         </div>
     )
 }
