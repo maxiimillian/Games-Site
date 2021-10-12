@@ -1,0 +1,36 @@
+@import './index.scss';
+
+.left-subcontainer {
+    display: flex;
+    background: $surface-primary;
+    border-radius: $border-radius;
+}
+
+.left-options-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: inherit;
+}
+
+.left-option {
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.6em;
+}
+
+.left-option-icon {
+    color: $icon-colour;
+}
+
+.left-option:hover {
+    background: #212121;
+    cursor: pointer;
+    border-radius: inherit;
+}
+
+.word-icon {
+    display: flex;
+    justify-content: space-between;
+}
+

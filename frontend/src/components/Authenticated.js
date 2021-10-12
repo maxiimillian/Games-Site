@@ -1,7 +1,7 @@
 
 
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, Suspense, lazy } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -11,19 +11,30 @@ import {
     useParams,
     Redirect,
   } from "react-router-dom";
-
-import Home from "./Home";
-import Board from "./Board";
-import Table from "./Table";
+//import Home from "./Home";
+//import Board from "./Board";
+//import Table from "./Table";
 import Chatbox from './Chatbox';
+import Sidebar from "./Sidebar";
+//import News from "./News";
+import Blockpage from './Blockpage';
+
+import { userContext } from "../contexts/userContext";
+import { SoundProvider } from "../contexts/soundContext";
 
 
 import Unauthenticated from './Unauthenticated';
 
+import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
 
 import logo from '../public/logo.png';
 import wenis_profile from '../public/wenis.jpg';
 import other_profile from "../public/bingo.jpg";
+
+const Home = lazy(() => import("./Home"));
+const Table = lazy(() => import("./Table"));
+const News = lazy(() => import("./News"));
+const Board = lazy(() => import("./Board"));
 
 
 
@@ -104,80 +115,66 @@ function Authenticated() {
     useEffect(() => getToken(), []);
 
     return (
-
-        <Router>
-            <div className="top-container">
-                
-                <div className="logo-container">
-                    <Link to="/"><img height={"5%"} width={"5%"} src={logo} ></img></Link>
-                </div>
-                
-                
-                <div className="page-container">
-
-                    <div className="left-container">
-                            <div className="main-user-info">
-                                {Object.keys(user).length != 0 ? 
-                                    <div class="main-user-container">
-                                        <img class="main-user-profile" src={user.img_url}></img>
-                                        <span class="main-user-name">{user.username}</span>
+        <SoundProvider>
+            <Router>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <div className="top-container">
+                        
+                        <div className="logo-container">
+                            <Link to="/"><img height={"5%"} width={"5%"} src={logo} ></img></Link>
+                        </div>
+                        
+                        
+                        <div className="page-container">
+                            <Switch>
+                                <Route path="/login">
+                                    <Unauthenticated handleSubmit={handleFormSubmit}/>
+                                    <div className="left-container">
+                                        <Sidebar />
                                     </div>
-                                    :
-                                    <div class="main-user-container">
-                                        <Link to="login"><span class="main-user-name">Sign In</span></Link>
+                                    {isAuthenticated ? <Redirect to="/" /> : null};
+                                    <div className="center-container">
+                                        <Home />
                                     </div>
-                                }
+                                    <div className="right-container">
+                                        <News />
+                                    </div>
+                                </Route>
 
+                                <Route path="/poker/:room_code">
+                                    <div className="center-container">
+                                        <Table />
+                                    </div>
+                                    <div className="right-container">
+                                        <Chatbox />
+                                    </div>
+                                </Route>
 
-                            </div>
-                            <div className="left-top-container">
-                                <div class="main-user-info">
+                                <Route path="/sudoku/:room_code">
+                                    <div className="left-container">
+                                        <Sidebar />
+                                    </div>
+                                    <Board />
+                                </Route>
 
-                                </div>
-                                <div className="left-subcontainer">
-                                    <div class="left-options-container">
-                                            <div class="left-option">
-                                                <div class="word-icon-combo">
-                                                    <i class="fas fa-gamepad" aria-hidden="true"></i>
-                                                    <span>Play</span>
-                                                    
-                                                </div>
-                                            </div>
-
+                                    <Route path="/">
+                                        <div className="left-container">
+                                            <Sidebar />
                                         </div>
-                                </div>
+                                        <div className="center-container">
+                                            <Home />
+                                        </div>
+                                        <div className="right-container">
+                                            <News />
+                                        </div>
+                                    </Route>
+
+                            </Switch>
                             </div>
                         </div>
-                    
-                    <Switch>
-                        <Route path="/login">
-                            <Unauthenticated handleSubmit={handleFormSubmit}/>
-                            {isAuthenticated ? <Redirect to="/" /> : null};
-                        </Route>
-
-                        <Route path="/poker/:room_code">
-                            <div className="center-container">
-                                <Table />
-                            </div>
-                            <div className="left-container">
-                                <Chatbox />
-                            </div>
-                        </Route>
-
-                        <Route path="/sudoku/:room_code">
-                            <Board />
-                        </Route>
-
-                        <Route path="/">
-                            <div className="center-container">
-                                <Home />
-                            </div>
-                        </Route>
-                    </Switch>
-                    </div>
-                </div>
-            </Router>
-
+                    </Suspense>
+                </Router>
+            </SoundProvider>
 
     )
   }

@@ -1,8 +1,9 @@
-import { React, useState, Component, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { useParams, useLocation, Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
 
 import Chatbox from "./Chatbox";
+import { soundContext } from "../contexts/soundContext";
 
 import "../styles/board.scss"
 import "../styles/chatbox.scss"
@@ -38,6 +39,8 @@ export default function Board(props) {
     const [chatInput, setChatInput] = useState("");
 
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
+
+    let sound = useContext(soundContext)
     
     function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -82,6 +85,7 @@ export default function Board(props) {
             setBaseIndex(getBase(data.board))
             setBoard(createBoard(data.board))
             setWaiting(false);
+            sound("GameStarted")
         });
 
         socket.on("Filled square", () => {
@@ -371,7 +375,7 @@ export default function Board(props) {
 
     return (
         <div className="board-top-container">
-            <div className="center-container">
+            <div className="center-board-container">
                 {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
                 <div className="board-container">
                     <table className={`board ${waiting ? "fade-out": null}`}>
@@ -403,7 +407,7 @@ export default function Board(props) {
                 </div>
                 
             </div>
-            <div className="right-container">
+            <div className="right-chat-container">
                 <div className="chat-top-container">
                     <div class="opponent-container">
                         <div class="user-info">

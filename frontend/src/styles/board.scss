@@ -1,5 +1,29 @@
 @import './index.scss';
 
+
+.board-top-container {
+    display: flex;
+    flex: 4 1 80%;
+    height: 100%;
+    margin: 0px 10px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.center-board-container {
+    flex: 3 1 70%;
+    height: 100%;
+    margin: 0px 10px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.right-chat-container {
+    flex: 1 1 30%;
+    margin: 0px 10px;
+    border-radius: 3px;
+}
+
 .board-container {
     display: flex;
   }
@@ -28,7 +52,7 @@
     top: 0;
     left: 0;
     right: 0
-  }
+}
   
 .fade-out {
     opacity: 0.4;

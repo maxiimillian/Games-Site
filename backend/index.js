@@ -1,6 +1,5 @@
 const path = require('path');
 const connection = require("./connection")
-const passport = require('passport');
 const mongoose = require('mongoose');
 
 const app = require("./app");

@@ -10,13 +10,6 @@ hr {
   border: solid rgba(255, 255, 255, 0.3) 1px;
 }
 
-body {
-  background: #121212;
-  height: 100%;
-  
-  margin: 0;
-}
-
 select {
   background-color: #3e7748;
   border: 1px solid #2d5233;
@@ -24,13 +17,6 @@ select {
 }
 
 body > * {
-  margin: 0 10px;
-}
-
-body {
-  background: #121212;
-  height: 100%;
-  
   margin: 0 10px;
 }
 
@@ -109,15 +95,6 @@ button:hover {
   padding: 20px
 }
 
-.left-container {
-  flex: 1;
-  
-  border-radius: 15px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
 
 .right-sub-container {
   padding: 10px;
@@ -143,14 +120,6 @@ button:hover {
 
 .name {
   align-self: center;
-}
-
-.center-container {
-  flex: 5;
-  height: 100%;
-  margin: 0px 10px;
-  border-radius: 15px;
-  position: relative;
 }
 
 .options-container {
@@ -210,52 +179,10 @@ button:hover {
   padding: 10px;
 }
 
-.main-user-name {
-  align-self: center;
-  color: rgb(170, 168, 168);
-  font-size: 1.5em;
-  font-weight: 600;
-  padding: 10px;
-}
-
-.main-user-name:hover {
-  color: white;
-  cursor: pointer;
-}
-
-.left-subcontainer {
-  display: flex;
-  background: #0f0f0f;
-  border-radius: 15px;
-}
-
-.left-options-container {
-  display: flex;
-  flex-direction: column;
-  
-}
-
-.left-option {
-  padding: 20px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.6em;
-}
-
-
 .settings {
   color: rgba(255,255,255,0.7);
   align-self: center;
   padding: 0px 10px;
-}
-
-.block-container {
-  width: 100%;
-  position: fixed;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 .create-container {
@@ -269,13 +196,4 @@ button:hover {
   top: 25%;
   margin: auto;
   position: absolute;
-}
-
-.board-top-container {
-  display: flex;
-  flex: 5;
-  height: 100%;
-  margin: 0px 10px;
-  border-radius: 15px;
-  position: relative;
 }

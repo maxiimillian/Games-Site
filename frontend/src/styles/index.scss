@@ -1,5 +1,10 @@
 $primary-color: #FFFF;
-$primary-background: #FFFF;
+$background: #121212;;
+$icon-colour: #A8BD92;
+
+$box-shadow: 0px 0px 10px 0.2px black;
+
+$surface-primary: rgba(15, 15, 15, 0.7);
 
 $board: #303030;
 $board-border: #B7B7B7;
@@ -8,10 +13,53 @@ $board-number: #FFFFFF;
 $board-highlight: #3F493E;
 $board-secondary-highlight: #4B514C;
 
-$light-mode-board: #E6EFF7;
+$light-mode-board: #0e0f0f;
 $light-mode-highlight: #DDE6EE;
 
 $control-buttons: #A8BD92;
 $control-buttons-on: #b9cfa1;
 
 $border-radius: 3;
+
+body {
+    background: $background; 
+    height: 100%;
+    padding: 20px;
+    margin: 0;
+}
+  
+
+h3, h3 > a {
+    color: rgb(170, 168, 168);
+    font-size: 1.3em;
+    font-weight: 600;
+    padding: 10px 0px;
+    margin: 0px;
+}
+  
+h3:hover, h3 > a:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.left-container {
+    flex: 1 1 20%;
+    
+    border-radius: 15px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.center-container {
+    flex: 3 1 60%;
+    height: 100%;
+    border-radius: 15px;
+    position: relative;
+}
+
+.right-container {
+    flex: 1 1 20%;
+    margin: 0px 10px;
+    border-radius: 3px;
+}

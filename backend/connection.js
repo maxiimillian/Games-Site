@@ -36,7 +36,6 @@ module.exports = function(io) {
 	});
 
 	sudoku.on("connection", socket => {
-		console.log("connected to sudoku");
 		socket.on("create", (difficulty) => {
 			difficulty = difficulty.toLowerCase()
 
@@ -148,7 +147,6 @@ module.exports = function(io) {
 											socket.emit("Winner", "win");
 											socket.broadcast.to(room_code).emit("Winner", "lose");
 										} else {
-											console.log("199");
 											socket.emit("Success", index, value);
 											socket.broadcast.to(room_code).emit("Filled square");
 										}

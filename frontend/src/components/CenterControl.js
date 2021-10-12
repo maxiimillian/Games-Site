@@ -52,14 +52,14 @@ function CenterControl(props) {
     return (
         <div>
             <div className="options-container">
-                    <div onClick={() => changeOption("sudoku")} className="game-option">
+                    <section onClick={() => changeOption("sudoku")} className="game-option">
                         <img className="game-icon" src={sudoku_logo}></img>
                         <span className="game-name">Sudoku</span>
-                    </div>
-                    <div onClick={() => changeOption("poker")}  className="game-option">
+                    </section>
+                    <section onClick={() => changeOption("poker")}  className="game-option">
                         <img className="game-icon"src={poker_logo}></img>
                         <span className="game-name">Poker</span>
-                    </div>
+                    </section>
             </div>
             {center}
         </div>
