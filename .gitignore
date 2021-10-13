@@ -1,3 +1,1 @@
-/sudoku/board-generator/target/*
-**/node_modules
 *.env
