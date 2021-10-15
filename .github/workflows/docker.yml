@@ -28,7 +28,7 @@ jobs:
         id: prepare      
         run: |        
           echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
-          echo ::set-output name=docker_image::${DOCKER_REGISTRY}/${DOCKER_IMAGE}        
+          echo ::set-output name=docker_image::maxiimillian/test:frontend       
           echo ::set-output name=version::${GITHUB_RUN_NUMBER}        
 
       - name: Login to Docker Hub
@@ -45,5 +45,5 @@ jobs:
       - name: Push Build  
         if: success()      
         run: |        
-          docker push ${ DOCKER_USERNAME }/${ DOCKER_IMAGE }
+          docker push maxiimillian/test:frontend
         
