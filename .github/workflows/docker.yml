@@ -6,39 +6,32 @@ on:
 
 jobs:   
   front-end:
-    runs-on: ubuntu-latest
-  
-    strategy:
-      matrix:
-        node-version: [14.x]
-        mongodb-version: ['4.0', '4.2', '4.4']
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        
-    steps:
- 
-    - name: Checkout
-      uses: actions/checkout@v1
- 
-    - name: Docker login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    runs-on: ubuntu-18.04    
+    env:      
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_USERNAME }}      
+      DOCKER_IMAGE: test:frontend
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  
+      DOCKER_TARGET_PLATFORM: linux/arm/v7                     
+      steps:    
+      - name: Checkout the code       
+        uses: actions/checkout@v1      
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
- 
-    - name: Docker build
-      working-directory: ./frontend
+      - name: Set up Docker Buildx      
+        uses: crazy-max/ghaction-docker-buildx@v1      
+        with:        
+          version: latest        
 
-      run: |
-          docker build \
-            --build-arg GIT_SHA=${{ github.sha }} \
-            --build-arg GIT_REF=${{ github.ref }} \
-            -t ${{ secrets.DOCKER_USERNAME }}/test:frontend .
- 
-    - name: Docker push
-      run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/test:frontend
- 
-    - name: Docker logout
-      run: docker logout
+      - name: Prepare      
+        if: success()      
+        id: prepare      
+        run: |        
+          echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
+          echo ::set-output name=docker_image::${DOCKER_REGISTRY}/${DOCKER_IMAGE}        
+          echo ::set-output name=version::${GITHUB_RUN_NUMBER}        - name: Docker Login      
+        if: success()      
+        run: |        
+          echo "${DOCKER_PASSWORD}" | docker login ${DOCKER_REGISTRY} --username "${DOCKER_USERNAME}" --password-stdin              - name: Run Buildx (push image)      
+        if: success()      
+        run: |        
+          docker buildx build \        --platform ${{ steps.prepare.outputs.docker_platform }} \        --tag ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }} \        --file ./Dockerfile \        --output type=image,push=true .
