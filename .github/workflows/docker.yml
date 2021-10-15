@@ -17,19 +17,17 @@ jobs:
     steps:    
       - name: Checkout the code       
         uses: actions/checkout@v1      
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Set up Docker Buildx      
-        uses: crazy-max/ghaction-docker-buildx@v1      
-        with:        
-          version: latest        
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
 
-      - name: Prepare      
-        if: success()      
-        id: prepare      
-        run: |        
-          echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
-          echo ::set-output name=docker_image::maxiimillian/test:frontend       
-          echo ::set-output name=version::${GITHUB_RUN_NUMBER}        
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -37,13 +35,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
               
-      - name: Run Build   
-        if: success()      
-        run: |        
-          docker build -t maxiimillian/test:frontend ./frontend/
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          file: frontend/Dockerfile
+          push: true
+          tags: maxiimillian/test:frontend
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      - name: Push Build  
-        if: success()      
-        run: |        
-          docker push maxiimillian/test:frontend
-        
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
