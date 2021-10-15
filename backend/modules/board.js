@@ -46,7 +46,7 @@ module.exports =
         init(callback) {
             utils.get_board(this.difficulty, (err, board) => {
                 let host_id = this.host;
-                if (err) {
+                if (err || board == null) {
                     this.board = DEFAULT_BOARD;
                     this.index = DEFAULT_INDEX;
                     this.boards = {host_id: DEFAULT_BOARD.unsolved};

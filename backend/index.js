@@ -7,15 +7,15 @@ const app = require("./app");
 const port = 3001;
 
 
-mongoose.connect("mongodb://localhost/PlaceholdrDB", {
+mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-let server = app.listen(port, () => console.log('App listening on port ' + port));
+console.log("eeee", process.env.ALLOWED_URL);
+let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
 let io = require("socket.io")(server, {
   cors: {
-    origin: "http://10.0.0.124:3000",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });

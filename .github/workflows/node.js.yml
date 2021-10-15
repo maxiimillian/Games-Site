@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [14.x]
         mongodb-version: ['4.0', '4.2', '4.4']
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
@@ -35,19 +35,30 @@ jobs:
         
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: ./backend/package-lock.json
         
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.6.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
-    - name: Test
+    - name: Test Backend
       working-directory: backend
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ./backend/package-lock.json
       run: | 
         npm ci  
+        npm run build --if-present
+        npm test --verbose --maxWorkers=2
+    
+    - name: Test Frontend
+      working-directory: frontend
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ./frontend/package-lock.json
+      run: |
+        npm ci
         npm run build --if-present
         npm test --verbose --maxWorkers=2

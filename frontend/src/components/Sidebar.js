@@ -17,24 +17,24 @@ function Sidebar() {
         <div className="left-container">
             <div className="main-user-info">
                 {Object.keys(user).length != 0 ? 
-                    <div class="main-user-container">
-                        <img class="main-user-profile" src={user.img_url}></img>
-                        <span class="main-user-name">{user.username}</span>
+                    <div className="main-user-container">
+                        <img className="main-user-profile" src={user.img_url}></img>
+                        <span className="main-user-name">{user.username}</span>
                     </div>
                     :
-                    <div class="main-user-container">
-                        <h3><Link class="main-user-name" to="login">Sign In</Link></h3>
+                    <div className="main-user-container">
+                        <h3><Link className="main-user-name" to="login">Sign In</Link></h3>
                     </div>
                 }
 
 
             </div>
             <div className="left-top-container">
-                <div class="main-user-info">
+                <div className="main-user-info">
 
                 </div>
                 <div className="left-subcontainer">
-                    <div class="left-options-container">
+                    <div className="left-options-container">
                             <SidebarOption title={"Play"} icon={faGamepad}/>
                             <SidebarOption title={"Profile"} icon={faIdBadge}/>
                             <SidebarOption title={"Settings"} icon={faCog}/>

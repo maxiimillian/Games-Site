@@ -121,6 +121,7 @@ export default function Board(props) {
     }, [highlightIndex]);
 
     function handleChatInput(e) {
+        setHighlightIndex(82);
         setChatInput(e.target.value);
     }
 
@@ -131,7 +132,12 @@ export default function Board(props) {
     }
 
     function handleEventInput({key}) {
-        if (ALLOWED_INPUTS.includes(parseInt(key)) && !(baseIndex.includes(highlightIndex)) && !(annotate && key == 0)) {
+        if (
+            ALLOWED_INPUTS.includes(parseInt(key)) 
+            && !(baseIndex.includes(highlightIndex)) 
+            && !(annotate && key == 0) 
+            && (highlightIndex > 0 && highlightIndex < 82) 
+            ) {
             let cells = [...board];
 
             if (annotate) {
