@@ -37,12 +37,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
               
-      - name: Run Buildx (push image)      
+      - name: Run Build   
         if: success()      
         run: |        
-          docker buildx build \        
-          --platform ${{ steps.prepare.outputs.docker_platform }} \        
-          --tag ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }} \        
-          --file ./Dockerfile \        
-          --output type=image,push=true
-          --push .
+          docker build -t ${ DOCKER_USERNAME }/${ DOCKER_IMAGE } .
+
+      - name: Push Build  
+        if: success()      
+        run: |        
+          docker push ${ DOCKER_USERNAME }/${ DOCKER_IMAGE }
+        
