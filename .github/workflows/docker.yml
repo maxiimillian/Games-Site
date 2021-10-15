@@ -40,7 +40,7 @@ jobs:
       - name: Run Build   
         if: success()      
         run: |        
-          docker build -t ${ DOCKER_USERNAME }/${ DOCKER_IMAGE } .
+          docker build -t maxiimillian/test:frontend ./frontend/
 
       - name: Push Build  
         if: success()      
