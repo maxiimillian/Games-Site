@@ -136,7 +136,7 @@ export default function Board(props) {
             ALLOWED_INPUTS.includes(parseInt(key)) 
             && !(baseIndex.includes(highlightIndex)) 
             && !(annotate && key == 0) 
-            && (highlightIndex > 0 && highlightIndex < 82) 
+            && (highlightIndex >= 0 && highlightIndex < 82) 
             ) {
             let cells = [...board];
 
