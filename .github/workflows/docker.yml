@@ -18,7 +18,11 @@ jobs:
  
     - name: Docker build
       working-directory: ./frontend
+
       run: |
+          apt-get update && apt-get install -y curl
+          curl -sL https://deb.nodesource.com/setup_8.x | bash -
+          apt-get update && apt-get install -y nodejs
           docker build \
             --build-arg GIT_SHA=${{ github.sha }} \
             --build-arg GIT_REF=${{ github.ref }} \
