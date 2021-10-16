@@ -59,6 +59,7 @@ function Authenticated() {
 
 
     async function getToken() {
+        console.log(process.env, process.env.REACT_APP_API_URL);
         const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
             method: "POST",
             mode: "cors",
