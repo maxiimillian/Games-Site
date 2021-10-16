@@ -39,6 +39,7 @@ async function attemptLogIn() {
 function App() {
   //True for now, eventually will be authtication check
   const [authenticated, setAuthenticated] = useState(true);
+  console.log("Yppppppp")
 
   return (
   

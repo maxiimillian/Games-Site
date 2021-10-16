@@ -1,5 +1,5 @@
 FROM arm32v7/node:14-buster
-LABEL authors="maxiimillian"
+ARG REACT_APP_API_URL
 
 WORKDIR ./app
 

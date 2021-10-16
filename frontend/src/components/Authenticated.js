@@ -24,6 +24,7 @@ import { SoundProvider } from "../contexts/soundContext";
 
 
 import Unauthenticated from './Unauthenticated';
+import Username from "./Username";
 
 import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
 
@@ -49,6 +50,7 @@ function Authenticated() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState({});
     const [socket, setSocket] = useState()
+    const [isLogin, setLogin] = useState(false);
 
 
     function handleFormSubmit() {
@@ -113,7 +115,8 @@ function Authenticated() {
     }, [isAuthenticated])
 
     useEffect(() => getToken(), []);
-
+    //ok so maybe make the login form a component with a true/false statement and seperate the Sign In from the sidebar
+    //then you can just turn it on with the sign in and off by clicking the BlockComponent 
     return (
         <SoundProvider>
             <Router>
@@ -127,19 +130,14 @@ function Authenticated() {
                         
                         <div className="page-container">
                             <Switch>
-                                <Route path="/login">
-                                    <Unauthenticated handleSubmit={handleFormSubmit}/>
-                                    <div className="left-container">
-                                        <Sidebar />
+
+                                {isLogin ? 
+                                    <div>
+                                        <Blockpage handleClick={setLogin(false)}></Blockpage>
+                                        <Unauthenticated handleSubmit={handleFormSubmit}/>
                                     </div>
-                                    {isAuthenticated ? <Redirect to="/" /> : null};
-                                    <div className="center-container">
-                                        <Home />
-                                    </div>
-                                    <div className="right-container">
-                                        <News />
-                                    </div>
-                                </Route>
+                                : null
+                                }
 
                                 <Route path="/poker/:room_code">
                                     <div className="center-container">
@@ -152,8 +150,10 @@ function Authenticated() {
 
                                 <Route path="/sudoku/:room_code">
                                     <div className="left-container">
+                                        <Username handleSignin={() => setLogin(true)} />
                                         <Sidebar />
-                                    </div>
+                                    </div>      
+
                                     <Board />
                                 </Route>
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/login.scss";
 
 function Unauthenticated({handleSubmit}) {
     const [user, setUser] = useState("");
@@ -53,7 +54,7 @@ function Unauthenticated({handleSubmit}) {
     async function handleLogin(e) {
         e.preventDefault();
 
-        const response = await fetch("http://localhost:3001/auth/login", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -77,7 +78,7 @@ function Unauthenticated({handleSubmit}) {
     async function handleRegister(e) {
         e.preventDefault();
         console.log(user, password, email);
-        const response = await fetch("http://localhost:3001/auth/register", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
             method: "POST",
             mode: "cors",
             headers: {

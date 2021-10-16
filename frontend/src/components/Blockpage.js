@@ -3,7 +3,7 @@ import "../styles/blockpage.scss"
 
 function Blockpage(props) {
     return (
-        <div className="block-container">
+        <div onClick={props.handleClick} className="block-container">
             {props.children}
         </div>
     )

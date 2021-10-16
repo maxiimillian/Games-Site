@@ -45,6 +45,8 @@ jobs:
           tags: maxiimillian/test:frontend
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: |
+            REACT_APP_API_URL={{ secrets.API_URL }}
 
       - name: Move cache
         run: |
