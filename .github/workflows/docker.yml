@@ -18,14 +18,29 @@ jobs:
       - name: Checkout the code       
         uses: actions/checkout@v1      
 
+      - name: Set up Docker Buildx      
+        uses: crazy-max/ghaction-docker-buildx@v1      
+        with:        
+          version: latest        
+
+      - name: Prepare      
+        if: success()      
+        id: prepare      
+        run: |        
+          echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}        
+          echo ::set-output name=docker_image::maxiimillian/test:frontend       
+          echo ::set-output name=version::${GITHUB_RUN_NUMBER}        
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
               
-      - name: Build and push
-        run: docker build -t maxiimillian/test:frontend ./frontend/
-        
-      - name: Docker Push
-        run: docker push maxiimillian/test:frontend
+      - name: Run Build   
+        if: success()      
+        run: |        
+          docker build -t maxiimillian/test:frontend ./frontend/
+      - name: Push Build  
+        if: success()      
+        run: |        
+          docker push maxiimillian/test:frontend
