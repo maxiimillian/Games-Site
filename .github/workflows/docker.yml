@@ -30,20 +30,18 @@ jobs:
 
       - name: Run Build Backend
         if: success()
-        run: |
-          docker build -t ${DOCKER_IMAGE_BACK} \ 
+        run: docker build -t $DOCKER_IMAGE_BACK ./backend/ \ 
           --build-arg DB_PATH=${{ secrets.DB_PATH }} \
           --build-arg BOARD_DB_PATH="./db.db" \
-          --build-arg ALLOWED_URL=${{ secrets.ALLOWED_URL }} \
-          ./backend/
+          --build-arg ALLOWED_URL=${{ secrets.ALLOWED_URL }}
           
               
       - name: Run Build Frontend
         if: success()      
-        run: docker build -t ${DOCKER_IMAGE_FRONT} ./frontend/
+        run: docker build -t $DOCKER_IMAGE_FRONT ./frontend/
       
       - name: Push Builds
         if: success()      
         run: |        
-          docker push ${DOCKER_IMAGE_FRONT}
-          docker push ${DOCKER_IMAGE_BACK}
+          docker push $DOCKER_IMAGE_FRONT
+          docker push $DOCKER_IMAGE_BACK
