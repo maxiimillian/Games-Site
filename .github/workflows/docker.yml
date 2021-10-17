@@ -31,10 +31,11 @@ jobs:
       - name: Run Build Backend
         if: success()
         run: |
-          docker build -t $DOCKER_IMAGE_BACK ./backend/ \ 
+          docker build -t $DOCKER_IMAGE_BACK \ 
           --build-arg DB_PATH=${{ secrets.DB_PATH }} \
           --build-arg BOARD_DB_PATH="./db.db" \
-          --build-arg ALLOWED_URL=${{ secrets.ALLOWED_URL }}
+          --build-arg ALLOWED_URL=${{ secrets.ALLOWED_URL }} \
+          ./backend/
           
               
       - name: Run Build Frontend
