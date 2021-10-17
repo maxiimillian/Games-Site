@@ -4,10 +4,11 @@ ARG REACT_APP_API_URL
 WORKDIR ./app
 
 COPY package*.json ./
-COPY . .
+
 
 RUN npm install
 
+COPY . .
 
 EXPOSE 3000
 
