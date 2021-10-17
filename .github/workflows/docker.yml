@@ -31,7 +31,7 @@ jobs:
       - name: Run Build Backend
         if: success()
         run: |
-          docker build -t $DOCKER_IMAGE_BACK \ 
+          docker build -t maxiimillian/test:backend \ 
           --build-arg DB_PATH=${{ secrets.DB_PATH }} \
           --build-arg BOARD_DB_PATH="./db.db" \
           --build-arg ALLOWED_URL=${{ secrets.ALLOWED_URL }} \
@@ -40,10 +40,13 @@ jobs:
               
       - name: Run Build Frontend
         if: success()      
-        run: docker build -t $DOCKER_IMAGE_FRONT ./frontend/
+        run: | 
+          docker build -t maxiimillian/test:frontend \
+          --build-arg REACT_APP_API_URL=${{ secrets.API_URL }} \
+          ./frontend/
       
       - name: Push Builds
         if: success()      
         run: |        
-          docker push $DOCKER_IMAGE_FRONT
-          docker push $DOCKER_IMAGE_BACK
+          docker push maxiimillian/test:frontend
+          docker push maxiimillian/test:backend
