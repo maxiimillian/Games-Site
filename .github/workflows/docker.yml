@@ -37,9 +37,7 @@ jobs:
       - name: Run Build Frontend
         if: success()      
         run: | 
-          docker build -t maxiimillian/test:frontend \
-          --build-arg REACT_APP_API_URL=${{ secrets.API_URL }} \
-          ./frontend
+          docker build -t maxiimillian/test:frontend --build-arg REACT_APP_API_URL=${{ secrets.API_URL }} ./frontend
       
       - name: Push Builds
         if: success()      
