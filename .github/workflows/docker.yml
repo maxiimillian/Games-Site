@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-18.04    
     env:      
       DOCKER_REGISTRY: ${{ secrets.DOCKER_USERNAME }}      
-      DOCKER_IMAGE_FRONT: maxiimillian/test:frontend
-      DOCKER_IMAGE_BACK: maxiimillian/test:backend
+      DOCKER_IMAGE_FRONT: "maxiimillian/test:frontend"
+      DOCKER_IMAGE_BACK: "maxiimillian/test:backend"
       DOCKER_TARGET_PLATFORM: linux/arm/v7            
 
     steps:    
