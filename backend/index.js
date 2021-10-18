@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = require("./app");
 
-const port = 3002;
+const port = 3001;
 
 
 mongoose.connect(process.env.DB_PATH, {
@@ -15,7 +15,7 @@ console.log("eeee", process.env.ALLOWED_URL);
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
 let io = require("socket.io")(server, {
   cors: {
-    origin: "*",
+    origin: process.env.ALLOWED_URL,
     methods: ["GET", "POST"]
   }
 });
