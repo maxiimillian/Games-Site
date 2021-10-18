@@ -39,6 +39,10 @@ jobs:
           tags: maxiimillian/test:backend
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
+          build-args: |
+            DB_PATH=${{ secrets.DB_PATH }}
+            BOARD_DB_PATH="./db.db"
+            ALLOWED_URL=${{ secrets.ALLOWED_URL }}
               
       - name: Run Build Frontend
         id: docker_build_front
@@ -51,4 +55,5 @@ jobs:
           tags: maxiimillian/test:frontend
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
-
+          build-args: |
+            REACT_API_API_URL=${{ secrets.API_URL }}
