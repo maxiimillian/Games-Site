@@ -12,8 +12,7 @@ const DEFAULT_INDEX = [1, 4, 8, 10, 80]
 
 function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;
-    console.log(str.length, index+1)
-    console.log("1:",str.substring(0,index), "2:", str.substring(index+1, str.length))
+
     return str.substring(0,index) + chr + str.substring(index+1, str.length);
 }
 
@@ -26,7 +25,6 @@ function getIndex(board) {
         }
     }
 
-    console.log("INDEX: ", index);
     return index;
 }
 
