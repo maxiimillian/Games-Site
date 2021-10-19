@@ -54,6 +54,7 @@ jobs:
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
+            PORT=3001
               
       - name: Run Build Frontend
         id: docker_build_front
