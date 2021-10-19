@@ -45,7 +45,7 @@ jobs:
           cache-to: type=gha, scope=${{ github.workflow }}
           build-args: |
             DB_PATH=${{ secrets.DB_PATH }}
-            BOARD_DB_PATH="./db.db"
+            BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
               
       - name: Run Build Frontend
