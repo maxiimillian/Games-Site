@@ -13,6 +13,8 @@ const DEFAULT_INDEX = [1, 4, 8, 10, 80]
 
 const PLAYER_LIMIT = 2;
 
+console.log("test");
+
 function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;
 
