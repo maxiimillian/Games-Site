@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { get_user_information } = require("../utils");
 const utils = require("../utils");
 
 const DEFAULT_BOARD = {
@@ -35,7 +36,7 @@ module.exports =
         constructor(host_id, difficulty) {
             this.id = crypto.randomBytes(20).toString('hex');;
             this.host = host_id;
-            this.players = [host_id];
+            this.players = {};
             this.difficulty = difficulty;
             this.board = null;
             this.index = null;
@@ -72,6 +73,7 @@ module.exports =
             this.board = DEFAULT_BOARD;
             this.index = getIndex(DEFAULT_BOARD);
             this.boards[this.host] = DEFAULT_BOARD.unsolved;
+            this.players[this.host] = 0;
         }
 
         set_board(board) {
@@ -90,10 +92,11 @@ module.exports =
         }
 
         add_player(user_id, callback) {
-            if (this.players.length >= PLAYER_LIMIT) {
+            if (Object.keys(this.players).length >= PLAYER_LIMIT) {
                 callback(new Error("Maximum two players")); 
+
             } else {
-                this.players.push(user_id);
+                this.players[user_id] = 0;
                 this.boards[user_id] = this.board.unsolved;
                 try {
                     utils.get_user_information(user_id, (err, user) => {
@@ -110,21 +113,18 @@ module.exports =
         }
 
         remove_player(user_id) {
-            this.players.map(player_id, index => {
-                if (player_id == user_id) {
-                    this.players.splice(index, 1);
-                }
-            })
+            delete this.players[user_id];
         }
 
         make_move(user_id, index, value, callback) {;
+
             if (DEFAULT_INDEX.includes(index)) {
                 callback(new Error("Cannot change base number"));
 
             } else if (value < 0 || value > 9) {
                 callback(new Error("Invalid value"));
 
-            } else if (!this.players.includes(user_id)){
+            } else if (typeof this.players[user_id] == "int"){
 
                 console.log("CANT FIND ", user_id, this.players);
                 callback(new Error("Unknown Player"));
@@ -134,6 +134,12 @@ module.exports =
             } else {
                 let current_board = this.boards[user_id];
                 this.boards[user_id] = setCharAt(current_board, parseInt(index), value);
+
+                if (value == 0) {
+                    this.players[user_id] -= 1;
+                } else {
+                    this.players[user_id] += 1;
+                }
 
                 if (this.boards[user_id] == this.board.solved) {
                     callback(null, true);
@@ -163,6 +169,26 @@ module.exports =
             if (this.rematch.includes(user_id)) {
                 this.rematch.findIndex(x => this.rematch.splice(x, 1));
             }
+        }
+
+        get_opponent(user_id, callback) {
+            let opponent = {}
+            
+            Object.keys(this.players).map(player_id => {
+                console.log(player_id);
+                if (player_id != user_id) {
+                    get_user_information(player_id, (err, user) => {
+                        if (err) {
+                            callback({});
+                        } else {
+                            opponent = {"score": this.players[player_id], "user": user};
+                            callback(opponent)
+                        }
+                    })
+                    
+                } 
+            });
+
         }
 
         start() {

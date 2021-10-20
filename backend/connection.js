@@ -40,6 +40,19 @@ module.exports = function(io) {
 		})
 	}
 	
+	function send_game_state(socket, user_id, room_code) {
+		console.log(boards, room_code);
+		board = boards[room_code];
+
+		board.get_opponent(user_id, (opponent) => {
+			socket.emit("state", 
+			board.boards[user_id], 
+			opponent
+			)
+		})
+
+	}
+
 	function alreadyInRoom(socket) {
 		if (socket.rooms.size > 1) {
 			return true
@@ -98,15 +111,25 @@ module.exports = function(io) {
 
 			get_socket_information(socket, (token, user_id, user) => {
 				let room = sudoku.adapter.rooms.get(room_code);
-
+				console.log(room_track_sudoku[user_id], room_code);
+				console.log(room);
 				if (room == null) {
 					socket.emit("err", "Room not found");
 	
+				} else if (user_id == null) {
+					socket.emit("err", "user not found")
+
+				} else if (room_track_sudoku[user_id] == room_code) {
+					send_game_state(socket, user_id, room_code);
+					socket.join(room_code);
+					console.log(room);
+
 				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
 					socket.emit("err", "Room is full");
 	
 				} else if (user == null) {
 					socket.emit("User Information Error");
+
 				} else {
 					let board = boards[room_code];
 					boards[room_code].add_player(user_id, (err, user) => {
@@ -135,7 +158,7 @@ module.exports = function(io) {
 			get_socket_information(socket, (token, user_id, user, room_code) => {
 				let room = sudoku.adapter.rooms.get(room_code);
 				let board = boards[room_code];
-	
+
 				if (room == null || board == null) {
 					console.log("e: ", room_code, room, sudoku.adapter.rooms, board, ": e");
 					socket.emit("err", "Room not found");
@@ -217,8 +240,21 @@ module.exports = function(io) {
 		});
 
 		socket.on("disconnect", () => {
-			sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", {});
-			delete room_track_sudoku[socket.id];
+			get_socket_information(socket, (token, user_id, user, room_code) => {
+				sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", user);
+				let room = sudoku.adapter.rooms.get(room_code);
+
+				if (!room) {
+					let board = boards[room_code];
+
+					Object.keys(board.players).map(player_id => {
+						delete room_track_sudoku[player_id];
+					})
+
+					delete board[room_code];
+				}
+			});
+
 		})
 	});
 

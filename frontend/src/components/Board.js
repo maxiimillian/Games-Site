@@ -92,7 +92,19 @@ export default function Board(props) {
             sound("GameStarted");
         });
 
+        socket.on("state", (board, opponentInfo) => {
+            console.log(opponentInfo);
+            setBaseIndex(getBase(board))
+            setBoard(createBoard(board));
+            setOpponent(opponentInfo.user);
+            setOpponentScore(opponentInfo.score);
+            setWaiting(false);
+            setStartingBoard(board);
+            sound("GameStarted");
+        });
+
         socket.on("Filled square", (operation) => {
+            console.log("???")
             if (operation == "add") {
                 setOpponentScore(state => state + 1);
 
