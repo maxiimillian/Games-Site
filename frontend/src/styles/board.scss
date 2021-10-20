@@ -1,5 +1,6 @@
 @import './index.scss';
 
+$overlay-colour: #c6f0bd;
 
 .board-top-container {
     display: flex;
@@ -26,7 +27,7 @@
 
 .board-container {
     display: flex;
-  }
+}
   
 .board {
     background: $board;
@@ -63,26 +64,6 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-}
-  
-.control-button {
-    padding: 20px;
-    width: 40%;
-    border: None;
-    color: black;
-    border-radius: 15px;
-    font-size: 1em;
-    margin-top: 20px;
-    background: $control-buttons;
-}
-
-.on {
-    background: $control-buttons-on;
-}
-
-.control-button:hover {
-    background: $control-buttons-on;
-    cursor: pointer;
 }
   
 tr {
@@ -168,6 +149,6 @@ td:hover {
   
 .overlay-number {
     font-size: 0.3em;
-    color: rgb(92, 70, 9);
+    color: $overlay-colour;
     width: 33%;
 }

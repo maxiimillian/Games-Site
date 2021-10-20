@@ -39,7 +39,6 @@ jobs:
           key: ${{ runner.os }}-single-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-single-buildx
-
       - name: Run Build Backend
         id: docker_build_back
         uses: docker/build-push-action@v2
@@ -55,6 +54,7 @@ jobs:
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
+            PORT=3001
               
       - name: Run Build Frontend
         id: docker_build_front
@@ -69,9 +69,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new, mode=max
           build-args: |
             REACT_APP_API_URL=${{ secrets.API_URL }}
-
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-

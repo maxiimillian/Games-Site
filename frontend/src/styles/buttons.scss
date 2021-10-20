@@ -1,0 +1,75 @@
+@import "./index.scss";
+
+.control-button {
+    padding: 20px;
+    width: 50%;
+    border: None;
+    color: black;
+    border-radius: $border-radius;;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 20px;
+    background: $control-buttons
+}
+
+.on {
+    background: $control-buttons-on;
+}
+
+.control-button:hover {
+    background: $control-buttons-on;
+    cursor: pointer;
+}
+
+.rematch-button {
+    padding: 20px;
+    width: 100%;
+    border-radius: $border-radius;;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 20px;
+    height: 70px;
+}
+
+.active {
+    
+	background: radial-gradient(closest-side, white, $icon-colour);
+	background-size: 400% 400%;
+	animation: active-button 5s ease infinite;
+
+}
+
+.active > .control-button-text {
+    animation: active-text 5s ease infinite;
+}
+
+.inactive {
+    background: $control-buttons;
+}
+
+@keyframes active-text {
+    0% {
+		font-size: 1.1em;
+	}
+    25% {
+        font-size: 1em;
+    }
+	50% {
+		font-size: 1.3em;
+	}
+	100% {
+		font-size: 1.1em;
+	}
+}
+
+@keyframes active-button {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

@@ -116,8 +116,7 @@ function Authenticated() {
     }, [isAuthenticated])
 
     useEffect(() => getToken(), []);
-    //ok so maybe make the login form a component with a true/false statement and seperate the Sign In from the sidebar
-    //then you can just turn it on with the sign in and off by clicking the BlockComponent 
+
     return (
         <SoundProvider>
             <Router>
@@ -160,6 +159,7 @@ function Authenticated() {
 
                                     <Route path="/">
                                         <div className="left-container">
+                                            <Username handleSignin={() => setLogin(true)} />
                                             <Sidebar />
                                         </div>
                                         <div className="center-container">

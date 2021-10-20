@@ -4,13 +4,14 @@ const mongoose = require('mongoose');
 
 const app = require("./app");
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 
 mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 console.log("eeee", process.env.ALLOWED_URL);
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
 let io = require("socket.io")(server, {
