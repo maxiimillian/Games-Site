@@ -12,7 +12,7 @@ module.exports = function(io) {
 	let boards = {};
 
 	const SUDOKU_PLAYER_LIMIT = 2;
-	const DIFFICULTIES = ["easy", "medium", "hard", "extreme"];
+	const DIFFICULTIES = ["easy", "medium", "hard", "extreme", "test"];
 	
 	const poker = io.of("/poker");
 	const sudoku = io.of("/sudoku");
@@ -76,7 +76,7 @@ module.exports = function(io) {
 	sudoku.on("connection", socket => {
 		socket.on("create", (difficulty) => {
 			difficulty = difficulty.toLowerCase()
-
+			console.log(difficulty)
 			if (!DIFFICULTIES.includes(difficulty)) {
 				socket.emit("err", "Invalid Difficulty");
 				return;
