@@ -35,10 +35,10 @@ jobs:
       - name: Cache Images
         uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-single-buildx
 
       - name: Run Build Backend
         id: docker_build_back
@@ -49,11 +49,13 @@ jobs:
           push: true
           platforms: linux/arm/v7
           tags: maxiimillian/test:backend
-          cache-from: type=local,src=~/.npm, mode=max
-          cache-to: type=local,dest=~~/.npm, mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache, mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache, mode=max
           build-args: |
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
             PORT=3001
+              
+
 
