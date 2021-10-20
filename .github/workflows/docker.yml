@@ -56,6 +56,20 @@ jobs:
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
             PORT=3001
               
+      - name: Run Build Frontend
+        id: docker_build_front
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          platforms: linux/arm/v7
+          tags: maxiimillian/test:frontend
+          cache-from: type=local,src=/tmp/.buildx-cache, mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache-new, mode=max
+          build-args: |
+            REACT_APP_API_URL=${{ secrets.API_URL }}
+            
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
