@@ -244,14 +244,14 @@ module.exports = function(io) {
 				sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", user);
 				let room = sudoku.adapter.rooms.get(room_code);
 
-				if (!room) {
+				if (!room && boards[room_code]) {
 					let board = boards[room_code];
 
 					Object.keys(board.players).map(player_id => {
 						delete room_track_sudoku[player_id];
 					})
 
-					delete board[room_code];
+					delete boards[room_code];
 				}
 			});
 
