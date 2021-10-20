@@ -79,4 +79,3 @@ jobs:
           mv /tmp/backend/.buildx-cache-new /tmp/backend/.buildx-cache
           rm -rf /tmp/frontend/.buildx-cache
           mv /tmp/frontend/.buildx-cache-new /tmp/frontend/.buildx-cache
-
