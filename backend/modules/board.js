@@ -48,9 +48,6 @@ module.exports =
         init(callback) {
             try {
                 utils.get_board(this.difficulty, (err, board) => {
-                    this.set_default();
-                    callback();
-                    return;
                     let host_id = this.host;
                     if (err || board == null) {
                         throw err;
