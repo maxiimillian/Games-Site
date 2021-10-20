@@ -48,8 +48,8 @@ jobs:
           push: true
           platforms: linux/arm/v7
           tags: maxiimillian/test:backend
-          cache-from: type=local,src=/tmp/.buildx-cache, mode=max
-          cache-to: type=local,dest=/tmp/.buildx-cache-new, mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache-backend, mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache-backend-new, mode=max
           build-args: |
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
@@ -65,11 +65,13 @@ jobs:
           push: true
           platforms: linux/arm/v7
           tags: maxiimillian/test:frontend
-          cache-from: type=local,src=/tmp/.buildx-cache, mode=max
-          cache-to: type=local,dest=/tmp/.buildx-cache-new, mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache-frontend, mode=max
+          cache-to: type=local,dest=/tmp/.buildx-cache-frontend-new, mode=max
           build-args: |
             REACT_APP_API_URL=${{ secrets.API_URL }}
       - name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf /tmp/.buildx-cache-backend
+          mv /tmp/.buildx-cache-backend-new /tmp/.buildx-cache-backend
+          rm -rf /tmp/.buildx-cache-frontend
+          mv /tmp/.buildx-cache-frontend-new /tmp/.buildx-cache-frontend
