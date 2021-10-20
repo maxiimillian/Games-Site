@@ -36,17 +36,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache-backend
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}-1
           restore-keys: |
-            ${{ runner.os }}-single-buildx
+            ${{ runner.os }}-single-buildx-1
       
-      - name: Cache Backend Layers
+      - name: Cache Frontend Layers
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache-frontend
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}-2
           restore-keys: |
-            ${{ runner.os }}-single-buildx
+            ${{ runner.os }}-single-buildx-2
 
       - name: Run Build Backend
         id: docker_build_back
