@@ -6,11 +6,11 @@ function Chatbox({ messages }) {
 
     return (
         <div class="chat-messages">
-            <ul>
-                {messages.map(message => {
+            <ul class="messages-container">
+                {messages.slice(0).reverse().map(message => {
                     console.log(messages, message);
                     numbers = numbers + 1;
-                    return <li><Message key={numbers} user={message.user} content={message.content} author={message.author}/></li>
+                    return <li class="message-item"><Message key={numbers} user={message.user} content={message.content} author={message.author}/></li>
                 })}
             </ul>
         </div>

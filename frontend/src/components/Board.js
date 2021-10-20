@@ -3,6 +3,7 @@ import { useParams, useLocation, Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
 
 import Chatbox from "./Chatbox";
+import ControlButton from "./ControlButton";
 import { soundContext } from "../contexts/soundContext";
 
 import "../styles/board.scss"
@@ -20,6 +21,7 @@ class Cell {
 
 export default function Board(props) {
     const [board, setBoard] = useState(createBoard(props.board));
+    const [startingBoard, setStartingBoard] = useState(null);
     const [baseIndex, setBaseIndex] = useState(getBase(props.board));
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
@@ -34,6 +36,7 @@ export default function Board(props) {
 
     const [opponentScore, setOpponentScore] = useState(baseIndex.length);
     const [result, setResult] = useState(null);
+    const [rematchStatus, setRematchStatus] = useState(false);
 
     const [messages, setMessages] = useState([]);
     const [chatInput, setChatInput] = useState("");
@@ -74,8 +77,8 @@ export default function Board(props) {
             setWaiting(true)
             setCreated(true)
             console.log(code, room_code);
-        })
-        
+        });
+
         socket.on("joined", (userInformation) => {
             setOpponent(userInformation);
         });
@@ -85,14 +88,19 @@ export default function Board(props) {
             setBaseIndex(getBase(data.board))
             setBoard(createBoard(data.board))
             setWaiting(false);
-            sound("GameStarted")
+            setStartingBoard(data.board);
+            sound("GameStarted");
         });
 
-        socket.on("Filled square", () => {
-            console.log("filled, ", opponentScore);
-            let score = opponentScore + 1;
-            console.log(score);
-            setOpponentScore(state => state + 1);
+        socket.on("Filled square", (operation) => {
+            if (operation == "add") {
+                setOpponentScore(state => state + 1);
+
+            } else if (operation == "subtract") {
+                setOpponentScore(state => state - 1);
+
+            }
+            
         })
 
         socket.on("Winner", (result) => {
@@ -113,12 +121,19 @@ export default function Board(props) {
         }
     }, [])
 
+    
+
     useEffect(() => {
         window.addEventListener("keydown", handleEventInput);
         return () => {
             window.removeEventListener("keydown", handleEventInput);
         };
-    }, [highlightIndex]);
+    }, [highlightIndex, annotate]);
+
+    function handleRematch() {
+        socket.emit("rematch", !rematchStatus);
+        setRematchStatus(!rematchStatus);
+    }
 
     function handleChatInput(e) {
         setHighlightIndex(82);
@@ -137,10 +152,12 @@ export default function Board(props) {
             && !(baseIndex.includes(highlightIndex)) 
             && !(annotate && key == 0) 
             && (highlightIndex >= 0 && highlightIndex < 82) 
+            && board[highlightIndex].value != key
             ) {
             let cells = [...board];
 
             if (annotate) {
+                console.log("annotated")
                 let annotations = cells[highlightIndex].annotations;
                 if (annotations.includes(key)) {
                     let index = annotations.indexOf(key);
@@ -151,14 +168,17 @@ export default function Board(props) {
                 } else {
                     annotations.push(...key);
                 }
+                cells[highlightIndex].annotations = annotations;
+                
                 
             } else {
-                cells[highlightIndex].value = key;
-                console.log("socket, ", highlightIndex, key);
                 socket.emit("move", highlightIndex, key)
+
+                cells[highlightIndex].value = key;
+                cells[highlightIndex].annotations = [];
+
             }
             
-    
             setBoard(cells);
         }
  
@@ -198,7 +218,7 @@ export default function Board(props) {
     }
 
     function resetBoard() {
-        setBoard(createBoardJson(props.board_json))
+        setBoard(createBoard(startingBoard))
     }
 
     function getBaseJson(board_json) {
@@ -348,13 +368,15 @@ export default function Board(props) {
                     let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
                     let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
 
+                    let annotate_number = 0;
 
                     return (
                         <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base}`}>
                             {cell.value == "0" ? "" : cell.value}
                             <div class="cell-overlay">
                                 {cell.annotations.map((annotation) => {
-                                    return <div class="overlay-number">{annotation}</div>
+                                    annotate_number += 1;
+                                    return <div key={annotate_number} class="overlay-number">{annotation}</div>
                                 })}
                             </div>
                         </td>
@@ -366,17 +388,41 @@ export default function Board(props) {
     }
 
     let scoreText;
+    let total;
+
+    if (startingBoard) {
+        total = (startingBoard.match(/0/g) || []).length
+    } else {
+        total = 0;
+    }
+    
 
     if (result == null) {
-        scoreText = <span className="opponent-score">Opponent: {opponentScore}/81</span> 
+        scoreText = <span className="opponent-score">Opponent: {opponentScore}/{total}</span> 
+        
     } else if (result == "win") {
         scoreText = 
         <div style={{display:"flex", flexDirection: "column"}}>
             <span className="opponent-score win">Opponent: {opponentScore}/81</span> 
             <span className="opponent-score win">You Won!</span> 
+            <ControlButton 
+                handleClick={() => handleRematch()}
+                name={"Rematch"}
+                class_on={"rematch-button active"}
+                class_off={"rematch-button inactive"}
+            />
         </div>
     } else {
-        scoreText = <span className="opponent-score lose">Opponent: Won</span> 
+        scoreText = <div>            
+                        <span className="opponent-score lose">Opponent: Won</span> 
+                        <ControlButton 
+                            handleClick={() => handleRematch()}
+                            name={"Rematch"}
+                            class_on={"rematch-button active"}
+                            class_off={"rematch-button inactive"}
+                        />
+                    </div>
+        
     }
 
     return (
@@ -407,8 +453,8 @@ export default function Board(props) {
                     </table>
                     <div className={`control-bar ${waiting ? "fade-out": null}`}>
                         {scoreText}   
-                        <button onClick={() => setAnnotate(!annotate)} className={annotate ? "control-button on": "control-button off"} >Annotate</button>
-                        <button onClick={() => resetBoard()} className="control-button">Reset</button>
+                        <ControlButton handleClick={() => setAnnotate(!annotate)} name={"annotate"} />
+                        <ControlButton handleClick={() => resetBoard()} name={"Reset"} />
                     </div>
                 </div>
                 
@@ -428,7 +474,8 @@ export default function Board(props) {
                             <input class="chat-input" 
                                 onSubmit={(e) => handleChatSubmit(e)} 
                                 placeholder="Start typing here..." value={chatInput} 
-                                onChange={(e) => handleChatInput(e)}>
+                                onChange={(e) => handleChatInput(e)}
+                                onClick={() => setHighlightIndex(82)}>
                             </input>
                             <input type="submit" style={{display: "none"}}></input>
                         </form>

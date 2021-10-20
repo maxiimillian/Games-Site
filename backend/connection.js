@@ -5,6 +5,40 @@ const Board = require("./modules/board");
 const { get_user_id, get_user_information } = require('./utils');
 
 module.exports = function(io) {
+
+	let room_track_sudoku = {};
+	let room_track_poker = {};
+	let tables = [];
+	let boards = {};
+
+	const SUDOKU_PLAYER_LIMIT = 2;
+	const DIFFICULTIES = ["easy", "medium", "hard", "extreme"];
+	
+	const poker = io.of("/poker");
+	const sudoku = io.of("/sudoku");
+
+	function get_socket_information(socket, callback) {
+
+		let token = socket.handshake.auth.token;
+
+		TokenModel.findOne({token: token}, (err, tokenObj) => {
+			let room_code = room_track_sudoku[tokenObj.user_id];
+
+			if (!err && tokenObj) {
+				utils.get_user_information(tokenObj.user_id, (err, user) => {
+					if (err || user == null) {
+						callback(tokenObj.token, tokenObj.user_id, null, room_code);
+					} else {
+						callback(tokenObj.token, tokenObj.user_id, user, room_code);
+					}
+				});
+				return;
+				
+			}
+
+			callback(null, null, null, room_code);
+		})
+	}
 	
 	function alreadyInRoom(socket) {
 		if (socket.rooms.size > 1) {
@@ -12,15 +46,6 @@ module.exports = function(io) {
 		}
 		return false;
 	}
-
-	let room_track_sudoku = {};
-	let room_track_poker = {};
-	let tables = [];
-	let boards = {};
-	const SUDOKU_PLAYER_LIMIT = 2;
-	
-	const poker = io.of("/poker");
-	const sudoku = io.of("/sudoku");
 
 	sudoku.use((socket, next) => {
 		let token = socket.handshake.auth.token;
@@ -39,22 +64,25 @@ module.exports = function(io) {
 		socket.on("create", (difficulty) => {
 			difficulty = difficulty.toLowerCase()
 
-			let room_code = utils.generate_room_code(6);
-			let token = socket.handshake.auth.token;
+			if (!DIFFICULTIES.includes(difficulty)) {
+				socket.emit("err", "Invalid Difficulty");
+				return;
+			}
 
-			TokenModel.findOne({token: token}, function (err, tokenObj) {
-				if (err || tokenObj == null) {
+			let room_code = utils.generate_room_code(6);
+
+			get_socket_information(socket, (token, user_id) => {
+				if (token == null) {
 					socket.emit("Unknown Token");
 
 				} else if (alreadyInRoom(socket)) {
 					socket.emit("err", "Already in a room.") 
 
 				} else {
-
 					socket.join(room_code);
-					room_track_sudoku[tokenObj.user_id] = room_code;
+					room_track_sudoku[user_id] = room_code;
 		
-					let board = new Board(tokenObj.user_id, difficulty);
+					let board = new Board(user_id, difficulty);
 
 					board.init(() => {
 						boards[room_code] = board;
@@ -62,106 +90,108 @@ module.exports = function(io) {
 					});
 
 				}
-	
-			});
-
+			})
 
 		});
 
 		socket.on("join", (room_code) => {
-			let room = sudoku.adapter.rooms.get(room_code);
-			let token = socket.handshake.auth.token;
-			
-			TokenModel.find({token:token}, (err, tokenObj) => {
-				if (err) {
-					socket.emit("err", "Something went wrong");
-				} else if (room == null) {
+
+			get_socket_information(socket, (token, user_id, user) => {
+				let room = sudoku.adapter.rooms.get(room_code);
+
+				if (room == null) {
 					socket.emit("err", "Room not found");
 	
 				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
 					socket.emit("err", "Room is full");
 	
+				} else if (user == null) {
+					socket.emit("User Information Error");
 				} else {
-					utils.get_user_information(tokenObj.user_id, (err, user) => {
+					let board = boards[room_code];
+					boards[room_code].add_player(user_id, (err, user) => {
 						if (err) {
-							socket.emit("User Information Error");
-							socket.leave(room_code);
-	
+							console.log("ERR", err, user);
+							socket.emit("error");
 						} else {
-							let board = boards[room_code];
-							boards[room_code].add_player(tokenObj.user_id, (err, user_information) => {
-								if (err) {
-									console.log("ERR", err, user_information);
-									socket.emit("error");
-								} else {
-									socket.join(room_code);
-									room_track_sudoku[tokenObj.user_id] = room_code;
-									sudoku.to(room_code).emit("joined", user_information);
-	
-									if (sudoku.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
-										boards[room_code].start();
-										sudoku.to(room_code).emit("start", {"board": board.board.unsolved})
-									}
-								}
-							})
-	
+							socket.join(room_code);
+							room_track_sudoku[user_id] = room_code;
+
+							sudoku.to(room_code).emit("joined", user);
+
+							if (sudoku.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
+								boards[room_code].start();
+								sudoku.to(room_code).emit("start", {"board": board.board.unsolved})
+							}
 						}
-	
-	
-					});
+					})
 					
 				}
-			})
-
-
-
+			});
 		});
 
 		socket.on("move", ( index, value) => {
-			let token = socket.handshake.auth.token;
 
-			TokenModel.find({token:token}, (err, tokenObj) => {
-				if (err) {
-					socket.emit("err", "Something went wrong")
+			get_socket_information(socket, (token, user_id, user, room_code) => {
+				let room = sudoku.adapter.rooms.get(room_code);
+				let board = boards[room_code];
+	
+				if (room == null || board == null) {
+					console.log("e: ", room_code, room, sudoku.adapter.rooms, board, ": e");
+					socket.emit("err", "Room not found");
+	
+				} else if (!board.started) {
+					socket.emit("err", "Room not started");
 				} else {
-					let room_code = room_track_sudoku[tokenObj.user_id];
-					let room = sudoku.adapter.rooms.get(room_code);
-					let board = boards[room_code];
-		
-					console.log("move", index, value);
-					if (room == null || board == null) {
-						socket.emit("err", "Room not found");
-		
-					} else if (!board.started) {
-						socket.emit("err", "Room not started");
-					} else {
-						TokenModel.find({token: socket.handshake.auth.token}, (err, tokenObj) => {
-							if (err) {
-								socket.emit("err", "Something went wrong");
+					console.log("oi: ", user_id)
+					board.make_move(user_id, index, value, (err, result) => {
+						
+						if (err) {
+							socket.emit("err", err);
+						} else {
+							if (result) {
+								socket.emit("Winner", "win");
+								socket.broadcast.to(room_code).emit("Winner", "lose");
 							} else {
-								board.make_move(tokenObj.user_id, index, value, (err, result) => {
-									if (err) {
-										socket.emit("err", err);
-									} else {
-										if (result) {
-											socket.emit("Winner", "win");
-											socket.broadcast.to(room_code).emit("Winner", "lose");
-										} else {
-											socket.emit("Success", index, value);
-											socket.broadcast.to(room_code).emit("Filled square");
-										}
-									}
-								});
+								socket.emit("move", index, value);
+
+								if (value == 0) {
+									socket.broadcast.to(room_code).emit("Filled square", "subtract");
+								} else {
+									socket.broadcast.to(room_code).emit("Filled square", "add");
+								}
+								
 							}
-						});
-		
-					}
+						}
+					});
+	
+				}
+			});
+		});
+
+		socket.on("rematch", (status) => {
+			get_socket_information(socket, (token, user_id, user, room_code) => {
+				if (status == "y") {
+					boards[room_code].add_rematch(user_id, (err, confirmed) => {
+						if (err) {
+							socket.emit("err", "something went wrong");
+						} else {
+							//if confirmed then create a game and send link to both,
+							//probably need the reconnect for this cause the host is gonna get added 
+							//when they join on redirect
+						}
+					}); 
+				} else if (status == "n") {
+					boards[room_code].remove_rematch(user_id);
+				} else {
+					socket.emit("err", "invalid status");
+					return
 				}
 
+				socket.broadcast.to(room_code).emit("rematch", status);
 			})
 
-
-		});
+		})
 
 		socket.on("chat", (message) => {
 			let token = socket.handshake.auth.token;

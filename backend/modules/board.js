@@ -10,6 +10,8 @@ const DEFAULT_BOARD = {
 
 const DEFAULT_INDEX = [1, 4, 8, 10, 80]
 
+const PLAYER_LIMIT = 2;
+
 function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;
 
@@ -37,29 +39,58 @@ module.exports =
             this.difficulty = difficulty;
             this.board = null;
             this.index = null;
-            this.boards = null;
+            this.boards = {};
             this.started = false;
+            this.rematch = [];
         }
 
         init(callback) {
-            utils.get_board(this.difficulty, (err, board) => {
-                let host_id = this.host;
-                if (err || board == null) {
-                    this.board = DEFAULT_BOARD;
-                    this.index = DEFAULT_INDEX;
-                    this.boards = {host_id: DEFAULT_BOARD.unsolved};
+            try {
+                utils.get_board(this.difficulty, (err, board) => {
+                    this.set_default();
                     callback();
-                } else {
+                    return;
+                    let host_id = this.host;
+                    if (err || board == null) {
+                        throw err;
+                    } else {
+                        this.board = board;
+                        this.index = getIndex(board);
+                        this.boards[host_id] = board.unsolved;
+
+                        callback();
+                    }
+                })
+            } catch (err) {
+                this.set_default();
+                callback();
+            }
+
+        }
+
+        set_default() {
+            this.board = DEFAULT_BOARD;
+            this.index = getIndex(DEFAULT_BOARD);
+            this.boards[this.host] = DEFAULT_BOARD.unsolved;
+        }
+
+        set_board(board) {
+            if (board) {
+                if (
+                    board.id 
+                    && board.solved 
+                    && board.unsolved 
+                    && board.difficulty)
+                {
                     this.board = board;
-                    this.index = getIndex(board);
-                    this.boards = {host_id: board.unsolved};
-                    callback();
+                } else {
+                    throw new Error("Board isn't valid");
                 }
-            })
+            }
         }
 
         add_player(user_id, callback) {
-            if (this.players.length > 1) {
+            if (this.players.length >= PLAYER_LIMIT) {
                 callback(new Error("Maximum two players")); 
             } else {
                 this.players.push(user_id);
@@ -86,7 +117,7 @@ module.exports =
             })
         }
 
-        make_move(user_id, index, value, callback) {
+        make_move(user_id, index, value, callback) {;
             if (DEFAULT_INDEX.includes(index)) {
                 callback(new Error("Cannot change base number"));
 
@@ -97,7 +128,9 @@ module.exports =
 
                 console.log("CANT FIND ", user_id, this.players);
                 callback(new Error("Unknown Player"));
-
+            
+            } else if (this.boards[user_id][parseInt(index)] == value) {
+                callback(new Error("Nothing Changed"), null);
             } else {
                 let current_board = this.boards[user_id];
                 this.boards[user_id] = setCharAt(current_board, parseInt(index), value);
@@ -108,6 +141,27 @@ module.exports =
                     callback(null, null);
                 }
                 
+            }
+        }
+
+        add_rematch(user_id, callback) {
+            if (this.rematch.includes(user_id)) {
+                this.rematch.push(user_id);
+
+                if (this.rematch.length >= PLAYER_LIMIT) {
+                    callback(true, true);
+                } else {
+                    callback(true, false);
+                }
+
+            } else {
+                callback(false, false);
+            }
+        }
+
+        remove_rematch(user_id) {
+            if (this.rematch.includes(user_id)) {
+                this.rematch.findIndex(x => this.rematch.splice(x, 1));
             }
         }
 
