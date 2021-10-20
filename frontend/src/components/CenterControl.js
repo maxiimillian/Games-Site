@@ -41,6 +41,7 @@ function CenterControl(props) {
                             <option>Medium</option>
                             <option>Hard</option>
                             <option>Extreme</option>
+                            <option>Test</option>
                         </select>
                         <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button>Create</button></Link>
                     </div>
