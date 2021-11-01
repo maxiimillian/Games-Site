@@ -1,5 +1,6 @@
 import sudoku_logo from "../public/sudoku_board.png";
 import poker_logo from "../public/poker.png";
+import "../../styles/gameoption.scss";
 
 function Option({ change_option }) {
     function handleClick(clicked_option) {

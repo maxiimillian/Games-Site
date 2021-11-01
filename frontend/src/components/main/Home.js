@@ -18,12 +18,7 @@ function Home() {
 
 
     return (
-
-
-        <div >
-            <CenterControl option={centerContent} />
-        </div>
-
+        <CenterControl option={centerContent} />
     )
   }
   

@@ -16,7 +16,7 @@
     background: $control-buttons-on;
 }
 
-.control-button:hover {
+.off:hover {
     background: $control-buttons-on;
     cursor: pointer;
 }
@@ -45,6 +45,20 @@
 
 .inactive {
     background: $control-buttons;
+}
+
+.settings-button {
+    padding: 20px;
+    border-radius: $border-radius;
+    background-color: #7F9E75;
+    margin-bottom: 1em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.home-username {
+
+    margin: 0px 4.3em;
+    padding: 0px 20px;
 }
 
 @keyframes active-text {

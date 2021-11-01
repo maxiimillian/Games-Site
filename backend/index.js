@@ -6,7 +6,7 @@ const app = require("./app");
 
 const port = process.env.PORT || 3001;
 
-
+console.log(process.env.DB_PATH)
 mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

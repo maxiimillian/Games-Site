@@ -1,47 +1,19 @@
 import "../styles/news.scss"
 
-function News() {
+function News(props) {
     return (
         <section className="news-container">
-            <h3>News</h3>
-
-            <section className="article-container">
-                <header>
-                    <span className="article-author">Author</span>
-                    <span className="article-date">3d</span>
-                </header>
-                
-                <span className="article-title">Article Title</span>
-            </section>
-
-            <section className="article-container">
-                <header>
-                    <span className="article-author">Author</span>
-                    <span className="article-date">3d</span>
-                </header>
-                
-                <span className="article-title">Article Title</span>
-            </section>
-
-            <section className="article-container">
-                <header>
-                    <span className="article-author">Author</span>
-                    <span className="article-date">3d</span>
-                </header>
-                
-                <span className="article-title">Article Title</span>
-            </section>
-
-            <section className="article-container">
-                <header>
-                    <span className="article-author">Author</span>
-                    <span className="article-date">3d</span>
-                </header>
-                
-                <span className="article-title">Article Title</span>
-            </section>
+            {props.articles.map(article => {
+                return (<section className="article-container">
+                    <header>
+                        <span className="article-author">{article.author}</span>
+                        <span className="article-date">{article.date}</span>
+                    </header>
+                    
+                    <span className="article-title">{article.title}</span>
+                </section>)
+            })}
         </section>
-        
     )
 }
 

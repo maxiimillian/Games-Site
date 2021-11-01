@@ -150,17 +150,22 @@ module.exports =
         }
 
         add_rematch(user_id, callback) {
-            if (this.rematch.includes(user_id)) {
-                this.rematch.push(user_id);
-
-                if (this.rematch.length >= PLAYER_LIMIT) {
-                    callback(true, true);
+            console.log(4, user_id, this.rematch)
+            if (!this.rematch.includes(user_id)) {
+                console.log(45)
+                console.log(this.rematch.length, this.rematch.length+1, PLAYER_LIMIT)
+                if (this.rematch.length+1 == PLAYER_LIMIT) {
+                    console.log(44)
+                    callback(false, true);
                 } else {
-                    callback(true, false);
+                    console.log(477)
+                    this.rematch.push(user_id);
+                    callback(false, false);
                 }
 
             } else {
-                callback(false, false);
+                console.log(411)
+                callback(true, false);
             }
         }
 

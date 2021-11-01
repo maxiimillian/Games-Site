@@ -2,12 +2,12 @@ import { React, useState, useEffect, useContext } from "react";
 import { useParams, useLocation, Redirect } from "react-router-dom";
 import { io } from "socket.io-client";
 
-import Chatbox from "./Chatbox";
-import ControlButton from "./ControlButton";
-import { soundContext } from "../contexts/soundContext";
+import Chatbox from "../common/Chatbox";
+import ControlButton from "../common/ControlButton";
+import { soundContext } from "../../contexts/soundContext";
 
-import "../styles/board.scss"
-import "../styles/chatbox.scss"
+import "../../styles/board.scss"
+import "../../styles/chatbox.scss"
 
 const BOARD_DEFAULT = "0".repeat(81);
 const BOARD_DEFAULT_INDEX = [];
@@ -27,6 +27,7 @@ export default function Board(props) {
     const [annotate, setAnnotate] = useState(false);
 
     const [opponent, setOpponent] = useState(null);
+    const [rematch, setRematch] = useState(false);
 
     const [waiting, setWaiting] = useState(true);
     const [created, setCreated] = useState(false);
@@ -69,6 +70,7 @@ export default function Board(props) {
             let difficulty = query.get("difficulty")
             socket.emit("create", difficulty)
         } else {
+            console.log("joining => ", room_code)
             socket.emit("join", room_code);
         }
 
@@ -103,6 +105,19 @@ export default function Board(props) {
             sound("GameStarted");
         });
 
+        //this is probably horrible, just figure out a way to unmount and have it join normally
+        //i cant do this anymore
+        //delete it ALL
+        socket.on("redirect", (new_code, data) => {
+            console.log("REDIRECTING => ", new_code)
+            setBaseIndex(getBase(data.board))
+            setBoard(createBoard(data.board))
+            setWaiting(false);
+            setStartingBoard(data.board);
+            setRoomCode(new_code);
+            setRematch(new_code);
+        });
+
         socket.on("Filled square", (operation) => {
             console.log("???")
             if (operation == "add") {
@@ -120,6 +135,7 @@ export default function Board(props) {
         })
 
         socket.on("chat", (message) => {
+            console.log("CHAT => ", message)
             setMessages(prevMessages => [...prevMessages, message]);
         });
 
@@ -131,7 +147,7 @@ export default function Board(props) {
             console.log("disconnecting")
             socket.disconnect();
         }
-    }, [])
+    }, [rematch])
 
     
 
@@ -441,6 +457,7 @@ export default function Board(props) {
         <div className="board-top-container">
             <div className="center-board-container">
                 {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
+                {rematch ? <Redirect to={`/sudoku/${rematch}`} /> : null}
                 <div className="board-container">
                     <table className={`board ${waiting ? "fade-out": null}`}>
                         <colgroup><col></col><col></col><col></col></colgroup>

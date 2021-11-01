@@ -47,16 +47,6 @@ button:hover {
   background-color: #6ca888;
 }
 
-
-
-.page-container {
-  display: flex;
-
-  height: 90%;
-  padding: 20px
-}
-
-
 .right-sub-container {
   padding: 10px;
 
@@ -81,43 +71,6 @@ button:hover {
 
 .name {
   align-self: center;
-}
-
-.options-container {
-  display: flex;
-
-  padding: 20px;
-}
-
-.game-option {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  margin: 0px 20px;
-  background: #212121;
-  max-width: 10%;
-  align-items: center;
-  border-radius: 15px;
-  box-shadow: 0px 0px 20px 2px black;
-  opacity: 0.8;
-  transition: ease-in-out 0.1s;
-}
-
-.game-option:hover {
-  opacity: 1;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-.game-icon {
-  height: auto;
-  width: 100%;
-
-}
-
-.game-name {
-  padding: 10px;
-  color: white;
 }
 
 .main-user {

@@ -1,7 +1,7 @@
 const TokenModel = require("../models/Token");
 const UserModel = require("../models/User");
 
-module.exports = async function refreshToken(token, user_id, callback) {
+module.exports = async function getProfile(token, callback) {
     try {
         if (token) {
             TokenModel.findOne({token: token}, function (err, tokenObj) {
@@ -15,13 +15,13 @@ module.exports = async function refreshToken(token, user_id, callback) {
                     return;
                 }
 
-                UserModel.findOne({user_id: user_id}, function(err, user) {
-
+                UserModel.findOne({user_id: tokenObj.user_id}, function(err, user) {
+                    console.log("TOK => ", tokenObj, "USER => ", user);
                     if (err) {
                         throw err;
                     }
                     else if (user == null) {
-                        callback(null, null);
+                        callback(null, {"user": null, "bio": null, "profile": null});
                     } else {
                         callback(null, {"user": user.username, "bio": user.bio, "profile": user.profile});
                         return;

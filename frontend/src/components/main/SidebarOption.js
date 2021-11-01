@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../styles/sidebar.scss";
+import "../../styles/sidebar.scss";
 
 function SidebarOption({ title, icon }) {
     return (
