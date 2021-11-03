@@ -33,12 +33,12 @@ export function AuthProvider({children}) {
         .finally(() => setLoading(false));
     }, []);
 
-    function login(user, password) {
+    async function login(user, password) {
         setLoading(true);
 
-        userApi.login(user, password)
-        .then((user) => setUser(user))
-        .catch((error) => setError(error))
+        await userApi.login(user, password)
+        .then((user) => setUser(user.profile))
+        .catch((error) => console.log(error))
         .finally(() => setLoading(false));
     }
 

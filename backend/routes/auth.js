@@ -41,12 +41,14 @@ router.post("/login", function(req, res) {
     loginUser(username, password, (err, user) => {
         if (err) {
             console.log("LOGIN ERR: ", err);
-            res.json({success: false, message:"failed"});
+            res.status(400).json({success: false, message:"failed"});
         } else if (!user) {
-            res.json({success: false, message:"Unvalid Authentication"});
+            console.log("here?");
+            res.status(400).json({success: false, message:"Invalid Authentication"});
         } else {
-            getProfile(user.token, user.user_id, (err, profile) => {
-                res.json({success:true, profile: profile, token:user.token});
+            getProfile(user.token, (err, profile) => {
+                console.log("here// ", profile, token);
+                res.status(200).json({success:true, profile: profile, token:user.token});
             })
         }
         res.end()
@@ -96,7 +98,7 @@ router.post('/register', function (req, res) {
                 res.status(400).json({success:false, message: "400 <Missing Information>"})
                 res.end()
             } else {
-                getProfile(user.token, user.user_id, (err, profile) => {
+                getProfile(user.token, (err, profile) => {
                     res.status(200).send({success:true, profile: profile, token:user.token});
                     res.end()
                 })
@@ -109,6 +111,7 @@ router.post('/register', function (req, res) {
 
 
 })
-  
+
+
 
 module.exports = router

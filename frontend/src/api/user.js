@@ -53,6 +53,7 @@ export async function register(username, password, email) {
         body: JSON.stringify({"username": username, "password": password, "email": email}),
     })
     .then(data => {
+        console.log("RD => ", data);
         return data.json()
     })
     .then(data => {
@@ -66,7 +67,7 @@ export async function register(username, password, email) {
 }
 
 export async function login(user, password) {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+    return await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -75,6 +76,7 @@ export async function login(user, password) {
         body: JSON.stringify({"username": user, "password": password}),
     })
     .then(data => {
+        console.log("DATA => ", data);
         return data.json();
     })
     .then(data => {
@@ -82,12 +84,10 @@ export async function login(user, password) {
             console.log("FAILED", data.message);
             throw data.message;
         } else {
-            console.log(data);
+            console.log("d => ", data);
             return data;
         }
     })
-   
-    return response;
 }
 
 export async function logout(user, password) {
