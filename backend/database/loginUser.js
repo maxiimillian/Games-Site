@@ -5,6 +5,7 @@ var crypto = require("crypto");
 const bcrypt = require('bcrypt');
 
 module.exports = async function loginUser(username, password, callback) {
+    console.log("logging in?")
     try {
         if (username != null && password != null) {
 
@@ -36,7 +37,7 @@ module.exports = async function loginUser(username, password, callback) {
                             let new_token = crypto.randomBytes(20).toString('hex');
     
                             if (token != null) {
-                                TokenModel.updateOne({user_id: user.user_id}, {token: new_token}, function(err, token) {
+                                TokenModel.updateOne({user_id: user.user_id}, {token: new_token}, function(err, _) {
                                     if (err) {
                                         throw err;
                                     }
@@ -47,13 +48,13 @@ module.exports = async function loginUser(username, password, callback) {
     
                                 let information = {token: crypto.randomBytes(20).toString('hex'), user_id: user.user_id};
     
-                                TokenModel.create(information, (err, token) => {
+                                TokenModel.create(information, (err, new_token) => {
     
                                     if (err) {
                                         throw err;
                                     }
                             
-                                    callback(null, token.token);
+                                    callback(null, new_token.token);
                                     return
                                 });
                             }
@@ -71,6 +72,7 @@ module.exports = async function loginUser(username, password, callback) {
             return
         }
     } catch (err) {
+        console.log(err);
         callback(err, null);
     }
 

@@ -1,5 +1,10 @@
 @import './index.scss';
 
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .left-subcontainer {
     display: flex;
     background: $surface-primary;

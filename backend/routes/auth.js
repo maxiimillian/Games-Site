@@ -15,9 +15,9 @@ router.use(function(req, res, next){
 
 router.post("/profile", function (req, res) {
     let token = req.body.token;
-    let user_id = req.body.user_id;
-
-    getProfile(token, user_id , (err, profile) => {
+    
+    console.log("GETTING PROFILE :")
+    getProfile(token, (err, profile) => {
         if (err) {
             res.json({success: false, message:"failed"});
             return;
@@ -41,11 +41,15 @@ router.post("/login", function(req, res) {
     loginUser(username, password, (err, user) => {
         if (err) {
             console.log("LOGIN ERR: ", err);
-            res.json({success: false, message:"failed"});
+            res.status(400).json({success: false, message:"failed"});
         } else if (!user) {
-            res.json({success: false, message:"Unvalid Authentication"});
+            console.log("here?");
+            res.status(400).json({success: false, message:"Invalid Authentication"});
         } else {
-            res.json({success:true, token:user.token})
+            getProfile(user.token, (err, profile) => {
+                console.log("here// ", profile, token);
+                res.status(200).json({success:true, profile: profile, token:user.token});
+            })
         }
         res.end()
     });
@@ -80,23 +84,34 @@ router.post('/register', function (req, res) {
     let email = req.body.email;
 
     if (!username || !email || !password) {
-        res.status(400).json({"error": "400 <Missing Information>"})
+        console.log("fusdgfuyds");
+        res.status(400).json({success:false, message: "400 <Missing Information>"})
         res.end();
         return;
+    } else {
+        createUser(username, email, password, (err, user) => {
+            if (err) {
+                res.status(400).json({success:false, message:"failed"});
+                res.end()
+            } else if (!user) {
+                console.log("fusdgfuyds", err, user);
+                res.status(400).json({success:false, message: "400 <Missing Information>"})
+                res.end()
+            } else {
+                getProfile(user.token, (err, profile) => {
+                    res.status(200).send({success:true, profile: profile, token:user.token});
+                    res.end()
+                })
+
+            }
+    
+            
+        });    
     }
 
-    createUser(username, email, password, (err, user) => {
-        if (err) {
-            res.status(400).json({success:false, message:"failed"});
-        } else if (!user) {
-            res.status(400).json({"error": "400 <Missing Information>"})
-        } else {
-            res.status(200).send(user);
-        }
 
-        res.end()
-    });    
 })
-  
+
+
 
 module.exports = router

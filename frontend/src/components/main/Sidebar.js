@@ -1,4 +1,4 @@
-import "../styles/sidebar.scss";
+import "../../styles/sidebar.scss";
 import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 import { Link } from "react-router-dom";

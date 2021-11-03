@@ -8,14 +8,15 @@
     flex-direction: column;
     position: absolute;
     z-index: 10;
-    margin: 3% 30%;
+    margin: auto 25%;
+    padding: 20px;
+    align-items: center;
   }
   
   .login-form {
     display: flex;
     flex-direction: column;
     width: 50%;
-    margin: 25% auto;
   }
   
   .form-input {

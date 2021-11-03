@@ -1,5 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import "../styles/buttons.scss";
+import "../../styles/buttons.scss";
 
 function ControlButton(props) {
     const [status, setStatus] = useState(false);
@@ -11,7 +12,7 @@ function ControlButton(props) {
 
     return (
         <button onClick={() => handleClickChild()} className={status ? props.class_on : props.class_off} >
-            <span className="control-button-text">{props.name}</span>
+            {props.icon}
         </button>
     )
 }

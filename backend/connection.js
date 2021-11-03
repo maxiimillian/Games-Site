@@ -39,6 +39,34 @@ module.exports = function(io) {
 			callback(null, null, null, room_code);
 		})
 	}
+
+	function create_game(user_id, difficulty, callback) {
+		difficulty = difficulty.toLowerCase()
+
+		if (!DIFFICULTIES.includes(difficulty)) {
+			callback(null, null)
+			return;
+		}
+
+		let board = new Board(user_id, difficulty);
+		let room_code = utils.generate_room_code(6);
+
+		callback(null, board, room_code);
+	}
+
+	function cleanup_game(room_code) {
+		let room = sudoku.adapter.rooms.get(room_code);
+
+		if (!room && boards[room_code]) {
+			let board = boards[room_code];
+
+			Object.keys(board.players).map(player_id => {
+				delete room_track_sudoku[player_id];
+			})
+
+			delete boards[room_code];
+		}
+	}
 	
 	function send_game_state(socket, user_id, room_code) {
 		console.log(boards, room_code);
@@ -75,44 +103,45 @@ module.exports = function(io) {
 
 	sudoku.on("connection", socket => {
 		socket.on("create", (difficulty) => {
-			difficulty = difficulty.toLowerCase()
-			console.log(difficulty)
-			if (!DIFFICULTIES.includes(difficulty)) {
-				socket.emit("err", "Invalid Difficulty");
-				return;
-			}
-
-			let room_code = utils.generate_room_code(6);
-
 			get_socket_information(socket, (token, user_id) => {
 				if (token == null) {
 					socket.emit("Unknown Token");
 
 				} else if (alreadyInRoom(socket)) {
-					socket.emit("err", "Already in a room.") 
+					socket.emit("err", "Already in a room.") ;
 
 				} else {
-					socket.join(room_code);
-					room_track_sudoku[user_id] = room_code;
-		
-					let board = new Board(user_id, difficulty);
+					create_game(user_id, difficulty, (err, board, room_code) => {
+						if (err) {
+							socket.emit("err", "Something went wrong");
+						} else {
+							socket.join(room_code);
+							room_track_sudoku[user_id] = room_code;
+							
+							board.init(() => {
+								boards[room_code] = board;
+								console.log("ok")
+								socket.emit("created", room_code);
+							});
+						}
 
-					board.init(() => {
-						boards[room_code] = board;
-						socket.emit("created", room_code);
 					});
-
 				}
-			})
+			});
 
 		});
 
 		socket.on("join", (room_code) => {
-
+			console.log(room_track_sudoku);
 			get_socket_information(socket, (token, user_id, user) => {
 				let room = sudoku.adapter.rooms.get(room_code);
-				console.log(room_track_sudoku[user_id], room_code);
-				console.log(room);
+				
+				if (!room && room_track_sudoku[user_id] == room_code) {
+					socket.join(room_code);
+					room = sudoku.adapter.rooms.get(room_code);
+					console.log("r", room);
+				}
+
 				if (room == null) {
 					socket.emit("err", "Room not found");
 	
@@ -122,7 +151,6 @@ module.exports = function(io) {
 				} else if (room_track_sudoku[user_id] == room_code) {
 					send_game_state(socket, user_id, room_code);
 					socket.join(room_code);
-					console.log(room);
 
 				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
 					socket.emit("err", "Room is full");
@@ -193,48 +221,71 @@ module.exports = function(io) {
 		});
 
 		socket.on("rematch", (status) => {
-			get_socket_information(socket, (token, user_id, user, room_code) => {
-				if (status == "y") {
-					boards[room_code].add_rematch(user_id, (err, confirmed) => {
+			get_socket_information(socket, (
+				token, user_id, user, old_room_code) => {
+
+				if (status) {
+					boards[old_room_code].add_rematch(user_id, (err, confirmed) => {
+						console.log(1)
 						if (err) {
 							socket.emit("err", "something went wrong");
-						} else {
-							//if confirmed then create a game and send link to both,
-							//probably need the reconnect for this cause the host is gonna get added 
-							//when they join on redirect
+
+						} else if (confirmed) {
+							let old_board = boards[old_room_code];
+
+							create_game(old_board.host, old_board.difficulty, 
+								(err, board, room_code) => {
+									console.log(4)
+
+								if (err) {
+									socket.emit("err", "Something went wrong");
+								} else {
+			
+									board.init(async () => {
+										boards[room_code] = board;
+
+										await Object.keys(old_board.players).map(player => {
+											room_track_sudoku[player] = room_code;
+											console.log("added!", player,)
+										})
+
+										sudoku.to(old_room_code).emit("redirect", room_code, {"board": board.board.unsolved});
+
+									});
+								}
+		
+							});
 						}
 					}); 
-				} else if (status == "n") {
-					boards[room_code].remove_rematch(user_id);
+				} else if (!!status) {
+					console.log(1333)
+					boards[old_room_code].remove_rematch(user_id);
+
 				} else {
 					socket.emit("err", "invalid status");
 					return
+
 				}
 
-				socket.broadcast.to(room_code).emit("rematch", status);
+				socket.broadcast.to(old_room_code).emit("rematch", status);
 			})
 
 		})
 
 		socket.on("chat", (message) => {
-			let token = socket.handshake.auth.token;
-
-			TokenModel.find({token:token}, (err, tokenObj) => {
-				if (err) {
-					socket.emit("err", "Could not send");
+			get_socket_information(socket, (token, user_id, user, room_code) => {
+				
+				if (!room_code || !user_id) {
+					socket.emit("err", "couldnt send");
 				} else {
-					let room_code = room_track_sudoku[tokenObj.user_id];
-					utils.get_user_information(tokenObj.user_id, (err, user) => {
-						if (err) {
-							socket.emit("err", "Could not send");
-						} else {
-							socket.broadcast.to(room_code).emit("chat", {"user": user.username, "content": message, "author": false});
-							socket.emit("chat", {"user": user.username, "content": message, "author": true});
-						}
-					})
-					
+					console.log(room_code, user);
+					socket.broadcast.to(room_code).emit("chat", {"user": user.username, "content": message, "author": false});
+					socket.emit("chat", {"user": user.username, "content": message, "author": true});
+
 				}
+
 			})
+
 
 			
 		});
@@ -242,17 +293,6 @@ module.exports = function(io) {
 		socket.on("disconnect", () => {
 			get_socket_information(socket, (token, user_id, user, room_code) => {
 				sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", user);
-				let room = sudoku.adapter.rooms.get(room_code);
-
-				if (!room && boards[room_code]) {
-					let board = boards[room_code];
-
-					Object.keys(board.players).map(player_id => {
-						delete room_track_sudoku[player_id];
-					})
-
-					delete boards[room_code];
-				}
 			});
 
 		})

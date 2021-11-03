@@ -1,12 +1,15 @@
 import { useState } from "react";
 import "../styles/login.scss";
+import useAuth from "../contexts/authContext";
 
 function Unauthenticated({handleSubmit}) {
-    const [user, setUser] = useState("");
+    const [username, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
     const [mode, setMode] = useState("login");
+
+    const {user, loading, error, login, register} = useAuth();
 
     var register_form = (
     <form className="login-form" onSubmit={(e) => { handleRegister(e) }}>
@@ -16,7 +19,7 @@ function Unauthenticated({handleSubmit}) {
         </div>
 
         <label>Username</label>
-        <input className="form-input" type="text" name="username" value={user} onChange={(e) => setUser(e.target.value)}></input>
+        <input className="form-input" type="text" name="username" value={username} onChange={(e) => setUser(e.target.value)}></input>
 
         <label>Password</label>
         <input className="form-input" type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
@@ -41,7 +44,7 @@ function Unauthenticated({handleSubmit}) {
         </div>
 
         <label>Username</label>
-        <input className="form-input" type="text" name="username" value={user} onChange={(e) => setUser(e.target.value)}></input>
+        <input className="form-input" type="text" name="username" value={username} onChange={(e) => setUser(e.target.value)}></input>
 
         <label>Password</label>
         <input className="form-input" type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
@@ -51,55 +54,20 @@ function Unauthenticated({handleSubmit}) {
     </form>
     )
 
-    async function handleLogin(e) {
+    function handleLogin(e) {
         e.preventDefault();
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({"username": user, "password": password}),
-        })
-        .then(data => {
-            return data.json();
-        })
-        .then(data => {
-            console.log(data);
-            localStorage.setItem("token", data.token);
-        })
-        .then(() => {
-            handleSubmit();
-        });
-
+        login(username, password);
     }
 
-    async function handleRegister(e) {
+    function handleRegister(e) {
         e.preventDefault();
-        console.log(user, password, email);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({"username": user, "password": password, "email": email}),
-        })
-        .then(data => {
-            return data.json()
-        })
-        .then(data => {
-            localStorage.setItem("token", data.token);
-        })
-        .then(() => {
-            handleSubmit();
-        });
+
+        register(username, password, email);
     }
 
     return (
-
-        <div className="login-form-container" >
+        <div style={{zIndex: "99"}} className="login-form-container" >
                 
             {mode == "login" ? 
                 login_form :

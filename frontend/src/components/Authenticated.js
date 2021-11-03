@@ -3,40 +3,34 @@
 
 import { useCallback, useEffect, useState, Suspense, lazy } from 'react';
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link,
-    useRouteMatch,
-    useParams,
-    Redirect,
   } from "react-router-dom";
-//import Home from "./Home";
-//import Board from "./Board";
-//import Table from "./Table";
-import Chatbox from './Chatbox';
-import Sidebar from "./Sidebar";
-//import News from "./News";
-import Blockpage from './Blockpage';
 
-import { userContext } from "../contexts/userContext";
+import Chatbox from './common/Chatbox';
+import Sidebar from "./main/Sidebar";
+
+import Blockpage from './common/Blockpage';
+
+import useAuth from "../contexts/authContext";
 import { SoundProvider } from "../contexts/soundContext";
-
+import Loading from "./common/Loading";
 
 import Unauthenticated from './Unauthenticated';
-import Username from "./Username";
-
-import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
 
 import logo from '../public/logo.png';
-import wenis_profile from '../public/wenis.jpg';
-import other_profile from "../public/bingo.jpg";
 
-const Home = lazy(() => import("./Home"));
-const Table = lazy(() => import("./Table"));
+const Home = lazy(() => import("./main/Home"));
+const Table = lazy(() => import("./poker/Table"));
 const News = lazy(() => import("./News"));
-const Board = lazy(() => import("./Board"));
+const Board = lazy(() => import("./sudoku/Board"));
 
+let template_articles = [
+    {"author": "John Doe", "date": "3d", "title": "This is an article about absolutely nothing."},
+    {"author": "John Doe", "date": "3d", "title": "This is an article about absolutely nothing."},
+    {"author": "John Doe", "date": "3d", "title": "This is an article about absolutely nothing."},
+]
 
 
 //<Board board_string={"050000002001000600968000004090010000015000940000900073100350090006001800000004000"} board_json={JSON.parse(data)}/>
@@ -47,19 +41,14 @@ const Board = lazy(() => import("./Board"));
 // thats probably best actually lmao    
 
 function Authenticated() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState({});
-    const [socket, setSocket] = useState()
-    const [isLogin, setLogin] = useState(false);
 
+    const {user, loading, error} = useAuth();
 
-    function handleFormSubmit() {
-        setIsAuthenticated(true);
-    }
+    if (loading) return <Loading />
+
 
 
     async function getToken() {
-        console.log(process.env, process.env.REACT_APP_API_URL);
         const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
             method: "POST",
             mode: "cors",
@@ -109,36 +98,22 @@ function Authenticated() {
     }
     
 
-    useEffect(() => {
+    /*useEffect(() => {
         getData((resp) => {
             setUser(resp);
         })
     }, [isAuthenticated])
 
-    useEffect(() => getToken(), []);
+    useEffect(() => getToken(), []);*/
 
     return (
         <SoundProvider>
-            <Router>
                 <Suspense fallback={<div>Loading...</div>}>
                     <div className="top-container">
-                        
-                        <div className="logo-container">
-                            <Link to="/"><img height={"5%"} width={"5%"} src={logo} ></img></Link>
-                        </div>
                         
                         
                         <div className="page-container">
                             <Switch>
-
-                                {isLogin ? 
-                                    <div>
-                                        <Blockpage handleClick={setLogin(false)}></Blockpage>
-                                        <Unauthenticated handleSubmit={handleFormSubmit}/>
-                                    </div>
-                                : null
-                                }
-
                                 <Route path="/poker/:room_code">
                                     <div className="center-container">
                                         <Table />
@@ -150,7 +125,6 @@ function Authenticated() {
 
                                 <Route path="/sudoku/:room_code">
                                     <div className="left-container">
-                                        <Username handleSignin={() => setLogin(true)} />
                                         <Sidebar />
                                     </div>      
 
@@ -159,14 +133,17 @@ function Authenticated() {
 
                                     <Route path="/">
                                         <div className="left-container">
-                                            <Username handleSignin={() => setLogin(true)} />
-                                            <Sidebar />
+                                            <div className="logo-container">
+                                                <Link to="/"><img className="logo" width="30%" src={logo} alt="website icon"></img></Link>
+                                            </div>
                                         </div>
                                         <div className="center-container">
+                                            {/* maybe put the Sign in/ username above the centr control thing */}
+                                            <h1 className="site-title">Playholdr</h1>
                                             <Home />
                                         </div>
                                         <div className="right-container">
-                                            <News />
+                                            
                                         </div>
                                     </Route>
 
@@ -174,7 +151,6 @@ function Authenticated() {
                             </div>
                         </div>
                     </Suspense>
-                </Router>
             </SoundProvider>
 
     )

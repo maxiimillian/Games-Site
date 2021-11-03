@@ -39,12 +39,12 @@ module.exports = {
 
     is_valid_email: function(email_string, callback) {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+        console.log(re.test(email_string));
         UserModel.findOne({email: email_string}, (err, user) => {
             if (err) throw err;
             callback(re.test(email_string) && user == null);
         });
-        return;
+
     },
 
     is_valid_username: function(username, callback) {
@@ -53,9 +53,11 @@ module.exports = {
             console.log("here", username.length < 20 && user == null);
             callback(username.length < 20 && user == null);
         });
+        return;
     },
 
     is_valid_password: function(password) {
+        return true;
         return password.length < 20;
     },
 
@@ -92,9 +94,9 @@ module.exports = {
     },
 
     get_board: function(difficulty, callback) {
-        console.log("getting board");
+        console.log("getting board", difficulty);
         db.all(`SELECT * FROM boards WHERE difficulty=? ORDER BY RANDOM() LIMIT 1`, [difficulty], (err, row) => {
-            if (err) {
+            if (err || row.length == 0) {
                 console.log("DB ERR: ", err);
                 callback(err, null);
             } else {
