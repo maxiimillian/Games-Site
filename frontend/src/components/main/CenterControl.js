@@ -12,6 +12,7 @@ import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
 
 import Username from "../common/Username";
 import ControlButtonIcon from '../common/ControlButtonIcon';
+import CreationForm from "../common/CreationForm";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -41,21 +42,7 @@ function CenterControl(props) {
         center = <Table />
     } else if (option == "sudoku") {
         center = (
-            <div class="block-container">
-                <div class="create-container">
-                    <div style={{dispaly: "flex", flexDirection: "column"}}>
-                        <h2>Create Game</h2>
-                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className="create-selector">
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
-                            <option>Extreme</option>
-                            <option>Test</option>
-                        </select>
-                        <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button>Create</button></Link>
-                    </div>
-                </div>
-            </div>
+            <CreationForm />
         )
     }   
 
