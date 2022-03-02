@@ -9,6 +9,7 @@ import { soundContext } from "../../contexts/soundContext";
 
 import "../../styles/board.scss";
 import "../../styles/chatbox.scss";
+//test
 
 function Sudoku(props) {
     const [baseIndex, setBaseIndex] = useState(getBase(props.board));
@@ -248,3 +249,4 @@ function Sudoku(props) {
     )
 }
 
+export default Sudoku;
