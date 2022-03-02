@@ -5,9 +5,9 @@ import Blockpage from "./Blockpage";
 import Unauthenticated from '../Unauthenticated';
 
 function Username(props) {
-    
     let {user, error} = useAuth();
     const [showForm, setShowForm] = useState(false);
+
     useEffect(() => {
         console.log("UOOO", user);
     }, [user])
@@ -15,10 +15,10 @@ function Username(props) {
         <div className={`main-user-info ${props.className}`}>
             {showForm ? 
                 <div>
-                    <Blockpage handleClick={() => setShowForm(false)}>
-                        
-                    </Blockpage>
+                    <Blockpage handleClick={() => setShowForm(false)} />
+
                     <Unauthenticated handleSubmit={(e) => console.log("e")}/>
+
                 </div>    
                 :
                 null

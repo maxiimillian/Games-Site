@@ -10,12 +10,6 @@ hr {
   border: solid rgba(255, 255, 255, 0.3) 1px;
 }
 
-select {
-  background-color: #3e7748;
-  border: 1px solid #2d5233;
-  color: white;
-}
-
 body > * {
   margin: 0 10px;
 }
@@ -97,17 +91,4 @@ button:hover {
   color: rgba(255,255,255,0.7);
   align-self: center;
   padding: 0px 10px;
-}
-
-.create-container {
-  padding: 20px;
-  background-color: #688D6F;
-  display: flex;
-  justify-content: center;
-  width: 25%;
-  left: 0;
-  right: 0;
-  top: 25%;
-  margin: auto;
-  position: absolute;
 }
