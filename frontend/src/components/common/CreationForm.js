@@ -6,6 +6,7 @@ import "../../styles/gamecreator.scss";
 function CreationForm(props) {
     const [time, setTime] = useState(5);
     const [players, setPlayers] = useState(2);
+    const [difficulty, setDifficulty] = useState("easy");
 
     return (
         <div>
@@ -16,7 +17,7 @@ function CreationForm(props) {
                     </div>
                     <div class="create-form-center">
                         <label for="difficulty">Difficulty:</label>
-                        <select name="difficulty">
+                        <select name="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                             <option value="easy">Easy</option>
                             <option value="medium">Medium</option>
                             <option value="hard">Hard</option>
