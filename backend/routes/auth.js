@@ -7,6 +7,7 @@ const loginUser = require("../database/loginUser");
 const getProfile = require("../database/getProfile");
 
 var router = express.Router()
+console.log("auth")
 
 router.use(function(req, res, next){
     console.log("called...");

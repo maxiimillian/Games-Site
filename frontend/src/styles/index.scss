@@ -1,3 +1,5 @@
+@import "./slider.scss";
+
 $primary-color: #FFFF;
 $background: rgba(18, 18, 18, 0.95);
 $icon-colour: #A8BD92;
@@ -34,7 +36,15 @@ body {
     padding: 20px;
     margin: 0;
 }
-  
+
+select {
+    background-color: #3E4C41;
+    border: none;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 700;
+}
 
 h3, h3 > a {
     color: rgb(170, 168, 168);
