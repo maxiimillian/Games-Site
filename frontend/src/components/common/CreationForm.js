@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 import "../../styles/gamecreator.scss";
 
 function CreationForm(props) {
@@ -6,9 +8,9 @@ function CreationForm(props) {
     const [players, setPlayers] = useState(2);
 
     return (
-        <div class="block-container">
+        <div>
             <section class="create-container" id="game-menu">
-                <form class="create-form" method="post" action="/sudoku/create/?create=true">
+                <form class="create-form" method="post" action={`${process.env.REACT_APP_API_URL}/sudoku/create?create=true`}>
                     <div class="create-form-header">
                         <h1>Game Settings</h1>
                     </div>
@@ -29,7 +31,7 @@ function CreationForm(props) {
                         <label for="players">Players: <b>{players}</b></label>
                         <input type="range" name="players" value={players} min="1" max="4" onChange={(e) => setPlayers(e.target.value)}></input>
                     </div>
-                    <button type="submit" class="create-form-submit">Create Game</button>
+                    <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button type="submit" class="create-form-submit">Create Game</button></Link>
                 </form>
             </section>
         </div>

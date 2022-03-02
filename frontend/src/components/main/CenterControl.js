@@ -13,6 +13,7 @@ import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
 import Username from "../common/Username";
 import ControlButtonIcon from '../common/ControlButtonIcon';
 import CreationForm from "../common/CreationForm";
+import Blockpage from "../common/Blockpage";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -42,7 +43,10 @@ function CenterControl(props) {
         center = <Table />
     } else if (option == "sudoku") {
         center = (
-            <CreationForm />
+            <div>
+                <Blockpage handleClick={() => changeOption("options")} />
+                <CreationForm />  
+            </div>
         )
     }   
 

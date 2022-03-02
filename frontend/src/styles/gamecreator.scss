@@ -2,13 +2,14 @@
 
 .create-container {
     background-color: #2C352E;
-    width: 25%;
+    width: 40%;
     left: 0;
     right: 0;
     top: 25%;
     margin: auto;
     position: absolute;
     color: #cacaca;
+    z-index: 1;
 }
 
 .create-form {

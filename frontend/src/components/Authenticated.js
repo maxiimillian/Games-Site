@@ -8,23 +8,23 @@ import {
     Link,
   } from "react-router-dom";
 
-import Chatbox from '../components/common/Chatbox';
-import Sidebar from "../components/main/Sidebar";
+import Chatbox from './common/Chatbox';
+import Sidebar from "./main/Sidebar";
 
-import Blockpage from '../components/common/Blockpage';
+import Blockpage from './common/Blockpage';
 
-import useAuth from "./authContext";
-import { SoundProvider } from "./soundContext";
-import Loading from "../components/common/Loading";
+import useAuth from "../contexts/authContext";
+import { SoundProvider } from "../contexts/soundContext";
+import Loading from "./common/Loading";
 
-import Unauthenticated from '../components/Unauthenticated';
+import Unauthenticated from './Unauthenticated';
 
 import logo from '../public/logo.png';
 
-const Home = lazy(() => import("../components/main/Home"));
-const Table = lazy(() => import("../components/poker/Table"));
-const News = lazy(() => import("../components/News"));
-const Board = lazy(() => import("../components/sudoku/Board"));
+const Home = lazy(() => import("./main/Home"));
+const Table = lazy(() => import("./poker/Table"));
+const News = lazy(() => import("./News"));
+const Sudoku = lazy(() => import("./sudoku/Sudoku"));
 
 let template_articles = [
     {"author": "John Doe", "date": "3d", "title": "This is an article about absolutely nothing."},
@@ -97,15 +97,6 @@ function Authenticated() {
         });
     }
     
-
-    /*useEffect(() => {
-        getData((resp) => {
-            setUser(resp);
-        })
-    }, [isAuthenticated])
-
-    useEffect(() => getToken(), []);*/
-
     return (
         <SoundProvider>
                 <Suspense fallback={<div>Loading...</div>}>
@@ -128,7 +119,7 @@ function Authenticated() {
                                         <Sidebar />
                                     </div>      
 
-                                    <Board />
+                                    <Sudoku />
                                 </Route>
 
                                     <Route path="/">
@@ -157,4 +148,3 @@ function Authenticated() {
   }
   
   export default Authenticated;
-  
