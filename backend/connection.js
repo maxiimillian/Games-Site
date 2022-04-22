@@ -69,10 +69,12 @@ module.exports = function(io, app) {
 	}
 	
 	function send_game_state(socket, user_id, room_code) {
-		console.log(boards, room_code);
+		//console.log(boards, room_code);
+		console.log(1);
 		board = boards[room_code];
-
+		console.log(board);
 		board.get_opponent(user_id, (opponent) => {
+			console.log("sending state....", board.boards[user_id]);
 			socket.emit("state", 
 			board.boards[user_id], 
 			opponent
@@ -83,7 +85,7 @@ module.exports = function(io, app) {
 
 	function alreadyInRoom(token) {
 		utils.get_user_id(token, (user_err, user_id) => {
-			console.log(user_err)
+			//console.log(user_err)
 			if (room_track_sudoku[user_id]) {
 				return true;
 			} else {
@@ -97,32 +99,32 @@ module.exports = function(io, app) {
 	app.post("/sudoku/create", (req, res) => {
 		let difficulty = req.body.difficulty;
 		let token = req.body.auth;
-		console.log(req.body);
+		//console.log(req.body);
 
 		if (token == null) {
-			console.log(1);
+			//console.log(1);
 			res.status(401).json({success:false, message: "401 <Missing Authentication>"});
 			res.end();
 		} else if (alreadyInRoom(token)) {
-			console.log(2);
+			//console.log(2);
 			res.status(401).json({success:false, message: "401 <Already in a room>"});
 			res.end();
 		} else {
 			utils.get_user_id(token, (user_err, user_id) => {
 				if (user_err) {
-					console.log(13);
+					//console.log(13);
 					res.status(400).json({success:false, message: "400 <Something went wrong>"});
 					res.end();
 				} else {
 					create_game(user_id, difficulty, (game_err, board, room_code) => {
 						if (game_err) {
-							console.log(14);
+							//console.log(14);
 							res.status(400).json({success:false, message: "400 <Something went wrong>"});
 							res.end();
 						} else {
 							room_track_sudoku[user_id] = room_code;
 							
-							board.init(() => {
+							board.init([], async () => {
 								boards[room_code] = board;
 								room_track_sudoku[user_id] = room_code;
 
@@ -169,7 +171,7 @@ module.exports = function(io, app) {
 							
 							board.init(() => {
 								boards[room_code] = board;
-								console.log("ok")
+								//console.log("ok")
 								socket.emit("created", room_code);
 							});
 						}
@@ -181,45 +183,51 @@ module.exports = function(io, app) {
 		});*/
 
 		socket.on("join", (room_code) => {
-			console.log(room_track_sudoku);
+			//console.log(room_track_sudoku);
+			socket.emit("err", "test");
 			get_socket_information(socket, (token, user_id, user) => {
 				let room = sudoku.adapter.rooms.get(room_code);
 				
 				if (!room && room_track_sudoku[user_id] == room_code) {
+					console.log(room_track_sudoku);
 					socket.join(room_code);
 					room = sudoku.adapter.rooms.get(room_code);
-					console.log("r", room);
+					//console.log("r", room);
 				}
-
+				
 				if (room == null) {
 					socket.emit("err", "Room not found");
-	
+					console.log(4244);
 				} else if (user_id == null) {
 					socket.emit("err", "user not found")
-
+					console.log(134);
 				} else if (room_track_sudoku[user_id] == room_code) {
-					send_game_state(socket, user_id, room_code);
 					socket.join(room_code);
-
+					send_game_state(socket, user_id, room_code);
+					boards[room_code].start();
 				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
 					socket.emit("err", "Room is full");
-	
+					console.log(421313);
 				} else if (user == null) {
-					socket.emit("User Information Error");
-
+					socket.emit("err", "User Information Error");
+					console.log(93243244);
 				} else {
+					console.log(4);
 					let board = boards[room_code];
 					boards[room_code].add_player(user_id, (err, user) => {
 						if (err) {
 							console.log("ERR", err, user);
-							socket.emit("error");
+							socket.emit("err", "error");
+							console.log(129012);
 						} else {
+							console.log(6);
 							socket.join(room_code);
 							room_track_sudoku[user_id] = room_code;
 
 							sudoku.to(room_code).emit("joined", user);
 
 							if (sudoku.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
+								console.log(8);
 								boards[room_code].start();
 								sudoku.to(room_code).emit("start", {"board": board.board.unsolved})
 							}
@@ -237,13 +245,13 @@ module.exports = function(io, app) {
 				let board = boards[room_code];
 
 				if (room == null || board == null) {
-					console.log("e: ", room_code, room, sudoku.adapter.rooms, board, ": e");
+					//console.log("e: ", room_code, room, sudoku.adapter.rooms, board, ": e");
 					socket.emit("err", "Room not found");
 	
 				} else if (!board.started) {
 					socket.emit("err", "Room not started");
 				} else {
-					console.log("oi: ", user_id)
+					//console.log("oi: ", user_id)
 					board.make_move(user_id, index, value, (err, result) => {
 						
 						if (err) {
@@ -275,31 +283,36 @@ module.exports = function(io, app) {
 
 				if (status) {
 					boards[old_room_code].add_rematch(user_id, (err, confirmed) => {
-						console.log(1)
+						//console.log(1)
 						if (err) {
 							socket.emit("err", "something went wrong");
 
 						} else if (confirmed) {
+							console.log("creating rematch")
 							let old_board = boards[old_room_code];
 
 							create_game(old_board.host, old_board.difficulty, 
 								(err, board, room_code) => {
-									console.log(4)
+									//console.log(4)
 
 								if (err) {
 									socket.emit("err", "Something went wrong");
 								} else {
-			
-									board.init(async () => {
+									let old_players = Object.keys(old_board.players);
+									console.log("g", old_players);
+									board.init(old_players, async() => {
 										boards[room_code] = board;
-
+										
 										await Object.keys(old_board.players).map(player => {
 											room_track_sudoku[player] = room_code;
-											console.log("added!", player,)
+											board.boards[player] = board.boards[board.host];
+											//console.log("added!", player,)
 										})
 
 										sudoku.to(old_room_code).emit("redirect", room_code, {"board": board.board.unsolved});
-
+										sudoku.in(old_room_code).socketsJoin(room_code);
+										sudoku.in(old_room_code).socketsLeave(old_room_code);
+										boards[room_code].start();
 									});
 								}
 		
@@ -307,7 +320,7 @@ module.exports = function(io, app) {
 						}
 					}); 
 				} else if (!!status) {
-					console.log(1333)
+					//console.log(1333)
 					boards[old_room_code].remove_rematch(user_id);
 
 				} else {
@@ -327,7 +340,7 @@ module.exports = function(io, app) {
 				if (!room_code || !user_id) {
 					socket.emit("err", "couldnt send");
 				} else {
-					console.log(room_code, user);
+					//console.log(room_code, user);
 					socket.broadcast.to(room_code).emit("chat", {"user": user.username, "content": message, "author": false});
 					socket.emit("chat", {"user": user.username, "content": message, "author": true});
 
@@ -390,8 +403,8 @@ module.exports = function(io, app) {
 		})
 
 		socket.on("disconnect", () => {
-			console.log(socket.id);
-			console.log(room_track_poker[socket.id]);
+			//console.log(socket.id);
+			//console.log(room_track_poker[socket.id]);
 		})
 	});
 

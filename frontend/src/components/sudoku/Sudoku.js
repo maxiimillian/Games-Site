@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useContext } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
 
 import Board from "./Board";
@@ -47,6 +47,7 @@ function Sudoku(props) {
     }
 
     let query = useQuery();
+    let history = useHistory();
 
     function getBaseJson(board_json) {
 
@@ -86,7 +87,7 @@ function Sudoku(props) {
     function handleInput(value, index) {
         let newBoardData = `${boardData}`
 
-        newBoardData.split('');
+        newBoardData = newBoardData.split('');
         newBoardData[index] = value;
         newBoardData = newBoardData.join('');
         //console.log("r2", `${boardData.slice(0, index)}${value}${boardData.slice(index+1, 82)}`)
@@ -120,15 +121,16 @@ function Sudoku(props) {
     
         socket_conn.on("connect", () => {
             console.log("connected");
+            if (query.get("create")) {
+                let difficulty = query.get("difficulty")
+                socket_conn.emit("create", difficulty)
+            } else {
+                console.log("joining => ", room_code)
+                socket_conn.emit("join", room_code);
+            }
         })
     
-        if (query.get("create")) {
-            let difficulty = query.get("difficulty")
-            socket_conn.emit("create", difficulty)
-        } else {
-            console.log("joining => ", room_code)
-            socket_conn.emit("join", room_code);
-        }
+
     
         socket_conn.on("created", (code) => {
             setRoomCode(code)
@@ -146,6 +148,7 @@ function Sudoku(props) {
             setBaseIndex(getBase(data.board))
             setBoardData(data.board)
             setWaiting(false);
+            setRematch(false);
             sound("GameStarted");
         });
     
@@ -157,16 +160,18 @@ function Sudoku(props) {
             setOpponent(opponentInfo.user);
             setOpponentScore(opponentInfo.score);
             setWaiting(false);
+            setRematch(false);
             sound("GameStarted");
         });
     
         socket_conn.on("redirect", (new_code, data) => {
             console.log("REDIRECTING => ", new_code)
-            setBaseIndex(getBase(data.board))
-            setBoardData(data.board)
-            setWaiting(false);
+            history.push(`/sudoku/${new_code}`);
+            setRematch(false);
+            setResult(null);
+            setBaseIndex(getBase(data.board));
+            setBoardData(data.board);
             setRoomCode(new_code);
-            setRematch(new_code);
         });
     
         socket_conn.on("Filled square", (operation) => {
@@ -201,10 +206,7 @@ function Sudoku(props) {
         }
     }, [rematch])
 
-    if (result == null) {
-        scoreText = <span className="opponent-score">Opponent: {opponentScore}/{total}</span> 
-        
-    } else if (result == "win") {
+    if (result == "win") {
         scoreText = 
         <div style={{display:"flex", flexDirection: "column"}}>
             <span className="opponent-score win">Opponent: {opponentScore}/81</span> 
@@ -216,7 +218,7 @@ function Sudoku(props) {
                 class_off={"rematch-button inactive"}
             />
         </div>
-    } else {
+    } else if (result == "lose") {
         scoreText = <div>            
                         <span className="opponent-score lose">Opponent: Won</span> 
                         <ControlButton 
@@ -233,11 +235,12 @@ function Sudoku(props) {
         <div className="board-top-container">
             <Board key={boardData} handleInput={handleInput} board={boardData} base={baseIndex} waiting={false}/>
             <div className="right-chat-container">
+                {scoreText}
                 <div className="chat-top-container">
                     <div class="opponent-container">
                         <div class="user-info">
                             <div class="user">
-                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span>
+                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className="opponent-score">{opponentScore}/{total}</span>
                             </div>
                         </div>
                     </div>

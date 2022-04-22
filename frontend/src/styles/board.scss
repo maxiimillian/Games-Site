@@ -134,7 +134,12 @@ td:hover {
     color: $board-base-index;
 }
   
-  
+
+.invalid-number {
+    background-color: #eb4034;
+    color: white;
+}
+
 .cell-overlay {
     position: absolute;
     

@@ -24,6 +24,7 @@ export default function Board(props) {
     const [baseIndex, setBaseIndex] = useState(props.base);
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
+    const [invalidIndex, setInvalidIndex] = useState([]);
 
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
 
@@ -256,11 +257,12 @@ export default function Board(props) {
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
                     let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
                     let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
+                    let is_invalid = (invalidIndex.includes(index.toString())) ? "invalid-number": "";
 
                     let annotate_number = 0;
                     
                     return (
-                        <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base}`}>
+                        <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base} ${is_invalid}`}>
                             {cell.value == "0" ? "" : cell.value}
                             <div class="cell-overlay">
                                 {cell.annotations.map((annotation) => {
