@@ -9,6 +9,7 @@ import { soundContext } from "../../contexts/soundContext";
 
 import "../../styles/board.scss";
 import "../../styles/chatbox.scss";
+//test
 
 const BOARD_DEFAULT_INDEX = "0404";
 

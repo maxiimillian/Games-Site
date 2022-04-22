@@ -44,6 +44,7 @@ function CreationForm(props) {
                     <div className="create-form-header">
                         <h1>Game Settings</h1>
                     </div>
+
                     <div className="create-form-center">
                         <label htmlFor="difficulty">Difficulty:</label>
                         <select name="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
