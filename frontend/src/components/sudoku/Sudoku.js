@@ -42,11 +42,19 @@ function Sudoku(props) {
         console.log("updated => ", boardData);
     }, [boardData])
 
+    useEffect(() => {
+        console.log(rematchStatus);
+        if (socket != null) {
+            socket.emit("rematch", rematchStatus);
+        }
+    }, [rematchStatus])
+
     function useQuery() {
         return new URLSearchParams(useLocation().search);
     }
 
     let query = useQuery();
+    let location = useLocation();
     let history = useHistory();
 
     function getBaseJson(board_json) {
@@ -97,7 +105,6 @@ function Sudoku(props) {
     }
 
     function handleRematch() {
-        socket.emit("rematch", !rematchStatus);
         setRematchStatus(!rematchStatus);
     }
 
@@ -148,7 +155,7 @@ function Sudoku(props) {
             setBaseIndex(getBase(data.board))
             setBoardData(data.board)
             setWaiting(false);
-            setRematch(false);
+            setRematchStatus(false);
             sound("GameStarted");
         });
     
@@ -160,14 +167,14 @@ function Sudoku(props) {
             setOpponent(opponentInfo.user);
             setOpponentScore(opponentInfo.score);
             setWaiting(false);
-            setRematch(false);
+            setRematchStatus(false);
             sound("GameStarted");
         });
     
         socket_conn.on("redirect", (new_code, data) => {
             console.log("REDIRECTING => ", new_code)
             history.push(`/sudoku/${new_code}`);
-            setRematch(false);
+            setRematchStatus(false);
             setResult(null);
             setBaseIndex(getBase(data.board));
             setBoardData(data.board);

@@ -319,7 +319,7 @@ module.exports = function(io, app) {
 							});
 						}
 					}); 
-				} else if (!!status) {
+				} else if (!status) {
 					//console.log(1333)
 					boards[old_room_code].remove_rematch(user_id);
 

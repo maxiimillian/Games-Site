@@ -156,7 +156,7 @@ module.exports =
         }
 
         add_rematch(user_id, callback) {
-            console.log(4, user_id, this.rematch)
+            console.log("USER IS REMATCHING => ", user_id, this.rematch);
             if (!Object.keys(this.rematch).includes(user_id)) {
                 console.log(45)
                 console.log(this.rematch.length, this.rematch.length+1, PLAYER_LIMIT)
