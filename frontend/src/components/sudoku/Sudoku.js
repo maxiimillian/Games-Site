@@ -152,19 +152,17 @@ function Sudoku(props) {
         });
     
         socket_conn.on("start", (data) => {
-            console.log("started", data, data.board);
-            setBaseIndex(getBase(data.board))
+            setBaseIndex(data.base)
             setBoardData(data.board)
             setWaiting(false);
             setRematchStatus(false);
             sound("GameStarted");
         });
     
-        socket_conn.on("state", (board, opponentInfo) => {
-            console.log(opponentInfo);
-            console.log("BOARD REC => ", board);
-            setBaseIndex(getBase(board))
-            setBoardData(board);
+        socket_conn.on("state", (data, opponentInfo) => {
+            setBaseIndex(data.base);
+            setBoardData(data.board);
+            console.log(data);
             setOpponent(opponentInfo.user);
             setOpponentScore(opponentInfo.score);
             setWaiting(false);
@@ -172,12 +170,12 @@ function Sudoku(props) {
             sound("GameStarted");
         });
     
-        socket_conn.on("redirect", (new_code, data) => {
+        socket_conn.on("redirect", (data, new_code) => {
             console.log("REDIRECTING => ", new_code)
             history.push(`/sudoku/${new_code}`);
             setRematchStatus(false);
             setResult(null);
-            setBaseIndex(getBase(data.board));
+            setBaseIndex(data.base);
             setBoardData(data.board);
             setRoomCode(new_code);
         });

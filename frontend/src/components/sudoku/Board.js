@@ -247,16 +247,13 @@ export default function Board(props) {
 
 
     function createRow(limit) {
-        //console.log("creating row => ", board);
         return (
             <tr>
             {board.map((cell, index) => {
-                ////console.log(limit-9, limit-1)
                 if (index >= limit-9 && index <= limit-1) {
-
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
                     let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
-                    let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
+                    let is_base = (baseIndex.includes(index)) ? "base-number": "";
                     let is_invalid = (invalidIndex.includes(index.toString())) ? "invalid-number": "";
 
                     let annotate_number = 0;
