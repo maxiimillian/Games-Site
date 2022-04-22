@@ -12,17 +12,6 @@ console.log(process.env.BOARD_DB_PATH)
 let db = new sqlite3.Database(process.env.BOARD_DB_PATH);
 
 module.exports = {
-    get_user_id: function(username) {
-        UserModel.findOne({username: username}, (err, user) => {
-            if (err) throw err;
-            if (user == null) {
-                throw "User not found"
-            } else {
-                return user.id
-            }
-        });
-    },
-
     get_user_information: function(user_id, callback) {
         UserModel.findOne({user_id: user_id}, (err, user) => {
             if (err) {
@@ -107,12 +96,12 @@ module.exports = {
         
     },
 
-    get_user_id: function(token) {
+    get_user_id: function(token, callback) {
         return TokenModel.findOne({token: token}, function (err, tokenObj) {
             if (err || tokenObj == null) {
-                return new Error("Invalid Token");
+                callback(new Error("Invalid Token"), null);
             } else {
-                return tokenObj.user_id
+                callback(null, tokenObj.user_id);
             }
 
         });

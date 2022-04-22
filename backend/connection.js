@@ -4,7 +4,7 @@ const Table = require("./modules/table");
 const Board = require("./modules/board");
 const { get_user_id, get_user_information } = require('./utils');
 
-module.exports = function(io) {
+module.exports = function(io, app) {
 
 	let room_track_sudoku = {};
 	let room_track_poker = {};
@@ -81,12 +81,61 @@ module.exports = function(io) {
 
 	}
 
-	function alreadyInRoom(socket) {
-		if (socket.rooms.size > 1) {
-			return true
-		}
-		return false;
+	function alreadyInRoom(token) {
+		utils.get_user_id(token, (user_err, user_id) => {
+			console.log(user_err)
+			if (room_track_sudoku[user_id]) {
+				return true;
+			} else {
+				return false;
+			}
+		});
 	}
+
+
+	//User creates game with this http request and connects to it through a socket
+	app.post("/sudoku/create", (req, res) => {
+		let difficulty = req.body.difficulty;
+		let token = req.body.auth;
+		console.log(req.body);
+
+		if (token == null) {
+			console.log(1);
+			res.status(401).json({success:false, message: "401 <Missing Authentication>"});
+			res.end();
+		} else if (alreadyInRoom(token)) {
+			console.log(2);
+			res.status(401).json({success:false, message: "401 <Already in a room>"});
+			res.end();
+		} else {
+			utils.get_user_id(token, (user_err, user_id) => {
+				if (user_err) {
+					console.log(13);
+					res.status(400).json({success:false, message: "400 <Something went wrong>"});
+					res.end();
+				} else {
+					create_game(user_id, difficulty, (game_err, board, room_code) => {
+						if (game_err) {
+							console.log(14);
+							res.status(400).json({success:false, message: "400 <Something went wrong>"});
+							res.end();
+						} else {
+							room_track_sudoku[user_id] = room_code;
+							
+							board.init(() => {
+								boards[room_code] = board;
+								room_track_sudoku[user_id] = room_code;
+
+								res.status(200).json({success:true, message: room_code, code: room_code});
+								res.end();
+							});
+						}
+					});
+				}
+			});
+
+		}
+	});
 
 	sudoku.use((socket, next) => {
 		let token = socket.handshake.auth.token;
@@ -102,7 +151,7 @@ module.exports = function(io) {
 	});
 
 	sudoku.on("connection", socket => {
-		socket.on("create", (difficulty) => {
+		/*socket.on("create", (difficulty) => {
 			get_socket_information(socket, (token, user_id) => {
 				if (token == null) {
 					socket.emit("Unknown Token");
@@ -129,7 +178,7 @@ module.exports = function(io) {
 				}
 			});
 
-		});
+		});*/
 
 		socket.on("join", (room_code) => {
 			console.log(room_track_sudoku);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import "../../styles/gamecreator.scss";
 
@@ -8,31 +8,61 @@ function CreationForm(props) {
     const [players, setPlayers] = useState(2);
     const [difficulty, setDifficulty] = useState("easy");
 
+    let history = useHistory();
+
+    function createGame(e) {
+        e.preventDefault();
+        let difficulty = e.target.difficulty.value;
+        let time = e.target.time.value;
+        let playerCount = e.target.players.value;
+
+        let payload = {
+            "difficulty": difficulty,
+            "time": time,
+            "playerCount": playerCount,
+            "auth": localStorage.getItem("token"),
+        }
+        
+        fetch(`${process.env.REACT_APP_API_URL}/sudoku/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            history.push(`/sudoku/${data.code}`);
+        });
+
+    }
+
     return (
         <div>
-            <section class="create-container" id="game-menu">
-                <form class="create-form" method="post" action={`${process.env.REACT_APP_API_URL}/sudoku/create?create=true`}>
-                    <div class="create-form-header">
+            <section className="create-container" id="game-menu">
+                <form className="create-form" onSubmit={(e) => createGame(e)}>
+                    <div className="create-form-header">
                         <h1>Game Settings</h1>
                     </div>
-                    <div class="create-form-center">
-                        <label for="difficulty">Difficulty:</label>
+                    <div className="create-form-center">
+                        <label htmlFor="difficulty">Difficulty:</label>
                         <select name="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                             <option value="easy">Easy</option>
                             <option value="medium">Medium</option>
                             <option value="hard">Hard</option>
                             <option value="extreme">Extreme</option>
+                            <option value="test">Test</option>
                         </select>
                     </div>
-                    <div class="create-form-center create-form-column">
-                        <label for="time">Time: <b>{time}</b></label>
+                    <div className="create-form-center create-form-column">
+                        <label htmlFor="time">Time: <b>{time}</b></label>
                         <input type="range" name="time" value={time} min="1" max="30" onChange={(e) => setTime(e.target.value)}></input>
                     </div>
-                    <div class="create-form-center create-form-column">
-                        <label for="players">Players: <b>{players}</b></label>
+                    <div className="create-form-center create-form-column">
+                        <label htmlFor="players">Players: <b>{players}</b></label>
                         <input type="range" name="players" value={players} min="1" max="4" onChange={(e) => setPlayers(e.target.value)}></input>
                     </div>
-                    <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button type="submit" class="create-form-submit">Create Game</button></Link>
+                    <button type="submit" className="create-form-submit">Create Game</button>
                 </form>
             </section>
         </div>
@@ -41,8 +71,8 @@ function CreationForm(props) {
 
 export default CreationForm;
 
-/* <div class="block-container">
-                <div class="create-container">
+/* <div className="block-container">
+                <div className="create-container">
                     <div style={{dispaly: "flex", flexDirection: "column"}}>
                         <h2>Create Game</h2>
                         <select value={difficulty} onChange={(e) => handleDifficulty(e)} className="create-selector">

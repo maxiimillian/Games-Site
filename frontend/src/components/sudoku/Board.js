@@ -25,22 +25,6 @@ export default function Board(props) {
     const [highlightIndex, setHighlightIndex] = useState(82);
     const [annotate, setAnnotate] = useState(false);
 
-    const [opponent, setOpponent] = useState(null);
-    const [rematch, setRematch] = useState(false);
-
-    const [waiting, setWaiting] = useState(true);
-    const [created, setCreated] = useState(false);
-
-    const [room_code, setRoomCode] = useState(useParams().room_code);
-    const [socket, setSocket] = useState(null);
-
-    const [opponentScore, setOpponentScore] = useState(baseIndex.length);
-    const [result, setResult] = useState(null);
-    const [rematchStatus, setRematchStatus] = useState(false);
-
-    const [messages, setMessages] = useState([]);
-    const [chatInput, setChatInput] = useState("");
-
     const ALLOWED_INPUTS = [0,1,2,3,4,5,6,7,8,9];
 
     useEffect(() => {
@@ -49,6 +33,10 @@ export default function Board(props) {
             window.removeEventListener("keydown", handleEventInput);
         };
     }, [highlightIndex, annotate]);
+
+    useEffect(() => {
+        console.log("NEW BOARD STATE =>")
+    }, [board])
 
     function handleEventInput({key}) {
         if (
@@ -61,7 +49,7 @@ export default function Board(props) {
             let cells = [...board];
 
             if (annotate) {
-                console.log("annotated")
+                //console.log("annotated")
                 let annotations = cells[highlightIndex].annotations;
                 if (annotations.includes(key)) {
                     let index = annotations.indexOf(key);
@@ -76,11 +64,7 @@ export default function Board(props) {
                 
                 
             } else {
-                socket.emit("move", highlightIndex, key)
-
-                cells[highlightIndex].value = key;
-                cells[highlightIndex].annotations = [];
-
+                props.handleInput(key, highlightIndex);
             }
             
             setBoard(cells);
@@ -101,21 +85,21 @@ export default function Board(props) {
 
     function createBoard(board) {
         var board_create = [];
-        
+        //console.log('creating this board => ', board);
         if (typeof board == "string") {
-
             for (let i = 0; i < board.length; i++) {
-
                 board_create.push(
                     new Cell(board[i], [])
                 );
     
             }
+            //console.log("created => ", board_create);
             return board_create;
     
         } else if (typeof board == "object") {
             return createBoardJson(board);
         } else {
+            //console.log("Default board?")
             return createBoard(BOARD_DEFAULT);
         }
 
@@ -127,9 +111,9 @@ export default function Board(props) {
 
     function handleCellClick(e) {
         let index = e.currentTarget.getAttribute("data-index")
-        console.log(index, e);
+        //console.log(index, e);
         setHighlightIndex(index);
-        console.log(highlightIndex)
+        //console.log(highlightIndex)
 
     }
 
@@ -219,17 +203,54 @@ export default function Board(props) {
         let col = searchSquare("x", index);
         let box = isAdjacentBox(index);
 
-        //console.log(row, col, box, index);
+        ////console.log(row, col, box, index);
         return row || col || box;
     }
 
 
+    function createCell(cell, index) {
+        let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
+        let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
+        let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
+        let annotate_number = 0;
+        
+        return (
+            <div key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base}`}>
+                <span>{cell.value == "0" ? "" : cell.value}</span>
+                <div class="cell-overlay">
+                    {cell.annotations.map((annotation) => {
+                        annotate_number += 1;
+                        return <div key={annotate_number} class="overlay-number">{annotation}</div>
+                    })}
+                </div>
+            </div>
+        )
+    }
+
+    function createHtmlBoard(board_str) {
+        //console.log("creating html => ", board_str);
+        return (
+            <tbody>
+                {createRow(9)}
+                {createRow(18)}
+                {createRow(27)}
+                {createRow(36)}
+                {createRow(45)}
+                {createRow(54)}
+                {createRow(63)}
+                {createRow(72)}
+                {createRow(81)}
+            </tbody>
+        )
+    }
+
 
     function createRow(limit) {
+        //console.log("creating row => ", board);
         return (
             <tr>
             {board.map((cell, index) => {
-                //console.log(limit-9, limit-1)
+                ////console.log(limit-9, limit-1)
                 if (index >= limit-9 && index <= limit-1) {
 
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
@@ -237,7 +258,7 @@ export default function Board(props) {
                     let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
 
                     let annotate_number = 0;
-
+                    
                     return (
                         <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base}`}>
                             {cell.value == "0" ? "" : cell.value}
@@ -266,31 +287,11 @@ export default function Board(props) {
 
     return (
             <div className="center-board-container">
-                {created ? <Redirect to={`/sudoku/${room_code}`} /> : null }
-                {rematch ? <Redirect to={`/sudoku/${rematch}`} /> : null}
                 <div className="board-container">
-                    <table className={`board ${waiting ? "fade-out": null}`}>
-                        <colgroup><col></col><col></col><col></col></colgroup>
-                        <colgroup><col></col><col></col><col></col></colgroup>
-                        <colgroup><col></col><col></col><col></col></colgroup>
-
-                        <tbody>
-                            {createRow(9)}
-                            {createRow(18)}
-                            {createRow(27)}
-                        </tbody>
-                        <tbody>
-                            {createRow(36)}
-                            {createRow(45)}
-                            {createRow(54)}
-                        </tbody>
-                        <tbody>
-                            {createRow(63)}
-                            {createRow(72)}
-                            {createRow(81)}
-                        </tbody>
+                    <table className={`board ${props.waiting ? "fade-out": null}`}>
+                        {createHtmlBoard(board)}
                     </table>
-                    <div className={`control-bar ${waiting ? "fade-out": null}`}>
+                    <div className={`control-bar ${props.waiting ? "fade-out": null}`}>
                         {scoreText}   
                         <ControlButton handleClick={() => setAnnotate(!annotate)} name={"annotate"} />
                         <ControlButton handleClick={() => resetBoard()} name={"Reset"} />
