@@ -19,4 +19,4 @@ let io = require("socket.io")(server, {
     methods: ["GET", "POST"]
   }
 });
-require("./connection.js")(io);
+require("./connection.js")(io, app);

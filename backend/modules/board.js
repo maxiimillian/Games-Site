@@ -47,7 +47,7 @@ module.exports =
             this.rematch = [];
         }
 
-        init(callback) {
+        init(player_ids, callback) {
             try {
                 utils.get_board(this.difficulty, (err, board) => {
                     let host_id = this.host;
@@ -57,6 +57,12 @@ module.exports =
                         this.board = board;
                         this.index = getIndex(board);
                         this.boards[host_id] = board.unsolved;
+                        this.players[host_id] = 0;
+                        console.log("e", player_ids, callback)
+                        player_ids.forEach(player_id => {
+                            this.players[player_id] = 0;
+                            this.boards[player_id] = board.unsolved;
+                        })
 
                         callback();
                     }
@@ -151,7 +157,7 @@ module.exports =
 
         add_rematch(user_id, callback) {
             console.log(4, user_id, this.rematch)
-            if (!this.rematch.includes(user_id)) {
+            if (!Object.keys(this.rematch).includes(user_id)) {
                 console.log(45)
                 console.log(this.rematch.length, this.rematch.length+1, PLAYER_LIMIT)
                 if (this.rematch.length+1 == PLAYER_LIMIT) {
@@ -165,6 +171,7 @@ module.exports =
 
             } else {
                 console.log(411)
+                this.rematch = {};
                 callback(true, false);
             }
         }
@@ -176,6 +183,7 @@ module.exports =
         }
 
         get_opponent(user_id, callback) {
+            console.log("op")
             let opponent = {}
             
             Object.keys(this.players).map(player_id => {
@@ -183,6 +191,7 @@ module.exports =
                 if (player_id != user_id) {
                     get_user_information(player_id, (err, user) => {
                         if (err) {
+                            console.log("here");
                             callback({});
                         } else {
                             opponent = {"score": this.players[player_id], "user": user};
@@ -191,6 +200,7 @@ module.exports =
                     })
                     
                 } 
+                console.log("??")
             });
 
         }

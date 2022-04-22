@@ -45,57 +45,6 @@ function Authenticated() {
     const {user, loading, error} = useAuth();
 
     if (loading) return <Loading />
-
-
-
-    async function getToken() {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({token: localStorage.getItem("token")}),
-        })
-        .then(data => {
-            return data.json();
-        })
-        .then((resp) => {
-            console.log(resp);
-            if (resp.success) {
-                localStorage.setItem("token", resp.token);
-            } else {
-                
-                localStorage.setItem("token", "nope");
-            }
-        } )
-    };
-
-    async function getData(callback) {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/profile`, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({token: localStorage.getItem("token")}),
-        })
-        .then(data => {
-            return data.json()
-            
-        })
-        .then(resp => {
-            if (resp.success) {
-                callback(resp)
-                return;
-
-            } else {
-                callback({})
-                return;
-
-            }
-        });
-    }
     
     return (
         <SoundProvider>
