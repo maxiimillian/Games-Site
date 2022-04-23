@@ -18,8 +18,13 @@ class Cell {
     }
 }
 
+/**
+ * 
+ * Takes in an array of Cell objects to represent the board (board) and an array of Index's that are the base numbers of the puzzle (base)
+ * Takes in a method handleInput for entering numbers and handleAnnotate for entering annotations
+ */
 export default function Board(props) {
-    const [board, setBoard] = useState(createBoard(props.board));
+    const [board, setBoard] = useState(props.board);
     const [startingBoard, setStartingBoard] = useState(null);
     const [baseIndex, setBaseIndex] = useState(props.base);
     const [highlightIndex, setHighlightIndex] = useState(82);
@@ -36,8 +41,12 @@ export default function Board(props) {
     }, [highlightIndex, annotate]);
 
     useEffect(() => {
-        console.log("NEW BOARD STATE =>")
-    }, [board])
+        setBoard(props.board);
+    }, [props.board])
+
+    useEffect(() => {
+        setBaseIndex(props.base);
+    }, [props.base])
 
     function handleEventInput({key}) {
         if (
@@ -50,19 +59,9 @@ export default function Board(props) {
             let cells = [...board];
 
             if (annotate) {
-                //console.log("annotated")
-                let annotations = cells[highlightIndex].annotations;
-                if (annotations.includes(key)) {
-                    let index = annotations.indexOf(key);
-
-                    if (index > -1) {
-                        annotations.splice(index, 1);
-                    }
-                } else {
-                    annotations.push(...key);
-                }
-                cells[highlightIndex].annotations = annotations;
-                
+                //Although this isn't needed for the server it should be handled outside since changing the input will rerender the componenent
+                //And clear the annotations
+                props.handleAnnotate(key, highlightIndex);
                 
             } else {
                 props.handleInput(key, highlightIndex);
@@ -112,10 +111,8 @@ export default function Board(props) {
 
     function handleCellClick(e) {
         let index = e.currentTarget.getAttribute("data-index")
-        //console.log(index, e);
-        setHighlightIndex(index);
-        //console.log(highlightIndex)
 
+        setHighlightIndex(index);
     }
 
     function searchSquare(axis, index) {
@@ -247,16 +244,14 @@ export default function Board(props) {
 
 
     function createRow(limit) {
-        //console.log("creating row => ", board);
         return (
             <tr>
             {board.map((cell, index) => {
-                ////console.log(limit-9, limit-1)
+                //console.log(cell.value, index);
                 if (index >= limit-9 && index <= limit-1) {
-
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
                     let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
-                    let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
+                    let is_base = (baseIndex.includes(index)) ? "base-number": "";
                     let is_invalid = (invalidIndex.includes(index.toString())) ? "invalid-number": "";
 
                     let annotate_number = 0;

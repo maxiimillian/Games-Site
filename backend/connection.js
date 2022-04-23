@@ -76,7 +76,7 @@ module.exports = function(io, app) {
 		board.get_opponent(user_id, (opponent) => {
 			console.log("sending state....", board.boards[user_id]);
 			socket.emit("state", 
-			board.boards[user_id], 
+			{"board": board.boards[user_id], "base": board.index}, 
 			opponent
 			)
 		})
@@ -229,7 +229,7 @@ module.exports = function(io, app) {
 							if (sudoku.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
 								console.log(8);
 								boards[room_code].start();
-								sudoku.to(room_code).emit("start", {"board": board.board.unsolved})
+								sudoku.to(room_code).emit("start", {"board": board.board.unsolved, "base": board.index})
 							}
 						}
 					})
@@ -309,7 +309,7 @@ module.exports = function(io, app) {
 											//console.log("added!", player,)
 										})
 
-										sudoku.to(old_room_code).emit("redirect", room_code, {"board": board.board.unsolved});
+										sudoku.to(old_room_code).emit("redirect", {"board": board.board.unsolved, "base": board.index}, room_code);
 										sudoku.in(old_room_code).socketsJoin(room_code);
 										sudoku.in(old_room_code).socketsLeave(old_room_code);
 										boards[room_code].start();

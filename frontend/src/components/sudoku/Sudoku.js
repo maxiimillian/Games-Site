@@ -9,13 +9,19 @@ import { soundContext } from "../../contexts/soundContext";
 
 import "../../styles/board.scss";
 import "../../styles/chatbox.scss";
-//test
 
 const BOARD_DEFAULT_INDEX = "0404";
 
+class Cell {
+    constructor(value, annotations) {
+        this.value = value;
+        this.annotations = annotations;
+    }
+}
+
 function Sudoku(props) {
     const [baseIndex, setBaseIndex] = useState([0]);
-    const [boardData, setBoardData] = useState();
+    const [boardData, setBoardData] = useState(defaultBoard());
 
     const [rematch, setRematch] = useState(false);
 
@@ -40,15 +46,23 @@ function Sudoku(props) {
     let total;
 
     useEffect(() => {
-        console.log("updated => ", boardData);
-    }, [boardData])
-
-    useEffect(() => {
         console.log(rematchStatus);
         if (socket != null) {
             socket.emit("rematch", rematchStatus);
         }
     }, [rematchStatus])
+
+    function defaultBoard() {
+        var board_create = [];
+
+        for (let i = 0; i < 81; i++) {
+            board_create.push(
+                new Cell("0", [])
+            );
+
+        }
+        return board_create
+    }
 
     function useQuery() {
         return new URLSearchParams(useLocation().search);
@@ -58,51 +72,70 @@ function Sudoku(props) {
     let location = useLocation();
     let history = useHistory();
 
-    function getBaseJson(board_json) {
+    function createBoardJson(board_json) {
+        var board_create = [];
 
-        let indexs = [];
-
-        board_json.forEach((square, index) => {
-            if (square.value != 0) {
-                console.log(index, typeof index)
-                indexs.push(index.toString());
-            }
+        board_json.forEach(square => {
+            board_create.push(
+                new Cell(square.value, square.candidates)
+            );
         })
-
-        return indexs;
+        return board_create;
     }
 
-    function getBase(board) {
+    function createBoard(board) {
+        var board_create = [];
 
         if (typeof board == "string") {
-            let indexs = [];
-
             for (let i = 0; i < board.length; i++) {
-                if (board[i] != 0) {
-                    indexs.push(i.toString());
-                }
+                board_create.push(
+                    new Cell(board[i], [])
+                );
+    
             }
-            return indexs;
+            return board_create;
     
         } else if (typeof board == "object") {
-            return getBaseJson(board);
+            return createBoardJson(board);
+
+        } else if (typeof board == "array") {
+            board_create.map(square => {
+                board_create.push(
+                    new Cell(square, [])
+                )
+            });
+            return board_create;
+
         } else {
-            return getBase(BOARD_DEFAULT_INDEX);
+            return createBoard("0".repeat(81));
         }
 
-
     }
-
     function handleInput(value, index) {
-        let newBoardData = `${boardData}`
-
-        newBoardData = newBoardData.split('');
-        newBoardData[index] = value;
-        newBoardData = newBoardData.join('');
-        //console.log("r2", `${boardData.slice(0, index)}${value}${boardData.slice(index+1, 82)}`)
+        let newBoard = boardData.slice();
+        newBoard[index].value = value;
+        newBoard[index].annotations = [];
 
         socket.emit("move", index, value);
-        setBoardData(newBoardData);
+        setBoardData(newBoard);
+    }
+
+    function handleAnnotate(value, index) {
+        let newBoard = boardData.slice();
+        let currentAnnotations = newBoard[index].annotations;
+        newBoard[index].value = "0";
+
+        if (currentAnnotations.includes(value)) {
+            let currentIndex = currentAnnotations.indexOf(value);
+            if (currentIndex > -1) {
+                currentAnnotations.splice(value, 1);
+            }
+        } else {
+            currentAnnotations.push(value);
+        }
+
+        newBoard[index].annotations = currentAnnotations;
+        setBoardData(newBoard);
     }
 
     function handleRematch() {
@@ -128,12 +161,10 @@ function Sudoku(props) {
         });
     
         socket_conn.on("connect", () => {
-            console.log("connected");
             if (query.get("create")) {
                 let difficulty = query.get("difficulty")
                 socket_conn.emit("create", difficulty)
             } else {
-                console.log("joining => ", room_code)
                 socket_conn.emit("join", room_code);
             }
         })
@@ -152,19 +183,16 @@ function Sudoku(props) {
         });
     
         socket_conn.on("start", (data) => {
-            console.log("started", data, data.board);
-            setBaseIndex(getBase(data.board))
-            setBoardData(data.board)
+            setBaseIndex(data.base)
+            setBoardData(createBoard(data.board))
             setWaiting(false);
             setRematchStatus(false);
             sound("GameStarted");
         });
     
-        socket_conn.on("state", (board, opponentInfo) => {
-            console.log(opponentInfo);
-            console.log("BOARD REC => ", board);
-            setBaseIndex(getBase(board))
-            setBoardData(board);
+        socket_conn.on("state", (data, opponentInfo) => {
+            setBaseIndex(data.base);
+            setBoardData(createBoard(data.board));
             setOpponent(opponentInfo.user);
             setOpponentScore(opponentInfo.score);
             setWaiting(false);
@@ -172,13 +200,12 @@ function Sudoku(props) {
             sound("GameStarted");
         });
     
-        socket_conn.on("redirect", (new_code, data) => {
-            console.log("REDIRECTING => ", new_code)
+        socket_conn.on("redirect", (data, new_code) => {
             history.push(`/sudoku/${new_code}`);
             setRematchStatus(false);
             setResult(null);
-            setBaseIndex(getBase(data.board));
-            setBoardData(data.board);
+            setBaseIndex(data.base);
+            setBoardData(createBoard(data.board));
             setRoomCode(new_code);
         });
     
@@ -198,7 +225,6 @@ function Sudoku(props) {
         })
     
         socket_conn.on("chat", (message) => {
-            console.log("CHAT => ", message)
             setMessages(prevMessages => [...prevMessages, message]);
         });
     
@@ -209,7 +235,6 @@ function Sudoku(props) {
         setSocket(socket_conn);
     
         return () => {
-            console.log("disconnecting")
             socket_conn.disconnect();
         }
     }, [rematch])
@@ -241,7 +266,7 @@ function Sudoku(props) {
 
     return(
         <div className="board-top-container">
-            <Board key={boardData} handleInput={handleInput} board={boardData} base={baseIndex} waiting={false}/>
+            <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} board={boardData} base={baseIndex} waiting={false}/>
             <div className="right-chat-container">
                 {scoreText}
                 <div className="chat-top-container">

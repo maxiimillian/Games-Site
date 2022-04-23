@@ -13,8 +13,6 @@ const DEFAULT_INDEX = [1, 4, 8, 10, 80]
 
 const PLAYER_LIMIT = 2;
 
-console.log("test");
-
 function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;
 
@@ -23,9 +21,10 @@ function setCharAt(str,index,chr) {
 
 function getIndex(board) {
     let index = [];
+    let board_characters = board.split('');
 
     for (let i = 0; i < board.length; i++) {
-        if (board[i] != 0) {
+        if (board_characters[i] != '0') {
             index.push(i);
         }
     }
@@ -55,10 +54,10 @@ module.exports =
                         throw err;
                     } else {
                         this.board = board;
-                        this.index = getIndex(board);
+                        this.index = getIndex(board.unsolved);
                         this.boards[host_id] = board.unsolved;
                         this.players[host_id] = 0;
-                        console.log("e", player_ids, callback)
+
                         player_ids.forEach(player_id => {
                             this.players[player_id] = 0;
                             this.boards[player_id] = board.unsolved;
@@ -156,21 +155,15 @@ module.exports =
         }
 
         add_rematch(user_id, callback) {
-            console.log("USER IS REMATCHING => ", user_id, this.rematch);
             if (!Object.keys(this.rematch).includes(user_id)) {
-                console.log(45)
-                console.log(this.rematch.length, this.rematch.length+1, PLAYER_LIMIT)
                 if (this.rematch.length+1 == PLAYER_LIMIT) {
-                    console.log(44)
                     callback(false, true);
                 } else {
-                    console.log(477)
                     this.rematch.push(user_id);
                     callback(false, false);
                 }
 
             } else {
-                console.log(411)
                 this.rematch = {};
                 callback(true, false);
             }
@@ -183,7 +176,6 @@ module.exports =
         }
 
         get_opponent(user_id, callback) {
-            console.log("op")
             let opponent = {}
             
             Object.keys(this.players).map(player_id => {
@@ -191,7 +183,6 @@ module.exports =
                 if (player_id != user_id) {
                     get_user_information(player_id, (err, user) => {
                         if (err) {
-                            console.log("here");
                             callback({});
                         } else {
                             opponent = {"score": this.players[player_id], "user": user};
@@ -200,7 +191,6 @@ module.exports =
                     })
                     
                 } 
-                console.log("??")
             });
 
         }
