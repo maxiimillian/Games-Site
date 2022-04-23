@@ -50,8 +50,6 @@ function Authenticated() {
         <SoundProvider>
                 <Suspense fallback={<div>Loading...</div>}>
                     <div className="top-container">
-                        
-                        
                         <div className="page-container">
                             <Switch>
                                 <Route path="/poker/:room_code">
