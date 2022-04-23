@@ -60,7 +60,7 @@ button:hover {
 }
 
 .user {
-  display: flex;
+  display: inline-block;
 }
 
 .name {

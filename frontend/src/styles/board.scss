@@ -107,7 +107,9 @@ td:hover {
   
 .opponent-score {
     color: $board-base-index;
-    font-size: 1.3em;
+    font-size: 1.1em;
+    margin-left: 10px;
+    color: $yellow-colour;
 }
 
 .win {

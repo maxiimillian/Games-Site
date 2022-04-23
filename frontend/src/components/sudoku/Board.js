@@ -106,7 +106,9 @@ export default function Board(props) {
     }
 
     function resetBoard() {
-        setBoard(createBoard(startingBoard))
+        board.map((square, index) => {
+            props.handleInput(square.value, index);
+        });
     }
 
     function handleCellClick(e) {
@@ -291,7 +293,7 @@ export default function Board(props) {
                     <div className={`control-bar ${props.waiting ? "fade-out": null}`}>
                         {scoreText}   
                         <ControlButton handleClick={() => setAnnotate(!annotate)} name={"annotate"} />
-                        <ControlButton handleClick={() => resetBoard()} name={"Reset"} />
+                        <ControlButton handleClick={() => props.handleReset()} name={"Reset"} />
                     </div>
                 </div>
                 
