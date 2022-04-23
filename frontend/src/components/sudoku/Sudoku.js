@@ -33,7 +33,9 @@ function Sudoku(props) {
 
     
     const [opponent, setOpponent] = useState(null);
-    const [opponentScore, setOpponentScore] = useState();
+    const [opponentScore, setOpponentScore] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [infoText, setInfoText] = useState("0 / 0");
     const [result, setResult] = useState(null);
     const [rematchStatus, setRematchStatus] = useState(false);
 
@@ -43,7 +45,6 @@ function Sudoku(props) {
     const sound = useContext(soundContext)
 
     let scoreText;
-    let total;
 
     useEffect(() => {
         console.log(rematchStatus);
@@ -51,6 +52,10 @@ function Sudoku(props) {
             socket.emit("rematch", rematchStatus);
         }
     }, [rematchStatus])
+
+    useEffect(() => {
+        setInfoText(`${opponentScore} / ${total}`);
+    }, [opponentScore, total])
 
     function defaultBoard() {
         var board_create = [];
@@ -152,6 +157,18 @@ function Sudoku(props) {
         setChatInput("");
     }
 
+    function handleReset() {
+        let newBoard = boardData.slice();
+        newBoard.map((square, index) => {
+            if (!baseIndex.includes(index)) {
+                square.value = "0";
+                socket.emit("move", index, square.value);
+            }
+        });
+
+        setBoardData(newBoard);
+    }
+
 
     useEffect(() => {
         let socket_conn = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
@@ -187,6 +204,8 @@ function Sudoku(props) {
             setBoardData(createBoard(data.board))
             setWaiting(false);
             setRematchStatus(false);
+            setTotal(81-data.base.length);
+            setInfoText(`${opponentScore} / ${total}`);
             sound("GameStarted");
         });
     
@@ -197,6 +216,8 @@ function Sudoku(props) {
             setOpponentScore(opponentInfo.score);
             setWaiting(false);
             setRematchStatus(false);
+            setTotal(81-data.base.length);
+            setInfoText(`${opponentScore} / ${total}`);
             sound("GameStarted");
         });
     
@@ -206,6 +227,8 @@ function Sudoku(props) {
             setResult(null);
             setBaseIndex(data.base);
             setBoardData(createBoard(data.board));
+            setTotal(81-data.base.length);
+            setInfoText(`${opponentScore} / ${total}`);
             setRoomCode(new_code);
         });
     
@@ -217,11 +240,11 @@ function Sudoku(props) {
                 setOpponentScore(state => state - 1);
     
             }
-            
         })
     
         socket_conn.on("Winner", (result) => {
             setResult(result);
+            setInfoText(`You ${result}!`);
         })
     
         socket_conn.on("chat", (message) => {
@@ -242,8 +265,6 @@ function Sudoku(props) {
     if (result == "win") {
         scoreText = 
         <div style={{display:"flex", flexDirection: "column"}}>
-            <span className="opponent-score win">Opponent: {opponentScore}/81</span> 
-            <span className="opponent-score win">You Won!</span> 
             <ControlButton 
                 handleClick={() => handleRematch()}
                 name={"Rematch"}
@@ -253,7 +274,6 @@ function Sudoku(props) {
         </div>
     } else if (result == "lose") {
         scoreText = <div>            
-                        <span className="opponent-score lose">Opponent: Won</span> 
                         <ControlButton 
                             handleClick={() => handleRematch()}
                             name={"Rematch"}
@@ -266,14 +286,14 @@ function Sudoku(props) {
 
     return(
         <div className="board-top-container">
-            <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} board={boardData} base={baseIndex} waiting={false}/>
+            <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
             <div className="right-chat-container">
                 {scoreText}
                 <div className="chat-top-container">
                     <div class="opponent-container">
                         <div class="user-info">
                             <div class="user">
-                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className="opponent-score">{opponentScore}/{total}</span>
+                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className="opponent-score">{infoText}</span>
                             </div>
                         </div>
                     </div>
