@@ -1,6 +1,7 @@
 @import "./index.scss";
 
 .chat-top-container {
+    grid-area: chatbox;
     display: flex; 
     flex-direction: column;
     background: #0f0f0f; 

@@ -2,6 +2,5 @@
 
 ## ToDo
 
-- Fix score
-- Button to go back to home
+- Move buttons outside of board (if possible for annotate idk)
 - Win/lose counter

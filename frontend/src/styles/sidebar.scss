@@ -3,6 +3,10 @@
 .sidebar-container {
     display: flex;
     flex-direction: column;
+
+    @media screen and (max-width: $small) {
+        display: none;
+    }
 }
 
 .left-subcontainer {

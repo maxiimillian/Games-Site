@@ -2,14 +2,18 @@
 
 .control-button {
     padding: 20px;
-    width: 50%;
     border: None;
     color: black;
     border-radius: $border-radius;;
     font-size: 1.1em;
     font-weight: 600;
     margin-top: 20px;
-    background: $control-buttons
+    background: $control-buttons;
+
+    @media screen and (max-width: $small) {
+        width: 100%;
+        margin: 0 3vw;
+    }
 }
 
 .on {
