@@ -2,6 +2,7 @@ import { React, useState, useEffect, useContext } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
 
+import Sidebar from "../main/Sidebar";
 import Board from "./Board";
 import Chatbox from "../common/Chatbox";
 import ControlButton from "../common/ControlButton";
@@ -286,6 +287,7 @@ function Sudoku(props) {
 
     return(
         <div className="board-top-container">
+            <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
             <div className="right-chat-container">
                 {scoreText}

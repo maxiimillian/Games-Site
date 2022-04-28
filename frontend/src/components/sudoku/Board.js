@@ -230,7 +230,7 @@ export default function Board(props) {
     function createHtmlBoard(board_str) {
         //console.log("creating html => ", board_str);
         return (
-            <tbody>
+            <div className={`board ${props.waiting ? "fade-out": null}`}>
                 {createRow(9)}
                 {createRow(18)}
                 {createRow(27)}
@@ -240,14 +240,14 @@ export default function Board(props) {
                 {createRow(63)}
                 {createRow(72)}
                 {createRow(81)}
-            </tbody>
+            </div>
         )
     }
 
 
     function createRow(limit) {
         return (
-            <tr>
+            <div class="row">
             {board.map((cell, index) => {
                 //console.log(cell.value, index);
                 if (index >= limit-9 && index <= limit-1) {
@@ -259,7 +259,7 @@ export default function Board(props) {
                     let annotate_number = 0;
                     
                     return (
-                        <td key={index} onClick={handleCellClick} data-index={index} className={`${highlighted} ${highlighted_adjacent} ${is_base} ${is_invalid}`}>
+                        <div key={index} onClick={handleCellClick} data-index={index} className={`cell ${highlighted} ${highlighted_adjacent} ${is_base} ${is_invalid}`}>
                             {cell.value == "0" ? "" : cell.value}
                             <div class="cell-overlay">
                                 {cell.annotations.map((annotation) => {
@@ -267,11 +267,11 @@ export default function Board(props) {
                                     return <div key={annotate_number} class="overlay-number">{annotation}</div>
                                 })}
                             </div>
-                        </td>
+                        </div>
                     )
                 }
             })}
-            </tr>
+            </div>
         )
     }
 
@@ -287,12 +287,10 @@ export default function Board(props) {
     return (
             <div className="center-board-container">
                 <div className="board-container">
-                    <table className={`board ${props.waiting ? "fade-out": null}`}>
-                        {createHtmlBoard(board)}
-                    </table>
+                    {createHtmlBoard(board)}
                     <div className={`control-bar ${props.waiting ? "fade-out": null}`}>
                         {scoreText}   
-                        <ControlButton handleClick={() => setAnnotate(!annotate)} name={"annotate"} />
+                        <ControlButton handleClick={() => setAnnotate(!annotate)} name={"Annotate"} />
                         <ControlButton handleClick={() => props.handleReset()} name={"Reset"} />
                     </div>
                 </div>

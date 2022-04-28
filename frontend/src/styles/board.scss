@@ -2,21 +2,81 @@
 
 $overlay-colour: #c6f0bd;
 
-.board-top-container {
+.board {
     display: flex;
-    flex: 4 1 80%;
-    height: 100%;
-    margin: 0px 10px;
-    border-radius: 15px;
+    flex-direction: column;
+    background-color: #303030;
+    width: 30vw;
+    height: 30vw;
+    font-size: 1.6em;
+    border: solid black 3px;
+    box-sizing: border-box;
+
+    @media screen and (max-width: $small) {
+        width: 93vw;
+        height: 94vw;
+    }
+}
+
+.row {
+    display: flex;
+    height: 11.11%;
+}
+
+.row:nth-child(3n+0) {
+    border-bottom: solid black 2px;
+}
+
+.cell:nth-child(3n+0) {
+    border-right: solid black 3px;
+}
+
+.row:last-child {
+    border: none;
+}
+
+.cell:last-child {
+    border: solid black 1px;
+}
+
+.cell {
+    width: 11.11%;
+    border: solid black 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
 }
 
-.center-board-container {
-    flex: 3 1 70%;
+.cell:hover {
+    cursor: pointer;
+}
+
+.board-top-container {
+    display: grid;
+    grid-template: "sidebar sudoku chatbox";
+    grid-template-columns: 20% 55% 25%;
     height: 100%;
     margin: 0px 10px;
     border-radius: 15px;
     position: relative;
+
+    @media screen and (max-width: $small) {
+        grid-template: "sudoku";
+        grid-template-columns: 95%;
+        width: 100%;
+    }
+}
+
+.center-board-container {
+    display: flex;
+    justify-content: space-around;
+
+    @media screen and (max-width: $small) {
+        grid-template: "sudoku";
+        grid-template-columns: 95%;
+        width: 100%;
+    }
 }
 
 .right-chat-container {
@@ -27,23 +87,13 @@ $overlay-colour: #c6f0bd;
 
 .board-container {
     display: flex;
+    font-size: calc(0.6vw + 10px);
+
+    @media screen and (max-width: $small) {
+        flex-direction: column;
+    }
 }
   
-.board {
-    background: $board;
-    border-collapse: collapse;
-    table-layout: fixed;
-    height: 100%;
-    margin: 0px auto;
-    border-radius: 15px;
-    flex: 3;
-    position: relative;
-}
-
-.board colgroup, .board tbody {
-    border: $board-border solid medium;
-}
-
 
 .waiting-block {
     width: 100%;
@@ -60,16 +110,18 @@ $overlay-colour: #c6f0bd;
 }
   
 .control-bar {
-    flex: 1;
     display: flex;
     flex-direction: column;
     padding: 20px;
+    
+    @media screen and (max-width: $small) {
+        flex-direction: row;
+        justify-content: space-around;
+    }
 }
   
 tr {
     border: $board-border solid thin;
-    height: 1.5em;
-    width: 1.4em;
     text-align: center;
     padding: 0;
     color: $board-number;
@@ -79,7 +131,6 @@ tr {
   
 td {
     border: $board-border solid thin;
-    
     height: 1.5em;
     width: 1.4em;
     text-align: center;

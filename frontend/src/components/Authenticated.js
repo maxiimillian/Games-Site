@@ -62,10 +62,6 @@ function Authenticated() {
                                 </Route>
 
                                 <Route path="/sudoku/:room_code">
-                                    <div className="left-container">
-                                        <Sidebar />
-                                    </div>      
-
                                     <Sudoku />
                                 </Route>
 
