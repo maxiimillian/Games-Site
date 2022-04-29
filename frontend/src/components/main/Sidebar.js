@@ -10,11 +10,11 @@ function Sidebar() {
     
     return (
             <div className="left-top-container">
-                                                    <div className="left-container">
-                                            <div className="logo-container">
-                                                <Link to="/"><img className="logo" width="30%" src={logo} alt="website icon"></img></Link>
-                                            </div>
-                                        </div>
+                <div className="left-container">
+                    <div className="logo-container">
+                        <Link to="/"><img className="logo" width="30%" src={logo} alt="website icon"></img></Link>
+                    </div>
+                </div>
                 <div className="left-subcontainer">
                     <div className="left-options-container">
                             <SidebarOption title={"Play"} icon={faGamepad}/>

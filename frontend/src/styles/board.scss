@@ -46,6 +46,7 @@ $overlay-colour: #c6f0bd;
     align-items: center;
     justify-content: center;
     position: relative;
+    color: white;
 }
 
 .cell:hover {
@@ -69,14 +70,7 @@ $overlay-colour: #c6f0bd;
 }
 
 .center-board-container {
-    display: flex;
-    justify-content: space-around;
 
-    @media screen and (max-width: $small) {
-        grid-template: "sudoku";
-        grid-template-columns: 95%;
-        width: 100%;
-    }
 }
 
 .right-chat-container {
