@@ -9,10 +9,11 @@
     font-weight: 600;
     margin-top: 20px;
     background: $control-buttons;
+    width: 100%;
 
     @media screen and (max-width: $small) {
         width: 100%;
-        margin: 0 3vw;
+
     }
 }
 
@@ -23,6 +24,12 @@
 .off:hover {
     background: $control-buttons-on;
     cursor: pointer;
+}
+
+.number-button-container {
+    display: flex;
+    width: 58%;
+    justify-content: space-evenly;
 }
 
 .rematch-button {

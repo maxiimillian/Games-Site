@@ -294,7 +294,7 @@ export default function Board(props) {
                         <ControlButton handleClick={() => props.handleReset()} name={"Reset"} />
                     </div>
                 </div>
-                
+
             </div>
     )
 }

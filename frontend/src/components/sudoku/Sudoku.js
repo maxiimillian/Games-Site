@@ -118,6 +118,10 @@ function Sudoku(props) {
 
     }
     function handleInput(value, index) {
+        console.log(baseIndex, index, baseIndex.includes(index), typeof index, typeof baseIndex[0]);
+        if (baseIndex.includes(parseInt(index))) {
+            return;
+        }
         let newBoard = boardData.slice();
         newBoard[index].value = value;
         newBoard[index].annotations = [];
@@ -201,6 +205,7 @@ function Sudoku(props) {
         });
     
         socket_conn.on("start", (data) => {
+            setOpponentScore(0);
             setBaseIndex(data.base)
             setBoardData(createBoard(data.board))
             setWaiting(false);
@@ -224,6 +229,7 @@ function Sudoku(props) {
     
         socket_conn.on("redirect", (data, new_code) => {
             history.push(`/sudoku/${new_code}`);
+            setOpponentScore(0);
             setRematchStatus(false);
             setResult(null);
             setBaseIndex(data.base);
