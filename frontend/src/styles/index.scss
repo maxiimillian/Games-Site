@@ -81,6 +81,7 @@ h3:hover, h3 > a:hover {
 .page-container {
     height: 90%;
     padding: 20px;
+    display: flex;
 
     @media screen and (max-width: $small) {
         padding: 5px;
