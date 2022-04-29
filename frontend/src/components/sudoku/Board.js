@@ -294,11 +294,7 @@ export default function Board(props) {
                         <ControlButton handleClick={() => props.handleReset()} name={"Reset"} />
                     </div>
                 </div>
-                <div class="number-button-container">
-                    {[...Array(9).keys()].map(number => {
-                        return <ControlButton handleClick={() => props.handleInput(number, highlightIndex)} name={number+1} />
-                    })}
-                </div>
+
             </div>
     )
 }

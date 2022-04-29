@@ -70,7 +70,8 @@ $overlay-colour: #c6f0bd;
 }
 
 .center-board-container {
-
+    display: flex;
+    justify-content: space-around;
 }
 
 .right-chat-container {
