@@ -54,6 +54,7 @@ jobs:
           cache-from: type=local,src=/tmp/backend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/backend/.buildx-cache-new, mode=max
           build-args: |
+            ENV=DEV
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
