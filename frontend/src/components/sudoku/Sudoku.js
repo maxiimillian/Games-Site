@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 
 import Sidebar from "../main/Sidebar";
 import Board from "./Board";
+import Waiting from "./Waiting";
 import Chatbox from "../common/Chatbox";
 import ControlButton from "../common/ControlButton";
 import { soundContext } from "../../contexts/soundContext";
@@ -30,6 +31,9 @@ function Sudoku(props) {
     const [created, setCreated] = useState(false);
 
     const [room_code, setRoomCode] = useState(useParams().room_code);
+    const [playerCount, setPlayerCount] = useState(0);
+    const [playerTotal, setPlayerTotal] = useState(0);
+    const [options, setOptions] = useState([]);
     const [socket, setSocket] = useState(null);
 
     
@@ -48,6 +52,12 @@ function Sudoku(props) {
     let scoreText;
 
     useEffect(() => {
+        if (waiting) {
+            getDetails(room_code);
+        }
+    }, [waiting])
+
+    useEffect(() => {
         console.log(rematchStatus);
         if (socket != null) {
             socket.emit("rematch", rematchStatus);
@@ -57,6 +67,27 @@ function Sudoku(props) {
     useEffect(() => {
         setInfoText(`${opponentScore} / ${total}`);
     }, [opponentScore, total])
+
+    async function getDetails(code) {
+        let detailsList = [];
+
+        await fetch(`${process.env.REACT_APP_API_URL}/sudoku/details/${code}`)
+        .then(response => response.json())
+        .then(response => {
+            if (response.details == undefined) {
+                return;
+            }
+            let details = response.details;
+                
+            detailsList.push(`Player Count: ${details.players} players`)
+            detailsList.push(`Time: ${details.time} minutes`)
+            detailsList.push(`Difficulty: ${details.difficulty}`)
+
+            setPlayerTotal(details.players);
+            setOptions(detailsList)
+        });
+        
+    }
 
     function defaultBoard() {
         var board_create = [];
@@ -200,7 +231,7 @@ function Sudoku(props) {
             console.log(code, room_code);
         });
     
-        socket_conn.on("joined", (userInformation) => {
+        socket_conn.on("joined", (userInformation, gameOptions) => {
             setOpponent(userInformation);
         });
     
@@ -291,7 +322,16 @@ function Sudoku(props) {
         
     }
 
-    return(
+    if (waiting) {
+        return (
+            <div className="board-top-container">
+                <Sidebar />
+                <Waiting code={room_code} options={options} player_total={playerTotal} player_count={playerCount} />
+            </div>
+        )
+    }
+
+    return (
         <div className="board-top-container">
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>

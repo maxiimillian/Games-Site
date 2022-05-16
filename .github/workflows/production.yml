@@ -1,8 +1,8 @@
-name: Build and publich to local rpi
+name: Build and publich to AWS
 
 on:
   push:
-    branches: [ local ]
+    branches: [ production ]
 
 jobs:   
   build-images:

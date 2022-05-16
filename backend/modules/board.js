@@ -34,7 +34,7 @@ function getIndex(board) {
 
 module.exports = 
     class Board {
-        constructor(host_id, difficulty) {
+        constructor(host_id, difficulty, time, max_player_count) {
             this.id = crypto.randomBytes(20).toString('hex');;
             this.host = host_id;
             this.players = {};
@@ -44,6 +44,8 @@ module.exports =
             this.boards = {};
             this.started = false;
             this.rematch = [];
+            this.max_player_count = max_player_count;
+            this.time = time;
         }
 
         init(player_ids, callback) {
@@ -96,8 +98,8 @@ module.exports =
         }
 
         add_player(user_id, callback) {
-            if (Object.keys(this.players).length >= PLAYER_LIMIT) {
-                callback(new Error("Maximum two players")); 
+            if (Object.keys(this.players).length >= this.max_player_count) {
+                callback(new Error("Player limit reached")); 
 
             } else {
                 this.players[user_id] = 0;
