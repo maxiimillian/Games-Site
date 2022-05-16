@@ -40,7 +40,7 @@ module.exports = function(io, app) {
 		})
 	}
 
-	function create_game(user_id, difficulty, callback) {
+	function create_game(user_id, difficulty, time, player_count, callback) {
 		difficulty = difficulty.toLowerCase()
 
 		if (!DIFFICULTIES.includes(difficulty)) {
@@ -48,7 +48,7 @@ module.exports = function(io, app) {
 			return;
 		}
 
-		let board = new Board(user_id, difficulty);
+		let board = new Board(user_id, difficulty, time, player_count);
 		let room_code = utils.generate_room_code(6);
 
 		callback(null, board, room_code);
@@ -98,27 +98,24 @@ module.exports = function(io, app) {
 	//User creates game with this http request and connects to it through a socket
 	app.post("/sudoku/create", (req, res) => {
 		let difficulty = req.body.difficulty;
+		let time = req.body.time;
+		let player_count = req.body.player_count;
 		let token = req.body.auth;
-		//console.log(req.body);
 
 		if (token == null) {
-			//console.log(1);
 			res.status(401).json({success:false, message: "401 <Missing Authentication>"});
 			res.end();
 		} else if (alreadyInRoom(token)) {
-			//console.log(2);
 			res.status(401).json({success:false, message: "401 <Already in a room>"});
 			res.end();
 		} else {
 			utils.get_user_id(token, (user_err, user_id) => {
 				if (user_err) {
-					//console.log(13);
 					res.status(400).json({success:false, message: "400 <Something went wrong>"});
 					res.end();
 				} else {
-					create_game(user_id, difficulty, (game_err, board, room_code) => {
+					create_game(user_id, difficulty, time, player_count, (game_err, board, room_code) => {
 						if (game_err) {
-							//console.log(14);
 							res.status(400).json({success:false, message: "400 <Something went wrong>"});
 							res.end();
 						} else {
@@ -136,6 +133,24 @@ module.exports = function(io, app) {
 				}
 			});
 
+		}
+	});
+
+
+	app.get("/sudoku/details/:code", (req, res) => {
+		let code = req.params["code"];
+		let details = {"time": null, "players": null, "difficulty": null}
+
+		let board = boards[code];
+
+		if (board) {
+			details["time"] = board.time;
+			details["players"] = board.max_player_count;
+			details["difficulty"] = board.difficulty;
+
+			res.status(200).json({success:true, details: details})
+		} else {
+			res.status(400).json({success:false, message: "Game not found"});
 		}
 	});
 
@@ -245,13 +260,11 @@ module.exports = function(io, app) {
 				let board = boards[room_code];
 
 				if (room == null || board == null) {
-					//console.log("e: ", room_code, room, sudoku.adapter.rooms, board, ": e");
 					socket.emit("err", "Room not found");
 	
 				} else if (!board.started) {
 					socket.emit("err", "Room not started");
 				} else {
-					//console.log("oi: ", user_id)
 					board.make_move(user_id, index, value, (err, result) => {
 						
 						if (err) {
@@ -283,7 +296,6 @@ module.exports = function(io, app) {
 
 				if (status) {
 					boards[old_room_code].add_rematch(user_id, (err, confirmed) => {
-						//console.log(1)
 						if (err) {
 							socket.emit("err", "something went wrong");
 
@@ -293,34 +305,29 @@ module.exports = function(io, app) {
 
 							create_game(old_board.host, old_board.difficulty, 
 								(err, board, room_code) => {
-									//console.log(4)
+									if (err) {
+										socket.emit("err", "Something went wrong");
+									} else {
+										let old_players = Object.keys(old_board.players);
+										console.log("g", old_players);
+										board.init(old_players, async() => {
+											boards[room_code] = board;
+											
+											await Object.keys(old_board.players).map(player => {
+												room_track_sudoku[player] = room_code;
+												board.boards[player] = board.boards[board.host];
+											})
 
-								if (err) {
-									socket.emit("err", "Something went wrong");
-								} else {
-									let old_players = Object.keys(old_board.players);
-									console.log("g", old_players);
-									board.init(old_players, async() => {
-										boards[room_code] = board;
-										
-										await Object.keys(old_board.players).map(player => {
-											room_track_sudoku[player] = room_code;
-											board.boards[player] = board.boards[board.host];
-											//console.log("added!", player,)
-										})
-
-										sudoku.to(old_room_code).emit("redirect", {"board": board.board.unsolved, "base": board.index}, room_code);
-										sudoku.in(old_room_code).socketsJoin(room_code);
-										sudoku.in(old_room_code).socketsLeave(old_room_code);
-										boards[room_code].start();
-									});
-								}
-		
+											sudoku.to(old_room_code).emit("redirect", {"board": board.board.unsolved, "base": board.index}, room_code);
+											sudoku.in(old_room_code).socketsJoin(room_code);
+											sudoku.in(old_room_code).socketsLeave(old_room_code);
+											boards[room_code].start();
+										});
+									}
 							});
 						}
 					}); 
 				} else if (!status) {
-					//console.log(1333)
 					boards[old_room_code].remove_rematch(user_id);
 
 				} else {
@@ -339,24 +346,18 @@ module.exports = function(io, app) {
 				
 				if (!room_code || !user_id) {
 					socket.emit("err", "couldnt send");
+					
 				} else {
-					//console.log(room_code, user);
 					socket.broadcast.to(room_code).emit("chat", {"user": user.username, "content": message, "author": false});
 					socket.emit("chat", {"user": user.username, "content": message, "author": true});
-
 				}
-
 			})
-
-
-			
 		});
 
 		socket.on("disconnect", () => {
 			get_socket_information(socket, (token, user_id, user, room_code) => {
 				sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", user);
 			});
-
 		})
 	});
 

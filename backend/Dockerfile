@@ -1,4 +1,5 @@
-FROM arm32v7/node:16-buster
+COPY install.sh install.sh
+RUN chmod u+x install.sh && ./install.sh
 
 ARG DB_PATH
 ARG BOARD_DB_PATH

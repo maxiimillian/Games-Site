@@ -19,7 +19,7 @@ function CreationForm(props) {
         let payload = {
             "difficulty": difficulty,
             "time": time,
-            "playerCount": playerCount,
+            "player_count": playerCount,
             "auth": localStorage.getItem("token"),
         }
         

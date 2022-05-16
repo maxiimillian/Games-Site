@@ -1,8 +1,8 @@
-name: Build and publich to local rpi
+name: Build and publich to AWS
 
 on:
   push:
-    branches: [ local ]
+    branches: [ production ]
 
 jobs:   
   build-images:
@@ -49,12 +49,11 @@ jobs:
           context: ./backend
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          platforms: linux/arm/v7
           tags: maxiimillian/test:backend
           cache-from: type=local,src=/tmp/backend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/backend/.buildx-cache-new, mode=max
           build-args: |
-            ENV=DEV
+            ENV=PROD
             DB_PATH=${{ secrets.DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
             ALLOWED_URL=${{ secrets.ALLOWED_URL }}
@@ -67,7 +66,6 @@ jobs:
           context: ./frontend
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          platforms: linux/arm/v7
           tags: maxiimillian/test:frontend
           cache-from: type=local,src=/tmp/frontend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/frontend/.buildx-cache-new, mode=max

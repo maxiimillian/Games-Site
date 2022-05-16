@@ -3,13 +3,16 @@
 $small: 375px;
 
 $primary-color: #FFFF;
+$text-primary: rgba(255, 255, 255, 0.7);
 $background: rgba(18, 18, 18, 0.95);
 $icon-colour: #A8BD92;
 $yellow-colour: #cdce89;
 
+
 $box-shadow: 0px 0px 10px 0.2px black;
 
 $surface-primary: rgba(15, 15, 15, 0.7);
+$surface-solid: rgba(25, 25, 25, 1);
 
 $board: #303030;
 $board-border: #B7B7B7;
@@ -17,6 +20,9 @@ $board-base-index: #A8BD92;
 $board-number: #FFFFFF;
 $board-highlight: #3F493E;
 $board-secondary-highlight: #4B514C;
+
+$cancel-red: #a33636;
+$cancel-red-hover: #b55151;
 
 $light-mode-board: #0e0f0f;
 $light-mode-highlight: #DDE6EE;
@@ -49,6 +55,10 @@ body {
     margin: 0;
 }
 
+h1 {
+    color: $primary-color;
+}
+
 select {
     background-color: #3E4C41;
     border: none;
@@ -71,6 +81,26 @@ h3:hover, h3 > a:hover {
     cursor: pointer;
 }
 
+p {
+    color: $text-primary;
+    opacity: 0.7;
+}
+
+input {
+    border: none;
+    border-radius: $border-radius;
+    padding: 5px;
+    background-color: rgb(18, 18, 18);
+    color: $text-primary;
+}
+
+ul {
+    list-style: circle;
+    color: $icon-colour;
+    padding: 0px 15px;
+    font-style: italic;
+}
+
 .site-title {
     align-self: center;
     color: $primary-color;
@@ -87,6 +117,12 @@ h3:hover, h3 > a:hover {
         padding: 5px;
     }
   }
+
+
+.box {
+    background-color: $surface-solid;
+    padding: 20px;
+}
 
 .logo {
     vertical-align: middle;
