@@ -9,7 +9,6 @@ const port = process.env.PORT || 3001;
 mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  tlsCAFile: `rds-combined-ca-bundle.pem`,
 });
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
