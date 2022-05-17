@@ -5,7 +5,15 @@
         {
             "dnsSearchDomains": null,
             "environmentFiles": null,
-            "logConfiguration": null,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "playholdr-logs",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "playholdr"
+                }
+            },
             "entryPoint": null,
             "portMappings": [],
             "command": null,
