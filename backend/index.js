@@ -9,6 +9,9 @@ const port = process.env.PORT || 3001;
 mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  maxIdleTimeMS: 270000,
+  minPoolSize: 2, 
+  maxPoolSize: 4,
 });
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
