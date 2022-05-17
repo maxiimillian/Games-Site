@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1                  
-  ECR_REPOSITORY: playholdr-backend          
+  ECR_REPOSITORY: playholdr_backend          
   ECS_SERVICE: playholdr-backend                 
   ECS_CLUSTER: playholdr-backend                 
   ECS_TASK_DEFINITION: ecs-task-definition.json
