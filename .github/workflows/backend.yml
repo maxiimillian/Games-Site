@@ -12,6 +12,7 @@ env:
   ECS_CLUSTER: playholdr-backend                 
   ECS_TASK_DEFINITION: ecs-task-definition.json
   CONTAINER_NAME: playholdr_backend
+  DB_PATH: ${{ secrets.DB_PATH }}
 
 permissions:
   contents: read
@@ -49,7 +50,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=${{ secrets.DB_PATH }} ./backend/
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH ./backend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     - name: Fill in the new image ID in the Amazon ECS task definition
