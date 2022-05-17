@@ -1,3 +1,5 @@
+import fs
+
 const path = require('path');
 const connection = require("./connection")
 const mongoose = require('mongoose');
@@ -12,6 +14,8 @@ mongoose.connect(process.env.DB_PATH, {
   maxIdleTimeMS: 270000,
   minPoolSize: 2, 
   maxPoolSize: 4,
+  ssl: true,
+  sslCA: [fs.readFileSync("rds-combined-ca-bundle.pem")],
 });
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
