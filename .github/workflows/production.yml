@@ -11,7 +11,7 @@ env:
   ECS_SERVICE: playholdr-backend                 
   ECS_CLUSTER: playholdr-backend                 
   ECS_TASK_DEFINITION: ecs-task-definition.json
-  CONTAINER_NAME: playholdr-backend
+  CONTAINER_NAME: playholdr_backend
 
 permissions:
   contents: read
@@ -44,7 +44,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
