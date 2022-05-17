@@ -6,7 +6,7 @@ on:
       - testing-actions-multiple-environments
 
 env:
-  AWS_REGION: us-east-1                  
+  AWS_REGION: us-east-2                  
   ECR_REPOSITORY: playholdr_backend          
   ECS_SERVICE: playholdr-backend                 
   ECS_CLUSTER: playholdr-backend                 
