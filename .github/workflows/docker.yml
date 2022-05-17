@@ -49,7 +49,7 @@ jobs:
           context: ./backend
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          platforms: linux/arm/v7
+          platforms: linux/arm/v7, 
           tags: maxiimillian/test:backend
           cache-from: type=local,src=/tmp/backend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/backend/.buildx-cache-new, mode=max
