@@ -1,4 +1,4 @@
-FROM arm32v7/node:16-buster
+FROM node:16
 
 ARG DB_PATH
 ARG BOARD_DB_PATH
