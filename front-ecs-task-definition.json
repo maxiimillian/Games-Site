@@ -48,7 +48,7 @@
             "dockerLabels": null,
             "systemControls": null,
             "privileged": null,
-            "name": "playholdr_backend"
+            "name": "playholdr_frontend"
         }
     ],
     "memory": "1024",
