@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Deploy Backend to Amazon ECS
 
 on:
   push:
@@ -53,7 +53,7 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg PORT=$PORT --build-arg ALLOWED_URL=$ALLOWED_URL  ./backend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        
+
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
