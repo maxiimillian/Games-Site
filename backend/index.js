@@ -11,7 +11,7 @@ mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
   ssl: true,
   sslValidate: false,
-  sslCA: fs.readFileSync('./rds-combined-ca-bundle.pem')
+  sslCA: './rds-combined-ca-bundle.pem',
 });
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
