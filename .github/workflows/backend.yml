@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY: playholdr_backend          
   ECS_SERVICE: playholdr-backend                 
   ECS_CLUSTER: playholdr-backend                 
-  ECS_TASK_DEFINITION: ecs-task-definition.json
+  ECS_TASK_DEFINITION: ./backend/ecs-task-definition.json
   CONTAINER_NAME: playholdr_backend
   DB_PATH: ${{ secrets.DB_PATH }}
   BOARD_DB_PATH: ${{secrets.BOARD_DB_PATH}}

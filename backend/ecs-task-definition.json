@@ -11,7 +11,7 @@
                     "awslogs-group": "playholdr-logs",
                     "awslogs-region": "us-east-2",
                     "awslogs-create-group": "true",
-                    "awslogs-stream-prefix": "playholdr"
+                    "awslogs-stream-prefix": "playholdr-frontend"
                 }
             },
             "entryPoint": null,
@@ -31,7 +31,7 @@
             "memoryReservation": null,
             "volumesFrom": [],
             "stopTimeout": null,
-            "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_backend",
+            "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_frontend",
             "startTimeout": null,
             "firelensConfiguration": null,
             "dependsOn": null,
@@ -48,7 +48,7 @@
             "dockerLabels": null,
             "systemControls": null,
             "privileged": null,
-            "name": "playholdr_backend"
+            "name": "playholdr_frontend"
         }
     ],
     "memory": "1024",
