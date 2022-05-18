@@ -41,6 +41,9 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: List files
+      run: ls -R
+
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
