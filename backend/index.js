@@ -1,5 +1,4 @@
-import fs
-
+const fs = require("fs");
 const path = require('path');
 const connection = require("./connection")
 const mongoose = require('mongoose');
