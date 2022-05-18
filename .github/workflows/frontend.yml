@@ -7,16 +7,13 @@ on:
 
 env:
   AWS_REGION: us-east-2                  
-  ECR_REPOSITORY: playholdr_backend          
-  ECS_SERVICE: playholdr-backend                 
+  ECR_REPOSITORY: playholdr_frontend          
+  ECS_SERVICE: playholdr-frontend                
   ECS_CLUSTER: playholdr-backend                 
   ECS_TASK_DEFINITION: ecs-task-definition.json
-  CONTAINER_NAME: playholdr_backend
-  DB_PATH: ${{ secrets.DB_PATH }}
-  BOARD_DB_PATH: ${{secrets.BOARD_DB_PATH}}
-  ALLOWED_URL: ${{ secrets.ALLOWED_URL }}
-  PORT: 3001
-  
+  CONTAINER_NAME: playholdr_frontend
+  REACT_APP_API_URL: ${{ secrets.API_URL }}
+
 permissions:
   contents: read
 
@@ -50,7 +47,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg PORT=$PORT --build-arg ALLOWED_URL=$ALLOWED_URL  ./backend/
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg REACT_APP_API_URL=$REACT_APP_API_URL ./frontend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
