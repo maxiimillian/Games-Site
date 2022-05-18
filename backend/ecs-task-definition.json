@@ -48,12 +48,12 @@
             "dockerLabels": null,
             "systemControls": null,
             "privileged": null,
-            "name": "playholdr_frontend"
+            "name": "playholdr_backend"
         }
     ],
     "memory": "1024",
     "taskRoleArn": null,
-    "family": "playholdr-backend",
+    "family": "playholdr-frontend",
     "pidMode": null,
     "requiresCompatibilities": [
         "FARGATE"

@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY: playholdr_frontend          
   ECS_SERVICE: playholdr-frontend                
   ECS_CLUSTER: playholdr-backend                 
-  ECS_TASK_DEFINITION: ./frontend/ecs-task-definition.json
+  ECS_TASK_DEFINITION: /frontend/ecs-task-definition.json
   CONTAINER_NAME: playholdr_frontend
   REACT_APP_API_URL: ${{ secrets.API_URL }}
 
