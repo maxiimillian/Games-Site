@@ -55,9 +55,9 @@ jobs:
           cache-to: type=local,dest=/tmp/backend/.buildx-cache-new, mode=max
           build-args: |
             ENV=DEV
-            DB_PATH=${{ secrets.DB_PATH }}
+            DB_PATH=${{ secrets.TESTING_DB_PATH }}
             BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH }}
-            ALLOWED_URL=${{ secrets.ALLOWED_URL }}
+            ALLOWED_URL=${{ secrets.TESTING_ALLOWED_URL }}
             PORT=3001
             
       - name: Run Build Frontend
@@ -72,7 +72,7 @@ jobs:
           cache-from: type=local,src=/tmp/frontend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/frontend/.buildx-cache-new, mode=max
           build-args: |
-            REACT_APP_API_URL=${{ secrets.API_URL }}
+            REACT_APP_API_URL=${{ secrets.TESTING_API_URL }}
             
       - name: Move cache
         run: |
