@@ -324,6 +324,11 @@ function Sudoku(props) {
     if (waiting) {
         return (
             <div className="board-top-container">
+                <Helmet>
+                    <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
+                    <meta property="og:site_name" content="Playholdr" />
+                    <meta property="og:description" content="Click the link to join" />
+                </Helmet>
                 <Sidebar />
                 <Waiting code={room_code} options={options} player_total={playerTotal} player_count={playerCount} />
             </div>
