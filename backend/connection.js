@@ -139,16 +139,29 @@ module.exports = function(io, app) {
 
 	app.get("/sudoku/details/:code", (req, res) => {
 		let code = req.params["code"];
-		let details = {"time": null, "players": null, "difficulty": null}
+		let details = {"time": null, "players": null, "difficulty": null, "host": null}
 
 		let board = boards[code];
-
+		console.log("getting details");
 		if (board) {
 			details["time"] = board.time;
 			details["players"] = board.max_player_count;
 			details["difficulty"] = board.difficulty;
 
-			res.status(200).json({success:true, details: details})
+			console.log(details);
+
+			get_user_information(board.host, (err, user) => {
+				if (err) {
+					details["host"] = "Unknown";
+				} else {
+					details["host"] = user.username;
+				}
+				console.log(details);
+				res.status(200).json({success:true, details: details})
+			})
+			
+
+			
 		} else {
 			res.status(400).json({success:false, message: "Game not found"});
 		}

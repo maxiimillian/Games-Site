@@ -1,5 +1,4 @@
-COPY install.sh install.sh
-RUN chmod u+x install.sh && ./install.sh
+FROM node:16
 
 ARG DB_PATH
 ARG BOARD_DB_PATH

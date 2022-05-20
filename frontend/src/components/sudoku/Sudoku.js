@@ -1,4 +1,5 @@
 import { React, useState, useEffect, useContext } from "react";
+import {Helmet} from "react-helmet";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
 
@@ -33,7 +34,7 @@ function Sudoku(props) {
     const [room_code, setRoomCode] = useState(useParams().room_code);
     const [playerCount, setPlayerCount] = useState(0);
     const [playerTotal, setPlayerTotal] = useState(0);
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState({"players": null, "time": null, "host": null, "difficulty": null});
     const [socket, setSocket] = useState(null);
 
     
@@ -69,22 +70,20 @@ function Sudoku(props) {
     }, [opponentScore, total])
 
     async function getDetails(code) {
+        console.log("getting details?")
         let detailsList = [];
 
         await fetch(`${process.env.REACT_APP_API_URL}/sudoku/details/${code}`)
         .then(response => response.json())
         .then(response => {
+            console.log("RESPOND => ", response);
             if (response.details == undefined) {
                 return;
             }
             let details = response.details;
-                
-            detailsList.push(`Player Count: ${details.players} players`)
-            detailsList.push(`Time: ${details.time} minutes`)
-            detailsList.push(`Difficulty: ${details.difficulty}`)
 
             setPlayerTotal(details.players);
-            setOptions(detailsList)
+            setOptions(details)
         });
         
     }
@@ -325,6 +324,11 @@ function Sudoku(props) {
     if (waiting) {
         return (
             <div className="board-top-container">
+                <Helmet>
+                    <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
+                    <meta property="og:site_name" content="Playholdr" />
+                    <meta property="og:description" content="Click the link to join" />
+                </Helmet>
                 <Sidebar />
                 <Waiting code={room_code} options={options} player_total={playerTotal} player_count={playerCount} />
             </div>
@@ -333,6 +337,11 @@ function Sudoku(props) {
 
     return (
         <div className="board-top-container">
+            <Helmet>
+                <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
+                <meta property="og:site_name" content="Playholdr" />
+                <meta property="og:description" content="Click the link to join" />
+            </Helmet>
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
             <div className="right-chat-container">
