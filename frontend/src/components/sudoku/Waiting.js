@@ -9,6 +9,17 @@ function Waiting(props) {
     const [wasClicked, setWasClicked] = useState(false);
     const [inviteInput, setInputFocus] = useFocus();
 
+    function formatOptions(details) {
+        console.log(props)
+        let optionsList = [];
+                
+        optionsList.push(`Player Count: ${details.players} players`)
+        optionsList.push(`Time: ${details.time} minutes`)
+        optionsList.push(`Difficulty: ${details.difficulty}`)
+
+        return optionsList;
+    }
+
     function generateOptionsList(options) {
         console.log("OPTIONS: ", props)
         return options.map(option => {
@@ -31,7 +42,7 @@ function Waiting(props) {
                     <span class="waiting-player-count">{props.player_count}/{props.player_total}</span>
                 </div>
                 <ul>
-                    {generateOptionsList(props.options)}
+                    {generateOptionsList(formatOptions(props.options))}
                 </ul>
                 <p>Send this link to a friend to start playing!</p>
                 <div class="input-container">
