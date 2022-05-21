@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends, faClipboard, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
@@ -11,9 +11,11 @@ import sidebarStyles from "../../styles/sidebar.module.scss";
 function Waiting(props) {
     const [wasClicked, setWasClicked] = useState(false);
     const [inviteInput, setInputFocus] = useFocus();
+    const [url, setUrl] = useState("");
 
-    const router = useRouter();
-    console.log(router.basePath, router.asPath);
+    useEffect(() => {
+        setUrl(`http://${window.location.hostname}:3000/sudoku/${props.code}`)
+    }, []);
 
     function formatOptions(details) {
         console.log(props)
@@ -52,7 +54,7 @@ function Waiting(props) {
                 </ul>
                 <p>Send this link to a friend to start playing!</p>
                 <div className={styles["input-container"]}>
-                    <input className={styles["invite-input"]} ref={inviteInput} value={`http://${window.location.hostname}:3000/sudoku/${props.code}`} readOnly></input>
+                    <input className={styles["invite-input"]} ref={inviteInput} value={url} readOnly></input>
                     <FontAwesomeIcon onClick={(e) => copyInput(e)} className="clipboard hover-pointer" size="2x" icon={wasClicked ? faClipboardCheck : faClipboard} fixedWidth/>
                 </div>
                 <div className={styles["cancel-container"]}>
