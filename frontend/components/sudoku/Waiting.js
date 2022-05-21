@@ -38,7 +38,7 @@ function Waiting(props) {
     function copyInput(e) {
         setWasClicked(true);
         setInputFocus();
-        activateClipboard(inviteInput.current.value);
+        activateClipboard(url);
     }
 
     return (
