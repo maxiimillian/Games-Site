@@ -11,6 +11,7 @@ import ControlButton from "../../components/common/ControlButton";
 import { soundContext } from "../../contexts/soundContext";
 
 import styles from "../../styles/chatbox.module.scss";
+import boardStyles from "../../styles/board.module.scss";
 
 const BOARD_DEFAULT_INDEX = "0404";
 
@@ -339,7 +340,7 @@ function Sudoku(props) {
 
     if (waiting) {
         return (
-            <div className={styles["board-top-container"]}>
+            <div className={boardStyles["board-top-container"]}>
                 {head}
                 <Sidebar />
                 <Waiting code={gameCode} options={options} player_total={playerTotal} player_count={playerCount} />
@@ -348,7 +349,7 @@ function Sudoku(props) {
     }
 
     return (
-        <div className="board-top-container">
+        <div className={boardStyles["board-top-container"]}>
             {head}
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>

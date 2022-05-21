@@ -33,3 +33,10 @@
 .waiting-player-count {
     color: $icon-colour;
 }
+
+.waiting-options {
+    list-style: circle;
+    color: $icon-colour;
+    padding: 0px 15px;
+    font-style: italic;
+}

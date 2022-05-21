@@ -8,7 +8,8 @@ import Chatbox from "../common/Chatbox";
 import ControlButton from "../common/ControlButton";
 import { soundContext } from "../../contexts/soundContext";
 
-import "../../styles/chatbox.module.scss";
+import styles from "../../styles/chatbox.module.scss";
+import boardStyles from "../../styles/board.module.scss";
 
 const BOARD_DEFAULT_INDEX = "0404";
 
@@ -51,6 +52,7 @@ function Sudoku(props) {
 
     useEffect(() => {
         if (waiting) {
+
             getDetails(room_code);
         }
     }, [waiting])
@@ -320,7 +322,7 @@ function Sudoku(props) {
 
     if (waiting) {
         return (
-            <div className={styles["board-top-container"]}>
+            <div className={boardStyles["board-top-container"]}>
                 <Helmet>
                     <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
                     <meta property="og:site_name" content="Playholdr" />
@@ -333,7 +335,7 @@ function Sudoku(props) {
     }
 
     return (
-        <div className={styles["board-top-container"]}>
+        <div className={boardStyles["board-top-container"]}>
             <Helmet>
                 <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
                 <meta property="og:site_name" content="Playholdr" />
@@ -361,7 +363,6 @@ function Sudoku(props) {
                             </input>
                             <input type="submit" style={{display: "none"}}></input>
                         </form>
-
                     </div>
                 </div>
             </div>

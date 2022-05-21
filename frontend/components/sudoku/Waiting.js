@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends, faClipboard, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
 import { activateClipboard, useFocus } from "../../util";
 import CancelButton from "../buttons/CancelButton";
 import styles from "../../styles/waiting.module.scss";
+import sidebarStyles from "../../styles/sidebar.module.scss";
+
 
 function Waiting(props) {
     const [wasClicked, setWasClicked] = useState(false);
     const [inviteInput, setInputFocus] = useFocus();
+
+    const router = useRouter();
+    console.log(router.basePath, router.asPath);
 
     function formatOptions(details) {
         console.log(props)
@@ -23,7 +29,7 @@ function Waiting(props) {
     function generateOptionsList(options) {
         console.log("OPTIONS: ", props)
         return options.map(option => {
-            return <li className={styles["waiting-option"]}>{option}</li>
+            return <li key={option} className={styles["waiting-option"]}>{option}</li>
         })
     }
 
@@ -34,20 +40,20 @@ function Waiting(props) {
     }
 
     return (
-        <div className={`${styles["box"]} ${styles["waiting-container"]}`}>
+        <div className={`box ${styles["waiting-container"]}`}>
             <div className={styles["waiting-subcontainer"]}>
                 <div className={styles["waiting-header"]}>
                     <h1>{props.code}</h1>
-                    <FontAwesomeIcon className={styles["left-option-icon"]} icon={faUserFriends} fixedWidth/>
+                    <FontAwesomeIcon className={sidebarStyles["left-option-icon"]} icon={faUserFriends} fixedWidth/>
                     <span className={styles["waiting-player-count"]}>{props.player_count}/{props.player_total}</span>
                 </div>
-                <ul>
+                <ul className={styles["waiting-options"]}>
                     {generateOptionsList(formatOptions(props.options))}
                 </ul>
                 <p>Send this link to a friend to start playing!</p>
                 <div className={styles["input-container"]}>
-                    <input className={styles["invite-input"]} ref={inviteInput} value={`https://playholdr.com/sudoku/${props.code}`} readonly></input>
-                    <FontAwesomeIcon onClick={(e) => copyInput(e)} className={styles["clipboard hover-pointer"]} size="2x" icon={wasClicked ? faClipboardCheck : faClipboard} fixedWidth/>
+                    <input className={styles["invite-input"]} ref={inviteInput} value={`http://${window.location.hostname}:3000/sudoku/${props.code}`} readOnly></input>
+                    <FontAwesomeIcon onClick={(e) => copyInput(e)} className="clipboard hover-pointer" size="2x" icon={wasClicked ? faClipboardCheck : faClipboard} fixedWidth/>
                 </div>
                 <div className={styles["cancel-container"]}>
                     <CancelButton />

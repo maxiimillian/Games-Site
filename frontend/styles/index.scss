@@ -123,22 +123,6 @@ ul {
     border-radius: 3px;
 }
 
-.board-top-container {
-    display: grid;
-    grid-template: "sidebar sudoku chatbox";
-    grid-template-columns: 20% 55% 25%;
-    height: 100%;
-    margin: 0px 10px;
-    border-radius: 15px;
-    position: relative;
-    width: 100%;
-
-    @media screen and (max-width: $small) {
-        grid-template: "sudoku";
-        grid-template-columns: 95%;
-    }
-}
-
 tr {
     border: $board-border solid thin;
     text-align: center;
