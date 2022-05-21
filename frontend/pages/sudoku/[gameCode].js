@@ -64,7 +64,8 @@ function Sudoku(props) {
 
     const router = useRouter();
     const { gameCode } = router.query;
-    const gameDetails = props.gameDetails;
+    console.log(props.gameDetails)
+    const gameDetails = props.gameDetails.details;
 
     let scoreText;
 
