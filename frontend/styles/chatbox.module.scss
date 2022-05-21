@@ -1,0 +1,86 @@
+@import './variables.scss';
+
+.chat-top-container {
+    grid-area: chatbox;
+    display: flex; 
+    flex-direction: column;
+    background: #0f0f0f; 
+    border-radius: 15px;
+}
+
+.opponent-container {
+    padding: 20px;
+    background: #212121;
+    border-radius: 3px 3px 0px 0px;
+    border-bottom: #303030 solid 1px;
+    display: flex;
+    color: white;
+    justify-content: space-between;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat-input {
+    background: #212121;
+    outline: none;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 0px 0px 3px 3px;
+    border-top: #303030 solid 1px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.messages-container {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+    height: 600px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    word-wrap: anywhere;
+}
+
+.message-item {
+    padding: 5px 0px;
+    word-break: break-all;
+}
+
+.message-container {
+    display: block;
+}
+
+.message-author-container {
+    display: flex;
+}
+
+.chat-user {
+    color:rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    padding-right:5px;
+}
+
+.name {
+    font-size: 1.4em;
+}
+
+.message {
+    color: white;
+}
+
+.opponent-score-text {
+    color: $board-base-index;
+    font-size: 1.3em;
+}
+  
+.opponent-score {
+    color: $board-base-index;
+    font-size: 1.1em;
+    margin-left: 10px;
+    color: $yellow-colour;
+}

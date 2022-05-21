@@ -1,0 +1,125 @@
+@import './variables.scss';
+
+.hover-pointer {
+    cursor: pointer;
+}
+
+.control-button {
+    padding: 20px;
+    border: None;
+    color: black;
+    border-radius: $border-radius;;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 20px;
+    background: $control-buttons;
+    width: 100%;
+
+    @media screen and (max-width: $small) {
+        width: 100%;
+
+    }
+}
+
+.clipboard {
+    color: $primary-color;
+    background-color: $icon-colour;
+    padding: 5px;
+    border-radius: $border-radius;
+    box-sizing: border-box;
+}
+
+.on {
+    background: $control-buttons-on;
+}
+
+.off:hover {
+    background: $control-buttons-on;
+    cursor: pointer;
+}
+
+.number-button-container {
+    display: flex;
+    width: 58%;
+    justify-content: space-evenly;
+}
+
+.rematch-button {
+    padding: 20px;
+    width: 100%;
+    border-radius: $border-radius;;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    height: 70px;
+}
+
+.active {
+    
+	background: radial-gradient(closest-side, white, $icon-colour);
+	background-size: 400% 400%;
+	animation: active-button 5s ease infinite;
+
+}
+
+.active > .control-button-text {
+    animation: active-text 5s ease infinite;
+}
+
+.inactive {
+    background: $control-buttons;
+}
+
+.settings-button {
+    padding: 20px;
+    border-radius: $border-radius;
+    background-color: #7F9E75;
+    margin-bottom: 1em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.home-username {
+
+    margin: 0px 4.3em;
+    padding: 0px 20px;
+}
+
+.cancel-button {
+    border-radius: $border-radius;
+    background-color: $cancel-red;
+    color: $primary-color;
+    font-weight: 700;
+    width: 100%;
+    padding: 10px;
+}
+
+.cancel-button:hover {
+    background-color: $cancel-red-hover;
+}
+
+@keyframes active-text {
+    0% {
+		font-size: 1.1em;
+	}
+    25% {
+        font-size: 1em;
+    }
+	50% {
+		font-size: 1.3em;
+	}
+	100% {
+		font-size: 1.1em;
+	}
+}
+
+@keyframes active-button {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}

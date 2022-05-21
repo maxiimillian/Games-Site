@@ -72,7 +72,7 @@ jobs:
           cache-from: type=local,src=/tmp/frontend/.buildx-cache, mode=max
           cache-to: type=local,dest=/tmp/frontend/.buildx-cache-new, mode=max
           build-args: |
-            REACT_APP_API_URL=${{ secrets.TESTING_API_URL }}
+            NEXT_PUBLIC_API_URL=${{ secrets.TESTING_API_URL }}
             
       - name: Move cache
         run: |
