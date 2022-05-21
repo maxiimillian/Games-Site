@@ -1,4 +1,4 @@
-import "../styles/app.css";
+import "../styles/App.css";
 import "../styles/index.scss";
 import "../styles/buttons.scss";
 import "../styles/slider.scss";
