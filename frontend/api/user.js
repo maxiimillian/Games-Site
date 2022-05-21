@@ -1,6 +1,6 @@
 export async function getUser() {
     console.log("getting user...")
-    await fetch(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -22,7 +22,7 @@ export async function getUser() {
         }
     })
 
-    return await fetch(`${process.env.REACT_APP_API_URL}/auth/profile`, {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -44,7 +44,7 @@ export async function getUser() {
 }
 
 export async function register(username, password, email) {
-    return await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -67,7 +67,7 @@ export async function register(username, password, email) {
 }
 
 export async function login(user, password) {
-    return await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -91,7 +91,7 @@ export async function login(user, password) {
 }
 
 export async function logout(user, password) {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "DELETE",
         mode: "cors",
         headers: {

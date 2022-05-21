@@ -1,11 +1,6 @@
-
-
-
-import { useCallback, useEffect, useState, Suspense, lazy } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import useAuth from "../contexts/authContext";
-import { SoundProvider } from "../contexts/soundContext";
 
 import Home from "./main/Home";
 import Loading from "./common/Loading";
@@ -31,26 +26,23 @@ function Authenticated() {
     if (loading) return <Loading />
     
     return (
-        <SoundProvider>
-            <div className="top-container">
-                <div className="page-container">
 
-                    <div className="left-container">
-                        <div className="logo-container">
-                            <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
-                        </div>
-                    </div>
-                    <div className="center-container">
-                        {/* maybe put the Sign in/ username above the centr control thing */}
-                        <h1 className="site-title">Playholdr</h1>
-                        <Home />
-                    </div>
-                    <div className="right-container">
-                        
-                    </div>
-                    </div>
+
+        <div>
+            <div className="left-container">
+                <div className="logo-container">
+                    <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
                 </div>
-            </SoundProvider>
+            </div>
+            <div className="center-container">
+                {/* maybe put the Sign in/ username above the centr control thing */}
+                <h1 className="site-title">Playholdr</h1>
+                <Home />
+            </div>
+            <div className="right-container">
+                
+            </div>
+        </div>
 
     )
   }

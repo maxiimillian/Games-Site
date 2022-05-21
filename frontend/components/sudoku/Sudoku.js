@@ -70,7 +70,7 @@ function Sudoku(props) {
         console.log("getting details?")
         let detailsList = [];
 
-        await fetch(`${process.env.REACT_APP_API_URL}/sudoku/details/${code}`)
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${code}`)
         .then(response => response.json())
         .then(response => {
             console.log("RESPOND => ", response);
@@ -203,7 +203,7 @@ function Sudoku(props) {
 
 
     useEffect(() => {
-        let socket_conn = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
+        let socket_conn = io(`${process.env.NEXT_PUBLIC_API_URL}/sudoku`, {
             auth: {
                 token: localStorage.getItem("token")
             }
@@ -320,7 +320,7 @@ function Sudoku(props) {
 
     if (waiting) {
         return (
-            <div className="board-top-container">
+            <div className={styles["board-top-container"]}>
                 <Helmet>
                     <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
                     <meta property="og:site_name" content="Playholdr" />
@@ -333,7 +333,7 @@ function Sudoku(props) {
     }
 
     return (
-        <div className="board-top-container">
+        <div className={styles["board-top-container"]}>
             <Helmet>
                 <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
                 <meta property="og:site_name" content="Playholdr" />
@@ -341,13 +341,13 @@ function Sudoku(props) {
             </Helmet>
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
-            <div className="right-chat-container">
+            <div className={styles["right-chat-container"]}>
                 {scoreText}
-                <div className="chat-top-container">
+                <div className={styles["chat-top-container"]}>
                     <div class="opponent-container">
                         <div class="user-info">
                             <div class="user">
-                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className="opponent-score">{infoText}</span>
+                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className={styles["opponent-score"]}>{infoText}</span>
                             </div>
                         </div>
                     </div>

@@ -10,7 +10,26 @@ function Username(props) {
     }, [user])
     return (
         <div className={`main-user-info ${props.className}`}>
-            <h1>e</h1>
+            {showForm ? 
+                <div>
+                    <Blockpage handleClick={() => setShowForm(false)} />
+
+                    <Unauthenticated handleSubmit={(e) => console.log("e")}/>
+
+                </div>    
+                :
+                null
+            }
+            {user ? 
+                <div className="main-user-container">
+                    <img className="main-user-profile" src={user.img_url}></img>
+                    <h3 className="main-user-name">{user.user}</h3>
+                </div>
+                :
+                <div className="main-user-container">
+                    <h3 onClick={() => setShowForm(true)}>Sign In</h3>
+                </div>
+            }
         </div>
         )
 }
@@ -28,12 +47,12 @@ function Username(props) {
                 null
             }
             {user.user ? 
-                <div className="main-user-container">
-                    <img className="main-user-profile" src={user.img_url}></img>
-                    <h3 className="main-user-name">{user.user}</h3>
+                <div className={styles["main-user-container">"]} 
+                    <img className={styles["main-user-profile" src={user.img_url}></img>"]} 
+                    <h3 className={styles["main-user-name">{user.user}</h3>"]} 
                 </div>
                 :
-                <div className="main-user-container">
+                <div className={styles["main-user-container">"]} 
                     <h3 onClick={() => setShowForm(true)}>Sign In</h3>
                 </div>
             }

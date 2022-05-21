@@ -1,7 +1,7 @@
 import { React, useState, useEffect, useContext } from "react";
 import ControlButton from "../common/ControlButton";
 
-import "../../styles/board.module.scss"
+import styles from "../../styles/board.module.scss"
 
 const BOARD_DEFAULT = "0".repeat(81);
 const BOARD_DEFAULT_INDEX = [];
@@ -225,7 +225,7 @@ export default function Board(props) {
     function createHtmlBoard(board_str) {
         //console.log("creating html => ", board_str);
         return (
-            <div className={`board ${props.waiting ? "fade-out": null}`}>
+            <div className={`${styles["board"]} ${props.waiting ? styles["fade-out"]: null}`}>
                 {createRow(9)}
                 {createRow(18)}
                 {createRow(27)}
@@ -242,7 +242,7 @@ export default function Board(props) {
 
     function createRow(limit) {
         return (
-            <div class="row">
+            <div className={styles["row"]}>
             {board.map((cell, index) => {
                 //console.log(cell.value, index);
                 if (index >= limit-9 && index <= limit-1) {
@@ -254,12 +254,13 @@ export default function Board(props) {
                     let annotate_number = 0;
                     
                     return (
-                        <div key={index} onClick={handleCellClick} data-index={index} className={`cell ${highlighted} ${highlighted_adjacent} ${is_base} ${is_invalid}`}>
+                        <div key={index} onClick={handleCellClick} data-index={index} 
+                        className={`${styles["cell"]} ${styles[highlighted]} ${styles[highlighted_adjacent]} ${styles[is_base]} ${styles[is_invalid]}`}>
                             {cell.value == "0" ? "" : cell.value}
-                            <div class="cell-overlay">
+                            <div className={styles["cell-overlay"]}>
                                 {cell.annotations.map((annotation) => {
                                     annotate_number += 1;
-                                    return <div key={annotate_number} class="overlay-number">{annotation}</div>
+                                    return <div key={annotate_number} className={styles["overlay-number"]}>{annotation}</div>
                                 })}
                             </div>
                         </div>
@@ -280,10 +281,10 @@ export default function Board(props) {
     }
 
     return (
-            <div className="center-board-container">
-                <div className="board-container">
+            <div className={styles["center-board-container"]}>
+                <div className={styles["board-container"]}>
                     {createHtmlBoard(board)}
-                    <div className={`control-bar ${props.waiting ? "fade-out": null}`}>
+                    <div className={`${styles["control-bar"]} ${props.waiting ? styles["fade-out"]: null}`}>
                         {scoreText}   
                         <ControlButton handleClick={() => setAnnotate(!annotate)} name={"Annotate"} />
                         <ControlButton handleClick={() => props.handleReset()} name={"Reset"} />

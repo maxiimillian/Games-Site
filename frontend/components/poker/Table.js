@@ -8,7 +8,7 @@ export default function Table(props) {
 
     useEffect(()=> {
         
-        let socket_return = io(`${process.env.REACT_APP_API_URL}/poker`, {
+        let socket_return = io(`${process.env.NEXT_PUBLIC_API_URL}/poker`, {
             auth: {
                 token: localStorage.getItem("token")
             }

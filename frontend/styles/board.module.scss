@@ -53,22 +53,6 @@ $overlay-colour: #c6f0bd;
     cursor: pointer;
 }
 
-.board-top-container {
-    display: grid;
-    grid-template: "sidebar sudoku chatbox";
-    grid-template-columns: 20% 55% 25%;
-    height: 100%;
-    margin: 0px 10px;
-    border-radius: 15px;
-    position: relative;
-    width: 100%;
-
-    @media screen and (max-width: $small) {
-        grid-template: "sudoku";
-        grid-template-columns: 95%;
-    }
-}
-
 .center-board-container {
     display: flex;
     justify-content: space-around;
@@ -118,18 +102,6 @@ $overlay-colour: #c6f0bd;
 .start-number {
     color: $board-base-index;
     font-weight: 500;
-}
-
-.opponent-score-text {
-    color: $board-base-index;
-    font-size: 1.3em;
-}
-  
-.opponent-score {
-    color: $board-base-index;
-    font-size: 1.1em;
-    margin-left: 10px;
-    color: $yellow-colour;
 }
 
 .win {

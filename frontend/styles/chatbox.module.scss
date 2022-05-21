@@ -13,6 +13,9 @@
     background: #212121;
     border-radius: 3px 3px 0px 0px;
     border-bottom: #303030 solid 1px;
+    display: flex;
+    color: white;
+    justify-content: space-between;
 }
 
 .chat-container {
@@ -68,4 +71,16 @@
 
 .message {
     color: white;
+}
+
+.opponent-score-text {
+    color: $board-base-index;
+    font-size: 1.3em;
+}
+  
+.opponent-score {
+    color: $board-base-index;
+    font-size: 1.1em;
+    margin-left: 10px;
+    color: $yellow-colour;
 }

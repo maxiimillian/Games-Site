@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from 'next/router'
 
-import "../../styles/gamecreator.module.scss";
+import styles from "../../styles/gamecreator.module.scss";
 
 function CreationForm(props) {
     const [time, setTime] = useState(5);
@@ -22,7 +22,7 @@ function CreationForm(props) {
             "auth": localStorage.getItem("token"),
         }
         
-        fetch(`${process.env.REACT_APP_API_URL}/sudoku/create`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -38,13 +38,13 @@ function CreationForm(props) {
 
     return (
         <div>
-            <section className="create-container" id="game-menu">
-                <form className="create-form" onSubmit={(e) => createGame(e)}>
-                    <div className="create-form-header">
+            <section className={styles["create-container"]} id="game-menu">
+                <form className={styles["create-form"]} onSubmit={(e) => createGame(e)}>
+                    <div className={styles["create-form-header"]}>
                         <h1>Game Settings</h1>
                     </div>
 
-                    <div className="create-form-center">
+                    <div className={styles["create-form-center"]}>
                         <label htmlFor="difficulty">Difficulty:</label>
                         <select name="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
                             <option value="easy">Easy</option>
@@ -54,15 +54,15 @@ function CreationForm(props) {
                             <option value="test">Test</option>
                         </select>
                     </div>
-                    <div className="create-form-center create-form-column">
+                    <div className={`${styles["create-form-center"]} ${styles["create-form-column"]}`}>
                         <label htmlFor="time">Time: <b>{time}</b></label>
                         <input type="range" name="time" value={time} min="1" max="30" onChange={(e) => setTime(e.target.value)}></input>
                     </div>
-                    <div className="create-form-center create-form-column">
+                    <div className={`${styles["create-form-center"]} ${styles["create-form-column"]}`}>
                         <label htmlFor="players">Players: <b>{players}</b></label>
                         <input type="range" name="players" value={players} min="1" max="4" onChange={(e) => setPlayers(e.target.value)}></input>
                     </div>
-                    <button type="submit" className="create-form-submit">Create Game</button>
+                    <button type="submit" className={styles["create-form-submit"]}>Create Game</button>
                 </form>
             </section>
         </div>
@@ -71,11 +71,11 @@ function CreationForm(props) {
 
 export default CreationForm;
 
-/* <div className="block-container">
-                <div className="create-container">
+/* <div className={styles["block-container"]}>
+                <div className={styles["create-container"]}>
                     <div style={{dispaly: "flex", flexDirection: "column"}}>
                         <h2>Create Game</h2>
-                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className="create-selector">
+                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className={styles["create-selector"]}>
                             <option>Easy</option>
                             <option>Medium</option>
                             <option>Hard</option>

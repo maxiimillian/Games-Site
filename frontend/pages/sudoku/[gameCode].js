@@ -1,5 +1,7 @@
 import { React, useState, useEffect, useContext } from "react";
+import { useRouter } from 'next/router'
 import { io } from "socket.io-client";
+import Head from "next/head";
 
 import Sidebar from "../../components/main/Sidebar";
 import Board from "../../components/sudoku/Board";
@@ -8,7 +10,7 @@ import Chatbox from "../../components/common/Chatbox";
 import ControlButton from "../../components/common/ControlButton";
 import { soundContext } from "../../contexts/soundContext";
 
-import "../../styles/chatbox.module.scss";
+import styles from "../../styles/chatbox.module.scss";
 
 const BOARD_DEFAULT_INDEX = "0404";
 
@@ -17,6 +19,20 @@ class Cell {
         this.value = value;
         this.annotations = annotations;
     }
+}
+
+export async function getServerSideProps(context) {
+    console.log("calling this thing")
+    let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${context.query.gameCode}`);
+    let responseJson = await response.json();
+    console.log("BEFORE R: ", responseJson);
+
+    return {
+        props: {
+            gameDetails: responseJson,
+        }
+    }
+
 }
 
 function Sudoku(props) {
@@ -28,7 +44,6 @@ function Sudoku(props) {
     const [waiting, setWaiting] = useState(true);
     const [created, setCreated] = useState(false);
 
-    const [room_code, setRoomCode] = useState(useParams().room_code);
     const [playerCount, setPlayerCount] = useState(0);
     const [playerTotal, setPlayerTotal] = useState(0);
     const [options, setOptions] = useState({"players": null, "time": null, "host": null, "difficulty": null});
@@ -47,13 +62,17 @@ function Sudoku(props) {
 
     const sound = useContext(soundContext)
 
+    const router = useRouter();
+    const { gameCode } = router.query;
+    const gameDetails = props.gameDetails;
+
     let scoreText;
 
     useEffect(() => {
-        if (waiting) {
-            getDetails(room_code);
+        if (waiting && gameCode != undefined) {
+            getDetails(gameCode);
         }
-    }, [waiting])
+    }, [waiting, router.isReady])
 
     useEffect(() => {
         console.log(rematchStatus);
@@ -67,13 +86,11 @@ function Sudoku(props) {
     }, [opponentScore, total])
 
     async function getDetails(code) {
-        console.log("getting details?")
         let detailsList = [];
 
-        await fetch(`${process.env.REACT_APP_API_URL}/sudoku/details/${code}`)
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${code}`)
         .then(response => response.json())
         .then(response => {
-            console.log("RESPOND => ", response);
             if (response.details == undefined) {
                 return;
             }
@@ -96,14 +113,6 @@ function Sudoku(props) {
         }
         return board_create
     }
-
-    function useQuery() {
-        return new URLSearchParams(useLocation().search);
-    }
-
-    let query = useQuery();
-    let location = useLocation();
-    let history = useHistory();
 
     function createBoardJson(board_json) {
         var board_create = [];
@@ -203,19 +212,19 @@ function Sudoku(props) {
 
 
     useEffect(() => {
-        let socket_conn = io(`${process.env.REACT_APP_API_URL}/sudoku`, {
+        if (!gameCode) { //wait for gameCode to be ready
+            return;
+        }
+        let socket_conn = io(`${process.env.NEXT_PUBLIC_API_URL}/sudoku`, {
             auth: {
                 token: localStorage.getItem("token")
             }
         });
+
+        console.log(socket_conn, localStorage.getItem("token"));
     
         socket_conn.on("connect", () => {
-            if (query.get("create")) {
-                let difficulty = query.get("difficulty")
-                socket_conn.emit("create", difficulty)
-            } else {
-                socket_conn.emit("join", room_code);
-            }
+            socket_conn.emit("join", gameCode);
         })
     
 
@@ -224,7 +233,7 @@ function Sudoku(props) {
             setRoomCode(code)
             setWaiting(true)
             setCreated(true)
-            console.log(code, room_code);
+            console.log(code, gameCode);
         });
     
         socket_conn.on("joined", (userInformation, gameOptions) => {
@@ -294,7 +303,7 @@ function Sudoku(props) {
         return () => {
             socket_conn.disconnect();
         }
-    }, [rematch])
+    }, [rematch, router.isReady])
 
     if (result == "win") {
         scoreText = 
@@ -318,43 +327,44 @@ function Sudoku(props) {
         
     }
 
+    let head = (<Head>
+        <meta charSet="utf-8" />
+        <meta name="description" content={"Click the link to join"} />
+
+        <meta name="og:title" content={`Sudoku Challenge from ${gameDetails.host} - ${gameDetails.difficulty} difficulty`} />
+        <meta name="og:site_name" content={"Playholdr"} />
+        <meta name="og:description" content={"Click the link to join"} />
+    </Head>)
+
     if (waiting) {
         return (
-            <div className="board-top-container">
-                <Helmet>
-                    <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
-                    <meta property="og:site_name" content="Playholdr" />
-                    <meta property="og:description" content="Click the link to join" />
-                </Helmet>
+            <div className={styles["board-top-container"]}>
+                {head}
                 <Sidebar />
-                <Waiting code={room_code} options={options} player_total={playerTotal} player_count={playerCount} />
+                <Waiting code={gameCode} options={options} player_total={playerTotal} player_count={playerCount} />
             </div>
         )
     }
 
     return (
         <div className="board-top-container">
-            <Helmet>
-                <meta property="og:title" content={`Sudoku Challenge from ${options.host} - ${options.difficulty} difficulty`} />
-                <meta property="og:site_name" content="Playholdr" />
-                <meta property="og:description" content="Click the link to join" />
-            </Helmet>
+            {head}
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
-            <div className="right-chat-container">
+            <div className={styles["right-chat-container"]}>
                 {scoreText}
-                <div className="chat-top-container">
-                    <div class="opponent-container">
-                        <div class="user-info">
-                            <div class="user">
-                                <span class="name">{opponent == null ? "Guest" : opponent.username}</span><span className="opponent-score">{infoText}</span>
+                <div className={styles["chat-top-container"]}>
+                    <div className={styles["opponent-container"]}>
+                        <div className={styles["user-info"]}>
+                            <div className="user">
+                                <span className={styles["name"]}>{opponent == null ? "Guest" : opponent.username}</span><span className={styles["opponent-score"]}>{infoText}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="chat-container">
+                    <div className={styles["chat-container"]}>
                         <Chatbox messages={messages} />
                         <form onSubmit={(e) => handleChatSubmit(e)}>
-                            <input class="chat-input" 
+                            <input className={styles["chat-input"]} 
                                 onSubmit={(e) => handleChatSubmit(e)} 
                                 placeholder="Start typing here..." value={chatInput} 
                                 onChange={(e) => handleChatInput(e)}>

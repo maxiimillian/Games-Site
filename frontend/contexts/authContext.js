@@ -28,6 +28,10 @@ export function AuthProvider({children}) {
         setLoading(true);
         userApi.getUser()
         .then((user) => setUser(user.profile))
+        .then((response) => {
+            console.log("r: ", response);
+            return response;
+        })
         .catch((error) => setError(error))
         .finally(() => setLoading(false));
     }, []);

@@ -1,4 +1,4 @@
-import "../../styles/sidebar.module.scss";
+import styles from "../../styles/sidebar.module.scss";
 import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import SidebarOption from "./SidebarOption";
@@ -10,11 +10,11 @@ function Sidebar() {
             <div className="left-top-container">
                 <div className="left-container">
                     <div className="logo-container">
-                        <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
+                        <Link href="/"><Image src="/logo.png" className={styles["logo"]} width="30%" height="100%" alt="website icon" /></Link>
                     </div>
                 </div>
-                <div className="left-subcontainer">
-                    <div className="left-options-container">
+                <div className={styles["left-subcontainer"]}>
+                    <div className={styles["left-options-container"]}>
                             <SidebarOption title={"Play"} icon={faGamepad}/>
                             <SidebarOption title={"Profile"} icon={faIdBadge}/>
                             <SidebarOption title={"Settings"} icon={faCog}/>

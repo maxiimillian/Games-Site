@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends, faClipboard, faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
 import { activateClipboard, useFocus } from "../../util";
 import CancelButton from "../buttons/CancelButton";
-import "../../styles/waiting.module.scss";
+import styles from "../../styles/waiting.module.scss";
 
 function Waiting(props) {
     const [wasClicked, setWasClicked] = useState(false);
@@ -23,7 +23,7 @@ function Waiting(props) {
     function generateOptionsList(options) {
         console.log("OPTIONS: ", props)
         return options.map(option => {
-            return <li class="waiting-option">{option}</li>
+            return <li className={styles["waiting-option"]}>{option}</li>
         })
     }
 
@@ -34,22 +34,22 @@ function Waiting(props) {
     }
 
     return (
-        <div class="box waiting-container">
-            <div class="waiting-subcontainer">
-                <div class="waiting-header">
+        <div className={styles["box waiting-container"]}>
+            <div className={styles["waiting-subcontainer"]}>
+                <div className={styles["waiting-header"]}>
                     <h1>{props.code}</h1>
-                    <FontAwesomeIcon className="left-option-icon" icon={faUserFriends} fixedWidth/>
-                    <span class="waiting-player-count">{props.player_count}/{props.player_total}</span>
+                    <FontAwesomeIcon className={styles["left-option-icon"]} icon={faUserFriends} fixedWidth/>
+                    <span className={styles["waiting-player-count"]}>{props.player_count}/{props.player_total}</span>
                 </div>
                 <ul>
                     {generateOptionsList(formatOptions(props.options))}
                 </ul>
                 <p>Send this link to a friend to start playing!</p>
-                <div class="input-container">
-                    <input className="invite-input" ref={inviteInput} value={`https://playholdr.com/sudoku/${props.code}`} readonly></input>
-                    <FontAwesomeIcon onClick={(e) => copyInput(e)} className="clipboard hover-pointer" size="2x" icon={wasClicked ? faClipboardCheck : faClipboard} fixedWidth/>
+                <div className={styles["input-container"]}>
+                    <input className={styles["invite-input"]} ref={inviteInput} value={`https://playholdr.com/sudoku/${props.code}`} readonly></input>
+                    <FontAwesomeIcon onClick={(e) => copyInput(e)} className={styles["clipboard hover-pointer"]} size="2x" icon={wasClicked ? faClipboardCheck : faClipboard} fixedWidth/>
                 </div>
-                <div class="cancel-container">
+                <div className={styles["cancel-container"]}>
                     <CancelButton />
                 </div>
             </div>

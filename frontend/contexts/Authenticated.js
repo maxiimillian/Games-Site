@@ -49,7 +49,7 @@ function Authenticated() {
 
 
     async function getToken() {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -72,7 +72,7 @@ function Authenticated() {
     };
 
     async function getData(callback) {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/profile`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
             method: "POST",
             mode: "cors",
             headers: {

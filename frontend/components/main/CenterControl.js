@@ -55,27 +55,27 @@ function CenterControl(props) {
                 <div className={styles["options-container"]}>
                     
                         <section onClick={() => changeOption("sudoku")} className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Sudoku</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Poker</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
-                            <Image src="/sudoku_board.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/sudoku_board.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Crossword</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Tic-Tac-Toe</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Blackjack</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="40" width="40" alt="sudoku board" />
+                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Clue</span>
                         </section>
                 </div>

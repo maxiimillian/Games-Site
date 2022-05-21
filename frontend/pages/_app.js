@@ -1,19 +1,25 @@
-import "../src/styles/index.scss";
-import "../src/styles/buttons.scss";
+import "../styles/app.css";
+import "../styles/index.scss";
+import "../styles/buttons.scss";
+import "../styles/slider.scss";
 import React from 'react';
 
-import Authenticated from "../components/Authenticated.js";
-
+import { SoundProvider } from "../contexts/soundContext";
 import useAuth, { AuthProvider } from "../contexts/authContext";
 
-function App() {
-  const {user, loading, error} = useAuth();
+function baseApp({ Component, pageProps }) {
   
   return (
-    <AuthProvider>
-        <Authenticated />
-    </AuthProvider>
+    <SoundProvider>
+      <AuthProvider>
+        <div className="top-container">                 
+          <div className="page-container">
+            <Component {...pageProps} />
+          </div>
+        </div>
+      </AuthProvider>
+    </SoundProvider>
   )
 }
 
-export default App;
+export default baseApp;
