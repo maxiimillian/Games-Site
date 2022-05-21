@@ -34,7 +34,7 @@ function Waiting(props) {
     }
 
     return (
-        <div className={styles["box waiting-container"]}>
+        <div className={`${styles["box"]} ${styles["waiting-container"]}`}>
             <div className={styles["waiting-subcontainer"]}>
                 <div className={styles["waiting-header"]}>
                     <h1>{props.code}</h1>
