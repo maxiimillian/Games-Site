@@ -1,0 +1,159 @@
+@import "./variables.scss";
+
+@font-face {
+    font-family: "UniSansRegular";
+    src: local("UniSansRegular", url(../fonts/UniSansRegular.otf), format("otf"));
+  }
+  
+
+* {
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html {
+    height: 100%;
+    background-image: url("../public/carbon.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body {
+    background: $background; 
+    height: 100%;
+    margin: 0;
+}
+
+h1 {
+    color: $primary-color;
+}
+
+select {
+    background-color: #3E4C41;
+    border: none;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+h3, h3 > a {
+    color: rgb(170, 168, 168);
+    font-size: 2em;
+    font-weight: 600;
+    padding: 10px 0px;
+    margin: 0px;
+}
+  
+h3:hover, h3 > a:hover {
+    color: white;
+    cursor: pointer;
+}
+
+p {
+    color: $text-primary;
+    opacity: 0.7;
+}
+
+input {
+    border: none;
+    border-radius: $border-radius;
+    padding: 5px;
+    background-color: rgb(18, 18, 18);
+    color: $text-primary;
+}
+
+ul {
+    list-style: circle;
+    color: $icon-colour;
+    padding: 0px 15px;
+    font-style: italic;
+}
+
+.site-title {
+    align-self: center;
+    color: $primary-color;
+    font-size: 3em;
+    margin: 0;
+}
+
+.page-container {
+    height: 90%;
+    padding: 20px;
+    display: flex;
+
+    @media screen and (max-width: $small) {
+        padding: 5px;
+    }
+  }
+
+
+.box {
+    background-color: $surface-solid;
+    padding: 20px;
+}
+
+.logo {
+    vertical-align: middle;
+}
+
+.logo-container {
+    display: flex;
+}
+
+.left-container {
+    flex: 1 1 20%;
+    border-radius: 15px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.left-top-container {
+    grid-area: sidebar;
+
+    @media screen and (max-width: $small) {
+        display: none;
+    }
+}
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    flex: 4 7 60%;
+    height: 100%;
+    width: 100%;
+    border-radius: 15px;
+    position: relative;
+}
+
+.right-container {
+    flex: 1 1 20%;
+    margin: 0px 10px;
+    border-radius: 3px;
+}
+
+tr {
+    border: $board-border solid thin;
+    text-align: center;
+    padding: 0;
+    color: $board-number;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+  
+td {
+    border: $board-border solid thin;
+    height: 1.5em;
+    width: 1.4em;
+    text-align: center;
+    padding: 0;
+    color: $board-number;
+    font-size: 1.8em;
+    font-weight: 600;
+    position: relative;
+    background-clip: padding-box;
+}
+
+td:hover {
+    cursor: pointer;
+}

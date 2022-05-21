@@ -1,0 +1,28 @@
+import "../../styles/sidebar.module.scss";
+import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
+import SidebarOption from "./SidebarOption";
+import Image from "next/image";
+
+function Sidebar() {
+    
+    return (
+            <div className="left-top-container">
+                <div className="left-container">
+                    <div className="logo-container">
+                        <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
+                    </div>
+                </div>
+                <div className="left-subcontainer">
+                    <div className="left-options-container">
+                            <SidebarOption title={"Play"} icon={faGamepad}/>
+                            <SidebarOption title={"Profile"} icon={faIdBadge}/>
+                            <SidebarOption title={"Settings"} icon={faCog}/>
+                        </div>
+                </div>
+            </div>
+
+    )
+}
+
+export default Sidebar;
