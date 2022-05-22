@@ -7,6 +7,7 @@
             "environmentFiles": null,
             "logConfiguration": {
                 "logDriver": "awslogs",
+                "secretOptions": null,
                 "options": {
                     "awslogs-group": "playholdr-logs",
                     "awslogs-region": "us-east-2",
@@ -53,7 +54,7 @@
     ],
     "memory": "1024",
     "taskRoleArn": null,
-    "family": "playholdr-frontend",
+    "family": "playholdr_frontend",
     "pidMode": null,
     "requiresCompatibilities": [
         "FARGATE"
