@@ -11,7 +11,7 @@
                     "awslogs-group": "playholdr-logs",
                     "awslogs-region": "us-east-2",
                     "awslogs-create-group": "true",
-                    "awslogs-stream-prefix": "playholdr"
+                    "awslogs-stream-prefix": "playholdr-backend"
                 }
             },
             "entryPoint": null,
@@ -48,7 +48,7 @@
             "dockerLabels": null,
             "systemControls": null,
             "privileged": null,
-            "name": "playholdr_backend"
+            "name": "playholdr-backend"
         }
     ],
     "memory": "1024",
