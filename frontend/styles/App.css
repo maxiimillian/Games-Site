@@ -6,10 +6,6 @@ hr {
   border: solid rgba(255, 255, 255, 0.3) 1px;
 }
 
-body > * {
-  margin: 0 10px;
-}
-
 button {
   border: none;
   border-radius: 15px;
@@ -22,11 +18,6 @@ input {
 
 button:hover {
   cursor: pointer;
-}
-
-
-.top-container {
-  padding: 20px;
 }
 
 .off {

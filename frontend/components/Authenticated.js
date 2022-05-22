@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import useAuth from "../contexts/authContext";
+import React from "react";
 
 import Home from "./main/Home";
 import Loading from "./common/Loading";
@@ -28,7 +29,7 @@ function Authenticated() {
     return (
 
 
-        <div>
+        <React.Fragment>
             <div className="left-container">
                 <div className="logo-container">
                     <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
@@ -42,7 +43,7 @@ function Authenticated() {
             <div className="right-container">
                 
             </div>
-        </div>
+        </React.Fragment>
 
     )
   }

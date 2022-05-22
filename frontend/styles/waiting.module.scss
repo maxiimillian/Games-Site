@@ -3,11 +3,20 @@
 .waiting-container {
     margin: auto;
     width: 80%;
+
+    @media (min-width: $small) {
+        width: 100%;
+        margin: 0;
+    }
 }
 
 .waiting-subcontainer {
     margin: auto;
     width: 50%;
+
+    @media (min-width: $small) {
+        width: 100%;
+    }
 }
 
 .input-container {

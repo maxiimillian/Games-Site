@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 import styles from "../../styles/gameoption.module.scss";
+import sidebarStyles from "../../styles/sidebar.module.scss";
 
 
 import { faCog, faIdBadge, faGamepad } from '@fortawesome/free-solid-svg-icons'
@@ -55,7 +56,7 @@ function CenterControl(props) {
                 <div className={styles["options-container"]}>
                     
                         <section onClick={() => changeOption("sudoku")} className={styles["game-option"]}>
-                            <Image src="/poker.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
+                            <Image src="/sudoku_board.png" className={styles["game-icon"]} height="150" width="200" alt="sudoku board" />
                             <span className={styles["game-name"]}>Sudoku</span>
                         </section>
                         <section onClick={() => changeOption("poker")}  className={styles["game-option"]}>
@@ -79,7 +80,7 @@ function CenterControl(props) {
                             <span className={styles["game-name"]}>Clue</span>
                         </section>
                 </div>
-                <div className={styles["sidebar-container"]}>
+                <div className={sidebarStyles["sidebar-container"]}>
                     <ControlButtonIcon 
                         class_on={"settings-button on"} 
                         class_off={"settings-button off"}

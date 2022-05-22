@@ -13,9 +13,7 @@ function baseApp({ Component, pageProps }) {
     <SoundProvider>
       <AuthProvider>
         <div className="top-container">                 
-          <div className="page-container">
             <Component {...pageProps} />
-          </div>
         </div>
       </AuthProvider>
     </SoundProvider>
