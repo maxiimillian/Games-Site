@@ -1,0 +1,44 @@
+@import './variables.scss';
+
+.options-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.options-sidebar-container {
+    display: flex;
+    justify-content: center;
+}
+
+.game-option {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 0px 0px 40px 20px;
+    background: #212121;
+    align-items: center;
+    border-radius: $border-radius;
+    opacity: 0.8;
+    transition: ease-in-out 0.1s;
+}
+  
+.game-option:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+  
+.game-icon {
+    height: auto;
+    width: 100%;
+  
+}
+  
+.game-name {
+    padding: 5px;
+    font-size: 1.3em;
+    font-weight: 500;
+    color: $primary-color;
+}
+  

@@ -1,0 +1,75 @@
+a {
+  text-decoration: None;
+}
+
+hr {
+  border: solid rgba(255, 255, 255, 0.3) 1px;
+}
+
+button {
+  border: none;
+  border-radius: 15px;
+}
+
+input {
+  border: none;
+  border-radius: 15px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.off {
+  background-color: #457a5e;
+}
+
+.on {
+  background-color: #6ca888;
+}
+
+.right-sub-container {
+  padding: 10px;
+
+}
+
+.profile {
+  border-radius: 50%;
+  width: 30px;
+  align-self: center;
+  padding: 5px;
+}
+
+.user {
+  display: inline-block;
+}
+
+.name {
+  align-self: center;
+}
+
+.main-user {
+  display: flex;
+}
+.main-user-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-user-container {
+  display: flex;
+  padding: 5px;
+}
+
+.main-user-profile {
+  border-radius: 50%;
+  width: 40px;
+  align-self: center;
+  padding: 10px;
+}
+
+.settings {
+  color: rgba(255,255,255,0.7);
+  align-self: center;
+  padding: 0px 10px;
+}

@@ -1,0 +1,33 @@
+{
+    "family": "playholdr",
+    "executionRoleArn": "arn:aws:iam::598513850756:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "playholdr-backend",
+            "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_backend",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "playholdr-logs",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-create-group": "true",
+                    "awslogs-stream-prefix": "playholdr-backend"
+                }
+            },
+            "portMappings": [
+                {
+                    "containerPort": 3002,
+                    "hostPort": 3002,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "2048"
+}
