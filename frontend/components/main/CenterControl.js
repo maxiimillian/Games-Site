@@ -41,7 +41,7 @@ function CenterControl(props) {
         center = <Table />
     } else if (option == "sudoku") {
         center = (
-            <div>
+            <div className="form-block-container">
                 <Blockpage handleClick={() => changeOption("options")} />
                 <CreationForm />  
             </div>

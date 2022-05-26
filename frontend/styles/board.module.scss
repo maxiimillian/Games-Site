@@ -12,8 +12,9 @@ $overlay-colour: #c6f0bd;
     width: 100%;
 
     @media screen and (max-width: $small) {
-        grid-template: "sudoku";
-        grid-template-columns: 95%;
+        grid-template: "sudoku"
+                        "chatbox";
+        grid-template-columns: 100%;
     }
 }
 
@@ -23,7 +24,7 @@ $overlay-colour: #c6f0bd;
     background-color: #303030;
     width: 30vw;
     height: 30vw;
-    font-size: 1.6em;
+    font-size: 2em;
     border: solid black 3px;
     box-sizing: border-box;
 

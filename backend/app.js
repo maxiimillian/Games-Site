@@ -21,6 +21,10 @@ app.use('/auth', auth);
 app.use('/poker', poker);
 app.use("/sudoku", sudoku);
 
+app.get("/", (req, res) => {
+  res.status(200).json({success: true})
+});
+
 
 app.use((req, res, next) => {
     console.log("called2");

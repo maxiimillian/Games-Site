@@ -1,18 +1,18 @@
-name: Deploy Frontend to Amazon ECS
+name: Deploy frontend to Amazon ECS
 
 on:
   push:
     branches:
-      - frontend-test
+      - testing-actions-multiple-environments
 
 env:
   AWS_REGION: us-east-2                  
   ECR_REPOSITORY: playholdr_frontend          
   ECS_SERVICE: playholdr-frontend                
-  ECS_CLUSTER: playholdr-backend                 
+  ECS_CLUSTER: playholdr              
   ECS_TASK_DEFINITION: front-ecs-task-definition.json
-  CONTAINER_NAME: playholdr_frontend
-  REACT_APP_API_URL: ${{ secrets.API_URL }}
+  CONTAINER_NAME: playholdr-frontend
+  NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
 
 permissions:
   contents: read
@@ -47,7 +47,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg REACT_APP_API_URL=$REACT_APP_API_URL ./frontend/
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL ./frontend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
@@ -65,4 +65,5 @@ jobs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
+        force-new-deployment: true
         wait-for-service-stability: true

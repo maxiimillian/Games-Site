@@ -8,6 +8,7 @@ import Board from "../../components/sudoku/Board";
 import Waiting from "../../components/sudoku/Waiting";
 import Chatbox from "../../components/common/Chatbox";
 import ControlButton from "../../components/common/ControlButton";
+import Error from "../../components/common/Error";
 import { soundContext } from "../../contexts/soundContext";
 
 import styles from "../../styles/chatbox.module.scss";
@@ -23,10 +24,12 @@ class Cell {
 }
 
 export async function getServerSideProps(context) {
-    console.log("calling this thing")
     let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${context.query.gameCode}`);
     let responseJson = await response.json();
-    console.log("BEFORE R: ", responseJson);
+
+    if (responseJson == undefined) {
+        return;
+    }
 
     return {
         props: {
@@ -60,6 +63,7 @@ function Sudoku(props) {
 
     const [messages, setMessages] = useState([]);
     const [chatInput, setChatInput] = useState("");
+    const [error, setError] = useState("");
 
     const sound = useContext(soundContext)
 
@@ -69,6 +73,7 @@ function Sudoku(props) {
     const gameDetails = props.gameDetails.details;
 
     let scoreText;
+    let head;
 
     useEffect(() => {
         if (waiting && gameCode != undefined) {
@@ -297,7 +302,7 @@ function Sudoku(props) {
         });
     
         socket_conn.on("err", (message) => {
-            console.log("ERR: ", message);
+            setError(message);
         });
 
         setSocket(socket_conn);
@@ -306,7 +311,7 @@ function Sudoku(props) {
             socket_conn.disconnect();
         }
     }, [rematch, router.isReady])
-
+    
     if (result == "win") {
         scoreText = 
         <div style={{display:"flex", flexDirection: "column"}}>
@@ -329,14 +334,25 @@ function Sudoku(props) {
         
     }
 
-    let head = (<Head>
-        <meta charSet="utf-8" />
-        <meta name="description" content={"Click the link to join"} />
+    if (gameDetails) {
+        console.log("gd", gameDetails)
+        head = (<Head>
+            <meta charSet="utf-8" />
+            <meta name="description" content={"Click the link to join"} />
+    
+            <meta name="og:title" content={`Sudoku Challenge from ${gameDetails.host} - ${gameDetails.difficulty} difficulty`} />
+            <meta name="og:site_name" content={"Playholdr"} />
+            <meta name="og:description" content={"Click the link to join"} />
+        </Head>)
+    } else {
+        return (
+            <div className={boardStyles["board-top-container"]}>
+                <Sidebar />
+                <Error errorMessage={error} />
+            </div>      
+        )
+    }
 
-        <meta name="og:title" content={`Sudoku Challenge from ${gameDetails.host} - ${gameDetails.difficulty} difficulty`} />
-        <meta name="og:site_name" content={"Playholdr"} />
-        <meta name="og:description" content={"Click the link to join"} />
-    </Head>)
 
     if (waiting) {
         return (
@@ -353,7 +369,7 @@ function Sudoku(props) {
             {head}
             <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
-            <div className={styles["right-chat-container"]}>
+
                 {scoreText}
                 <div className={styles["chat-top-container"]}>
                     <div className={styles["opponent-container"]}>
@@ -376,7 +392,7 @@ function Sudoku(props) {
 
                     </div>
                 </div>
-            </div>
+
         </div>
     )
 }

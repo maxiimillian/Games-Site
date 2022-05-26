@@ -18,7 +18,7 @@ let server = app.listen(port, () => console.log('yoooo App listening on port ' +
 
 let io = require("socket.io")(server, {
   cors: {
-    origin: process.env.ALLOWED_URL,
+    origin: '*',
     methods: ["GET", "POST"]
   }
 });

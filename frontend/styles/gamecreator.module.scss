@@ -5,11 +5,15 @@
     width: 40%;
     left: 0;
     right: 0;
-    top: 25%;
+    top: 5%;
     margin: auto;
     position: absolute;
     color: #cacaca;
     z-index: 1;
+
+    @media screen and (max-width: $small) {
+        width: 100%;
+    }
 }
 
 .create-form {
