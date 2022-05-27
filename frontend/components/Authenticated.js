@@ -30,17 +30,17 @@ function Authenticated() {
 
 
         <React.Fragment>
-            <div className="left-container">
-                <div className="logo-container">
-                    <Link href="/"><Image src="/logo.png" className="logo" width="30%" height="100%" alt="website icon" /></Link>
+            <div className={styles["left-container"]}>
+                <div className={styles["logo-container"]}>
+                    <Link href="/"><Image src="/logo.png" className={styles["logo"]} width="30%" height="100%" alt="website icon" /></Link>
                 </div>
             </div>
-            <div className="center-container">
+            <div className={styles["center-container"]}>
                 {/* maybe put the Sign in/ username above the centr control thing */}
-                <h1 className="site-title">Playholdr</h1>
+                <h1 className={styles["site-title"]}>Playholdr</h1>
                 <Home />
             </div>
-            <div className="right-container">
+            <div className={styles["right-container"]}>
                 
             </div>
         </React.Fragment>

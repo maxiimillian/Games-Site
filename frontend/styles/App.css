@@ -6,11 +6,6 @@ hr {
   border: solid rgba(255, 255, 255, 0.3) 1px;
 }
 
-button {
-  border: none;
-  border-radius: 15px;
-}
-
 input {
   border: none;
   border-radius: 15px;
@@ -52,8 +47,9 @@ button:hover {
   display: flex;
 }
 .main-user-info {
-  display: flex;
-  justify-content: space-between;
+  width: 74%;
+  margin: auto;
+
 }
 
 .main-user-container {

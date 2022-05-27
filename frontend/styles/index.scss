@@ -22,12 +22,21 @@ h1 {
 }
 
 select {
+    -webkit-appearance: none;
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: top 50% right 10%;
     background-color: #3E4C41;
     border: none;
     color: white;
     padding: 5px;
     border-radius: 10px;
     font-weight: 700;
+}
+
+select, option {
+    cursor: pointer;
 }
 
 h3, h3 > a {
@@ -46,6 +55,10 @@ h3:hover, h3 > a:hover {
 p {
     color: $text-primary;
     opacity: 0.7;
+}
+
+label {
+    color: $form-color;
 }
 
 input {
@@ -70,10 +83,14 @@ input {
 .page-container {
     height: 90%;
     padding: 20px;
-    display: flex;
+    display: grid;
+    grid-template: "sidebar main right";
+    grid-template-columns: 20% 60% 20%;
 
     @media screen and (max-width: $small) {
         padding: 5px;
+        grid-template: "main";
+        grid-template-columns: 100%;
     }
   }
 
@@ -92,7 +109,7 @@ input {
 }
 
 .left-container {
-    flex: 1 1 20%;
+    grid-area: sidebar;
     border-radius: 15px;
     padding: 10px;
     display: flex;
@@ -108,9 +125,9 @@ input {
 }
 
 .center-container {
+    grid-area: main;
     display: flex;
     flex-direction: column;
-    flex: 4 7 60%;
     height: 100%;
     width: 100%;
     border-radius: 15px;
@@ -118,7 +135,7 @@ input {
 }
 
 .right-container {
-    flex: 1 1 20%;
+    grid-area: right;
     margin: 0px 10px;
     border-radius: 3px;
 }

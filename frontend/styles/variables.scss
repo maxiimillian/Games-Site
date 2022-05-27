@@ -1,10 +1,11 @@
 $small: 375px;
 
-$primary-color: #FFFF;
-$text-primary: rgba(255, 255, 255, 0.7);
 $background: rgba(18, 18, 18, 0.95);
 $icon-colour: #A8BD92;
 $yellow-colour: #cdce89;
+$green-box: #2C352E;
+
+$form-header-border: 1px solid #3E4C41;
 
 $box-shadow: 0px 0px 10px 0.2px black;
 
@@ -28,3 +29,14 @@ $control-buttons: #A8BD92;
 $control-buttons-on: #b9cfa1;
 
 $border-radius: 3px;
+
+/* Text Colors */
+$form-color: #cacaca;
+$primary-color: #FFFF;
+$text-primary: rgba(255, 255, 255, 0.7);
+
+/*Inputs*/
+$form-input-background: #C0D3C3;
+
+/* Buttons */
+$submit: #CAA472;

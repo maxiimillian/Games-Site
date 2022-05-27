@@ -1,5 +1,10 @@
 @import './variables.scss';
 
+button {
+    border: none;
+    border-radius: $border-radius;
+}
+
 .hover-pointer {
     cursor: pointer;
 }
@@ -95,6 +100,19 @@
 
 .cancel-button:hover {
     background-color: $cancel-red-hover;
+}
+
+.submit {
+    padding: 10px;
+    margin: 20px 0;
+    color: black;
+    font-weight: 500;
+    background-color: $submit;
+    font-size: 1.3em;
+}
+
+.submit:hover {
+
 }
 
 @keyframes active-text {

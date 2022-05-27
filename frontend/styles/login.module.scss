@@ -1,44 +1,39 @@
 @import './variables.scss';
 
 .login-form-container {
-    background: #8DAA91;
-    border-radius: 15px;
-    width: 40%;
+    background: $green-box;
+    border-radius: $border-radius;
     display: flex;
     flex-direction: column;
     position: absolute;
     z-index: 10;
-    margin: auto 25%;
-    padding: 20px;
     align-items: center;
+    width: 40%;
+    left: 0;
+    right: 0;
+    top: 5%;
+    margin: auto;
   }
 
-  
-  
+  .form-header-text {
+    color: white; 
+    font-size: 1.6em;
+    font-weight: 600;
+  }
+
+  .highlight {
+    color: $submit;
+    font-weight: 800;
+  }
+
   .login-form {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 70%;
   }
   
   .form-input {
-    padding: 10px;
-    margin: 20px 0;
-    border: #688D6F solid 3px;
-    background-color: #729779;
     color: white;
+    background-color: $form-input-background;
     font-size: 1.1em;
-  }
-  
-  .form-submit {
-    width: 50%;
-    padding: 10px;
-    margin: 20px 0;
-    color: white;
-    background-color: #9761a1;
-    font-size: 1.1em;
-  }
-  
-  .form-submit:hover {
-    background-color: #6a4770;
   }

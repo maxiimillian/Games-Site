@@ -1,4 +1,6 @@
 import useAuth from "../../contexts/authContext";
+import Blockpage from "../common/Blockpage";
+import Unauthenticated from "../Unauthenticated";
 import { useState, useEffect } from "react";
 
 function Username(props) {
