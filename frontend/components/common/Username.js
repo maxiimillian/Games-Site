@@ -6,6 +6,15 @@ import { useState, useEffect } from "react";
 function Username(props) {
     let {user, error} = useAuth();
     const [showForm, setShowForm] = useState(false);
+    const [username, setUsername] = useState(null);
+
+    useEffect(() => {
+        if (user) {
+            if (user.user) {
+                setUsername(user.user);
+            }
+        }
+    }, [user])
 
     useEffect(() => {
         console.log("UOOO", user);
@@ -22,7 +31,7 @@ function Username(props) {
                 :
                 null
             }
-            {user ? 
+            {username ? 
                 <div className="main-user-container">
                     <img className="main-user-profile" src={user.img_url}></img>
                     <h3 className="main-user-name">{user.user}</h3>
