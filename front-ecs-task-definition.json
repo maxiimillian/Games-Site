@@ -6,7 +6,6 @@
         {
             "name": "playholdr-frontend",
             "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_frontend",
-<<<<<<< HEAD
             "portMappings": [
                 {
                     "containerPort": 3000,
@@ -17,31 +16,6 @@
             "essential": true
         }
     ],
-=======
-            "startTimeout": null,
-            "firelensConfiguration": null,
-            "dependsOn": null,
-            "disableNetworking": null,
-            "interactive": null,
-            "healthCheck": null,
-            "essential": true,
-            "links": null,
-            "hostname": null,
-            "extraHosts": null,
-            "pseudoTerminal": null,
-            "user": null,
-            "readonlyRootFilesystem": null,
-            "dockerLabels": null,
-            "systemControls": null,
-            "privileged": null,
-            "name": "playholdr-frontend"
-        }
-    ],
-    "memory": "1024",
-    "taskRoleArn": null,
-    "family": "playholdr-frontend",
-    "pidMode": null,
->>>>>>> 26d0cd115df4bd327c0a20572e582f350f17257c
     "requiresCompatibilities": [
         "FARGATE"
     ],
