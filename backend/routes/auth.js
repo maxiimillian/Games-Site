@@ -48,8 +48,11 @@ router.post("/login", function(req, res) {
             res.status(400).json({success: false, message:"Invalid Authentication"});
         } else {
             getProfile(user.token, (err, profile) => {
-                console.log("here// ", profile, token);
-                res.status(200).json({success:true, profile: profile, token:user.token});
+                if (err) {
+                    res.status(400).json({success:false, message: "Something went wrong with profile"});
+                } else {
+                    res.status(200).json({success:true, profile: profile, token:user.token});
+                }
             })
         }
         res.end()
