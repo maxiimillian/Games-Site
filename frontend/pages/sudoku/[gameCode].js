@@ -271,7 +271,7 @@ function Sudoku(props) {
         });
     
         socket_conn.on("redirect", (data, new_code) => {
-            history.push(`/sudoku/${new_code}`);
+            router.push(`/sudoku/${new_code}`);
             setOpponentScore(0);
             setRematchStatus(false);
             setResult(null);
@@ -279,7 +279,6 @@ function Sudoku(props) {
             setBoardData(createBoard(data.board));
             setTotal(81-data.base.length);
             setInfoText(`${opponentScore} / ${total}`);
-            setRoomCode(new_code);
         });
     
         socket_conn.on("Filled square", (operation) => {
