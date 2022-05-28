@@ -323,7 +323,7 @@ module.exports = function(io, app) {
 							console.log("creating rematch")
 							let old_board = boards[old_room_code];
 
-							create_game(old_board.host, old_board.difficulty, 
+							create_game(old_board.host, old_board.difficulty, old_board.time, old_board.max_player_count,
 								(err, board, room_code) => {
 									if (err) {
 										socket.emit("err", "Something went wrong");

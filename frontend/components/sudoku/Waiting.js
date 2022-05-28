@@ -14,7 +14,7 @@ function Waiting(props) {
     const [url, setUrl] = useState("");
 
     useEffect(() => {
-        setUrl(`http://${window.location.hostname}:3000/sudoku/${props.code}`)
+        setUrl(`http://${window.location.hostname}/sudoku/${props.code}`)
     }, []);
 
     function formatOptions(details) {
