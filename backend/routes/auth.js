@@ -55,9 +55,10 @@ router.post("/login", function(req, res) {
                 } else {
                     res.status(200).json({success:true, profile: profile, token: token});
                 }
+                res.end();
             })
         }
-        res.end()
+        
     });
 });
 
