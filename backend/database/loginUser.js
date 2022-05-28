@@ -49,13 +49,13 @@ module.exports = async function loginUser(username, password, callback) {
                                 console.log(9);
                                 let information = {token: crypto.randomBytes(20).toString('hex'), user_id: user.user_id};
     
-                                TokenModel.create(information, (err, new_token) => {
+                                TokenModel.create(information, (err, _new_token) => {
     
                                     if (err) {
                                         throw err;
                                     }
                             
-                                    callback(null, new_token.token);
+                                    callback(null, information.token);
                                     return
                                 });
                             }
