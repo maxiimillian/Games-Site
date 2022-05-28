@@ -33,7 +33,6 @@ function Username(props) {
             }
             {username ? 
                 <div className="main-user-container">
-                    <img className="main-user-profile" src={user.img_url}></img>
                     <h3 className="main-user-name">{user.user}</h3>
                 </div>
                 :
