@@ -43,7 +43,7 @@ router.post("/login", function(req, res) {
         if (err) {
             console.log("LOGIN ERR: ", err);
             res.status(400).json({success: false, message:"failed"});
-        } else if (!user) {
+        } else if (!token) {
             console.log("here?");
             res.status(400).json({success: false, message:"Invalid Authentication"});
         } else {
