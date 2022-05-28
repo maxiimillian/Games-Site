@@ -39,7 +39,7 @@ router.post("/login", function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
-    loginUser(username, password, (err, user) => {
+    loginUser(username, password, (err, token) => {
         if (err) {
             console.log("LOGIN ERR: ", err);
             res.status(400).json({success: false, message:"failed"});
@@ -47,11 +47,11 @@ router.post("/login", function(req, res) {
             console.log("here?");
             res.status(400).json({success: false, message:"Invalid Authentication"});
         } else {
-            getProfile(user.token, (err, profile) => {
+            getProfile(token, (err, profile) => {
                 if (err) {
                     res.status(400).json({success:false, message: "Something went wrong with profile"});
                 } else {
-                    res.status(200).json({success:true, profile: profile, token:user.token});
+                    res.status(200).json({success:true, profile: profile, token:token});
                 }
             })
         }
