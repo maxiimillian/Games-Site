@@ -11,7 +11,7 @@ button {
 
 .control-button {
     padding: 20px;
-    border: None;
+    border: 2px solid transparent;
     color: black;
     border-radius: $border-radius;;
     font-size: 1.1em;
@@ -23,6 +23,7 @@ button {
     @media screen and (max-width: $small) {
         width: 100%;
         font-size: 1.6em;
+        margin-top: 10px;
     }
 }
 
@@ -35,18 +36,42 @@ button {
 }
 
 .on {
-    background: $control-buttons-on;
+    border: 2px solid $control-buttons-on;
 }
 
 .off:hover {
-    background: $control-buttons-on;
+    opacity: 1;
     cursor: pointer;
 }
 
+.off {
+    opacity: 0.9;
+}
+
+.number-buttons {
+    display: flex;
+}
+
 .number-button-container {
+    grid-area: numbers;
     display: flex;
     width: 58%;
     justify-content: space-evenly;
+}
+
+.number-button-container:hover {
+    cursor: pointer;
+}
+
+.number-button-container > span {
+    color: black;
+    background-color: $icon-colour;
+    height: fit-content;
+    padding: 5px;
+    font-size: 1.6em;
+    border-radius: $border-radius;
+    width: 60%;
+    text-align: center;
 }
 
 .rematch-button {

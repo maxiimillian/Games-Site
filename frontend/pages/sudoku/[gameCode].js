@@ -8,8 +8,10 @@ import Board from "../../components/sudoku/Board";
 import Waiting from "../../components/sudoku/Waiting";
 import Chatbox from "../../components/common/Chatbox";
 import ControlButton from "../../components/common/ControlButton";
+import NumberButton from "../../components/buttons/NumberButton";
 import Error from "../../components/common/Error";
 import { soundContext } from "../../contexts/soundContext";
+import { isAdjacent } from "../../components/sudoku/sudokuUtils";
 
 import styles from "../../styles/chatbox.module.scss";
 import boardStyles from "../../styles/board.module.scss";
@@ -160,8 +162,8 @@ function Sudoku(props) {
         }
 
     }
+
     function handleInput(value, index) {
-        console.log(baseIndex, index, baseIndex.includes(index), typeof index, typeof baseIndex[0]);
         if (baseIndex.includes(parseInt(index))) {
             return;
         }
@@ -169,19 +171,27 @@ function Sudoku(props) {
         newBoard[index].value = value;
         newBoard[index].annotations = [];
 
+        newBoard.map((cell, testIndex) => {
+            if (isAdjacent(index, testIndex, newBoard)) {
+                let conflictingAnnotationIndex = newBoard[testIndex].annotations.indexOf(value);
+                newBoard[testIndex].annotations.splice(conflictingAnnotationIndex, 1)
+            }
+        })
+
         socket.emit("move", index, value);
         setBoardData(newBoard);
     }
 
     function handleAnnotate(value, index) {
         let newBoard = boardData.slice();
-        let currentAnnotations = newBoard[index].annotations;
+        let currentAnnotations = newBoard[index].annotations.slice();
         newBoard[index].value = "0";
 
         if (currentAnnotations.includes(value)) {
+            console.log(value, currentAnnotations, currentAnnotations.indexOf(value))
             let currentIndex = currentAnnotations.indexOf(value);
             if (currentIndex > -1) {
-                currentAnnotations.splice(value, 1);
+                currentAnnotations.splice(currentIndex, 1);
             }
         } else {
             currentAnnotations.push(value);
@@ -208,6 +218,7 @@ function Sudoku(props) {
     function handleReset() {
         let newBoard = boardData.slice();
         newBoard.map((square, index) => {
+            newBoard[index].annotations = [];
             if (!baseIndex.includes(index)) {
                 square.value = "0";
                 socket.emit("move", index, square.value);

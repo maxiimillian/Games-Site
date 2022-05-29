@@ -2,6 +2,8 @@ import { React, useState, useEffect, useContext } from "react";
 import ControlButton from "../common/ControlButton";
 
 import styles from "../../styles/board.module.scss"
+import NumberButton from "../buttons/NumberButton";
+import { isAdjacent } from "./sudokuUtils";
 
 const BOARD_DEFAULT = "0".repeat(81);
 const BOARD_DEFAULT_INDEX = [];
@@ -43,7 +45,21 @@ export default function Board(props) {
         setBaseIndex(props.base);
     }, [props.base])
 
+    function createNumberButtons(numberSet) {
+        return numberSet.map((number) => {
+            return <NumberButton key={number} number={number} handleClick={handleInput} />
+        })
+    }
+
+    function sortLowToHigh(a, b) {
+        return a - b;
+    }
+
     function handleEventInput({key}) {
+        handleInput(key)
+    }
+ 
+    function handleInput(key) {
         if (
             ALLOWED_INPUTS.includes(parseInt(key)) 
             && !(baseIndex.includes(highlightIndex)) 
@@ -190,22 +206,9 @@ export default function Board(props) {
         return test[0] == highlight[0] && test[1] == highlight[1];
     }
 
-    function isAdjacent(index) {
-        if (highlightIndex < 0 || highlightIndex > 81 || highlightIndex == null) {
-            return false;
-        }
-        let row = searchSquare("y", index);
-        let col = searchSquare("x", index);
-        let box = isAdjacentBox(index);
-
-        ////console.log(row, col, box, index);
-        return row || col || box;
-    }
-
-
     function createCell(cell, index) {
         let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
-        let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
+        let highlighted_adjacent = isAdjacent(index, highlightIndex) ? "highlighted-adjacent" : "";
         let is_base = (baseIndex.includes(index.toString())) ? "base-number": "";
         let annotate_number = 0;
         
@@ -247,7 +250,7 @@ export default function Board(props) {
                 //console.log(cell.value, index);
                 if (index >= limit-9 && index <= limit-1) {
                     let highlighted = (index == highlightIndex) ? "highlighted-square" : "";
-                    let highlighted_adjacent = isAdjacent(index) ? "highlighted-adjacent" : "";
+                    let highlighted_adjacent = isAdjacent(index, highlightIndex, board) ? "highlighted-adjacent" : "";
                     let is_base = (baseIndex.includes(index)) ? "base-number": "";
                     let is_invalid = (invalidIndex.includes(index.toString())) ? "invalid-number": "";
 
@@ -258,7 +261,7 @@ export default function Board(props) {
                         className={`${styles["cell"]} ${styles[highlighted]} ${styles[highlighted_adjacent]} ${styles[is_base]} ${styles[is_invalid]}`}>
                             {cell.value == "0" ? "" : cell.value}
                             <div className={styles["cell-overlay"]}>
-                                {cell.annotations.map((annotation) => {
+                                {cell.annotations.slice().sort(sortLowToHigh).map((annotation) => {
                                     annotate_number += 1;
                                     return <div key={annotate_number} className={styles["overlay-number"]}>{annotation}</div>
                                 })}
@@ -284,6 +287,9 @@ export default function Board(props) {
             <div className={styles["center-board-container"]}>
                 <div className={styles["board-container"]}>
                     {createHtmlBoard(board)}
+                    <div className="number-buttons">
+                        {createNumberButtons(Array.from(new Array(9), (x, i) => i + 1))}
+                    </div>
                     <div className={`${styles["control-bar"]} ${props.waiting ? styles["fade-out"]: null}`}>
                         {scoreText}   
                         <ControlButton handleClick={() => setAnnotate(!annotate)} name={"Annotate"} />

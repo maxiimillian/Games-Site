@@ -25,9 +25,6 @@ $cancel-red-hover: #b55151;
 $light-mode-board: #0e0f0f;
 $light-mode-highlight: #DDE6EE;
 
-$control-buttons: #A8BD92;
-$control-buttons-on: #b9cfa1;
-
 $border-radius: 3px;
 
 /* Text Colors */
@@ -40,3 +37,5 @@ $form-input-background: #C0D3C3;
 
 /* Buttons */
 $submit: #CAA472;
+$control-buttons: $submit;
+$control-buttons-on: #b9cfa1;
