@@ -173,8 +173,11 @@ function Sudoku(props) {
 
         newBoard.map((cell, testIndex) => {
             if (isAdjacent(index, testIndex, newBoard)) {
-                let conflictingAnnotationIndex = newBoard[testIndex].annotations.indexOf(value);
-                newBoard[testIndex].annotations.splice(conflictingAnnotationIndex, 1)
+                if (newBoard[testIndex].annotations.includes(value)) {
+                    console.log("true...", testIndex, value);
+                    let conflictingAnnotationIndex = newBoard[testIndex].annotations.indexOf(value);
+                    newBoard[testIndex].annotations.splice(conflictingAnnotationIndex, 1);
+                }
             }
         })
 
