@@ -4,15 +4,17 @@ $overlay-colour: #c6f0bd;
 
 .board-top-container {
     display: grid;
-    grid-template: "sidebar sudoku chatbox";
+    grid-template: "sidebar board rematch" "sidebar board chatbox" "sidebar board chatbox";
     grid-template-columns: 20% 55% 25%;
+    grid-template-rows: 100px;
     height: 100%;
     border-radius: 15px;
     position: relative;
     width: 100%;
 
     @media screen and (max-width: $small) {
-        grid-template: "sudoku"
+        grid-template:  "rematch"
+                        "sudoku"
                         "chatbox";
         grid-template-columns: 100%;
     }
@@ -85,6 +87,7 @@ $overlay-colour: #c6f0bd;
     display: grid;
     grid-template: "board buttons" "numbers null";
     font-size: calc(0.6vw + 10px);
+    row-gap: 1vw;
 
     @media screen and (max-width: $small) {
         row-gap: 1em;
@@ -105,6 +108,10 @@ $overlay-colour: #c6f0bd;
   
 .fade-out {
     opacity: 0.4;
+}
+
+.rematch-container {
+    grid-area: rematch;
 }
   
 .control-bar {
@@ -157,16 +164,25 @@ $overlay-colour: #c6f0bd;
 
 .cell-overlay {
     position: absolute;
+    width: 100%;
     left: 0px;
     height: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 }
   
 .overlay-number {
-    font-size: 0.3em;
+    font-size: calc(0.6vw + 3px);
     color: $overlay-colour;
-    width: 33%;
+    flex-basis: 33.333333%;
+    height: 32%;
     text-align: center;
     font-weight: 500;
+
+    @media screen and (max-width: $small) {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: calc(0.5vw + 7px);
+    }
 }

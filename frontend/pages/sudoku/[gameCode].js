@@ -327,7 +327,7 @@ function Sudoku(props) {
     
     if (result == "win") {
         scoreText = 
-        <div style={{display:"flex", flexDirection: "column"}}>
+        <div className={boardStyles["rematch-container"]}>
             <ControlButton 
                 handleClick={() => handleRematch()}
                 name={"Rematch"}
@@ -336,7 +336,7 @@ function Sudoku(props) {
             />
         </div>
     } else if (result == "lose") {
-        scoreText = <div>            
+        scoreText = <div className={boardStyles["rematch-container"]}>  
                         <ControlButton 
                             handleClick={() => handleRematch()}
                             name={"Rematch"}
