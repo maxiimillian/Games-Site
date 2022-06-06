@@ -1,0 +1,39 @@
+@import './variables.scss';
+
+.login-form-container {
+    background: $green-box;
+    border-radius: $border-radius;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 10;
+    align-items: center;
+    width: 40%;
+    left: 0;
+    right: 0;
+    top: 5%;
+    margin: auto;
+  }
+
+  .form-header-text {
+    color: white; 
+    font-size: 1.6em;
+    font-weight: 600;
+  }
+
+  .highlight {
+    color: $submit;
+    font-weight: 800;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+  }
+  
+  .form-input {
+    color: white;
+    background-color: $form-input-background;
+    font-size: 1.1em;
+  }

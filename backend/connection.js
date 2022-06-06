@@ -69,18 +69,19 @@ module.exports = function(io, app) {
 	}
 	
 	function send_game_state(socket, user_id, room_code) {
-		//console.log(boards, room_code);
-		console.log(1);
 		board = boards[room_code];
-		console.log(board);
-		board.get_opponent(user_id, (opponent) => {
-			console.log("sending state....", board.boards[user_id]);
-			socket.emit("state", 
-			{"board": board.boards[user_id], "base": board.index}, 
-			opponent
-			)
-		})
-
+		
+		if (!board) {
+			socket.emit("err", "Game does not exist");
+		} else {
+			board.get_opponent(user_id, (opponent) => {
+				console.log("sending state....", board.boards[user_id]);
+				socket.emit("state", 
+				{"board": board.boards[user_id], "base": board.index}, 
+				opponent
+				)
+			})
+		}
 	}
 
 	function alreadyInRoom(token) {
@@ -139,16 +140,30 @@ module.exports = function(io, app) {
 
 	app.get("/sudoku/details/:code", (req, res) => {
 		let code = req.params["code"];
-		let details = {"time": null, "players": null, "difficulty": null}
+		console.log("requesting code => ", code);
+		let details = {"time": null, "players": null, "difficulty": null, "host": null}
 
 		let board = boards[code];
-
+		console.log("getting details");
 		if (board) {
 			details["time"] = board.time;
 			details["players"] = board.max_player_count;
 			details["difficulty"] = board.difficulty;
 
-			res.status(200).json({success:true, details: details})
+			console.log(details);
+
+			get_user_information(board.host, (err, user) => {
+				if (err) {
+					details["host"] = "Unknown";
+				} else {
+					details["host"] = user.username;
+				}
+				console.log(details);
+				res.status(200).json({success:true, details: details})
+			})
+			
+
+			
 		} else {
 			res.status(400).json({success:false, message: "Game not found"});
 		}
@@ -202,13 +217,17 @@ module.exports = function(io, app) {
 			socket.emit("err", "test");
 			get_socket_information(socket, (token, user_id, user) => {
 				let room = sudoku.adapter.rooms.get(room_code);
-				
-				if (!room && room_track_sudoku[user_id] == room_code) {
+
+				//For when game is created but no ones joined, meaning the socket room doesnt yet exist
+				//Need to check that room_code isn't null incase user_id also doesnt exist in room track
+				if (!room && room_track_sudoku[user_id] == room_code && room_code) { 
 					console.log(room_track_sudoku);
 					socket.join(room_code);
 					room = sudoku.adapter.rooms.get(room_code);
 					//console.log("r", room);
 				}
+
+				console.log("room: ", room, room_code)
 				
 				if (room == null) {
 					socket.emit("err", "Room not found");
@@ -216,7 +235,8 @@ module.exports = function(io, app) {
 				} else if (user_id == null) {
 					socket.emit("err", "user not found")
 					console.log(134);
-				} else if (room_track_sudoku[user_id] == room_code) {
+					// for rejoining after leaving the game, second condition to protect against user_id not existing and null room code	
+				} else if (room_track_sudoku[user_id] == room_code && room_code ) { 
 					socket.join(room_code);
 					send_game_state(socket, user_id, room_code);
 					boards[room_code].start();
@@ -303,7 +323,7 @@ module.exports = function(io, app) {
 							console.log("creating rematch")
 							let old_board = boards[old_room_code];
 
-							create_game(old_board.host, old_board.difficulty, 
+							create_game(old_board.host, old_board.difficulty, old_board.time, old_board.max_player_count,
 								(err, board, room_code) => {
 									if (err) {
 										socket.emit("err", "Something went wrong");

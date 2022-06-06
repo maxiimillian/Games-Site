@@ -1,0 +1,188 @@
+@import './variables.scss';
+
+$overlay-colour: #c6f0bd;
+
+.board-top-container {
+    display: grid;
+    grid-template: "sidebar board rematch" "sidebar board chatbox" "sidebar board chatbox";
+    grid-template-columns: 20% 55% 25%;
+    grid-template-rows: 100px;
+    height: 100%;
+    border-radius: 15px;
+    position: relative;
+    width: 100%;
+
+    @media screen and (max-width: $small) {
+        grid-template:  "rematch"
+                        "sudoku"
+                        "chatbox";
+        grid-template-columns: 100%;
+    }
+}
+
+.board {
+    grid-area: board;
+    display: flex;
+    flex-direction: column;
+    background-color: #303030;
+    width: 30vw;
+    height: 30vw;
+    font-size: 2em;
+    border: solid black 3px;
+    box-sizing: border-box;
+
+    @media screen and (max-width: $small) {
+        width: 93vw;
+        height: 94vw;
+    }
+}
+
+.row {
+    display: flex;
+    height: 11.11%;
+}
+
+.row:nth-child(3n+0) {
+    border-bottom: solid black 2px;
+}
+
+.cell:nth-child(3n+0) {
+    border-right: solid black 3px;
+}
+
+.row:last-child {
+    border: none;
+}
+
+.cell:last-child {
+    border: solid black 1px;
+}
+
+.cell {
+    width: 11.11%;
+    border: solid black 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+}
+
+.cell:hover {
+    cursor: pointer;
+}
+
+.center-board-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.right-chat-container {
+    flex: 1 1 30%;
+    margin: 0px 10px;
+    border-radius: 3px;
+}
+
+.board-container {
+    display: grid;
+    grid-template: "board buttons" "numbers null";
+    font-size: calc(0.6vw + 10px);
+    row-gap: 1vw;
+
+    @media screen and (max-width: $small) {
+        row-gap: 1em;
+        grid-template: "board" "numbers" "buttons";
+    }
+}
+  
+
+.waiting-block {
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    right: 0
+}
+  
+.fade-out {
+    opacity: 0.4;
+}
+
+.rematch-container {
+    grid-area: rematch;
+}
+  
+.control-bar {
+    grid-area: buttons;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    
+    @media screen and (max-width: $small) {
+        padding: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.start-number {
+    color: $board-base-index;
+    font-weight: 500;
+}
+
+.win {
+    color: #32a852;
+}
+
+.lose {
+    color: #eb4034;
+}
+  
+  
+.highlighted-adjacent {
+    background-color: $board-secondary-highlight;
+    color: $board-number;
+}
+  
+.highlighted-square {
+    background-color: $board-highlight;
+    color: $board-number;
+  
+}
+  
+.base-number {
+    color: $board-base-index;
+}
+  
+
+.invalid-number {
+    background-color: #eb4034;
+    color: white;
+}
+
+.cell-overlay {
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+  
+.overlay-number {
+    font-size: calc(0.6vw + 3px);
+    color: $overlay-colour;
+    flex-basis: 33.333333%;
+    height: 32%;
+    text-align: center;
+    font-weight: 500;
+
+    @media screen and (max-width: $small) {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: calc(0.5vw + 7px);
+    }
+}

@@ -4,7 +4,7 @@ import React from 'react';
 import { useState } from "react";
 
 
-import Authenticated from "./components/Authenticated";
+import Authenticated from "../components/Authenticated";
 
 import useAuth, { AuthProvider } from "./contexts/authContext";
 import { BrowserRouter as Router } from "react-router-dom";
