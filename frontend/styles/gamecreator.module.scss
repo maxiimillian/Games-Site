@@ -49,11 +49,17 @@
 
 .create-form-submit {
     border-radius: $border-radius;
-    background-color: $form-input-background;
+    background-color: $submit;
+    color: black;
     width: 90%;
     margin: 20px auto;
-    height: 40px;
+    padding: 10px;
     font-size: 1.2em;
     font-weight: 600;
-    box-shadow: 0 0 2px 0px rgb(3, 3, 3);
+}
+
+.create-form-submit:hover {
+    opacity: 0.5;
+    background-color: $submit-hover;
+    color: $submit-hover-text;
 }

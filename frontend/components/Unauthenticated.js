@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../styles/login.module.scss";
+import gameCreationStyles from "../styles/gamecreator.module.scss";
 import useAuth from "../contexts/authContext";
 
 function Unauthenticated({handleSubmit}) {
@@ -12,28 +13,35 @@ function Unauthenticated({handleSubmit}) {
     const {user, loading, error, login, register} = useAuth();
 
     var register_form = (
-    <form className={styles["login-form"]} onSubmit={(e) => { handleRegister(e) }}>
-        <div style={{display: "flex"}}>
-            <h1 className={styles["form-header-text"]}>Welcome, </h1>
-            <h1 className={`${styles["form-header-text"]} ${styles["highlight"]}`}>&nbsp;Register.</h1>
-        </div>
+        <form className={styles["login-form"]} onSubmit={(e) => { handleRegister(e) }}>
+            <div className={gameCreationStyles["create-form-header"]}>
+                <h1 className={styles["form-header-text"]}>Welcome, </h1>
+                <h1 className={`${styles["form-header-text"]} ${styles["highlight"]}`}>&nbsp;Register.</h1>
+            </div>
 
-        <label>Username</label>
-        <input className={styles["form-input"]} type="text" name="username" value={username} onChange={(e) => setUser(e.target.value)}></input>
+            <div className={`${gameCreationStyles["create-form-center"]} ${gameCreationStyles["create-form-column"]}`}>
+                <label>Username</label>
+                <input className={styles["form-input"]} type="text" name="username" value={username} onChange={(e) => setUser(e.target.value)}></input>
+            </div>
 
-        <label>Password</label>
-        <input className={styles["form-input"]} type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            <div className={`${gameCreationStyles["create-form-center"]} ${gameCreationStyles["create-form-column"]}`}>
+                <label>Password</label>
+                <input className={styles["form-input"]} type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+            </div>
 
+            <div className={`${gameCreationStyles["create-form-center"]} ${gameCreationStyles["create-form-column"]}`}>
+                <label>Confirm Password</label>
+                <input className={styles["form-input"]} type="password" name="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></input>
+            </div>
 
-        <label>Confirm Password</label>
-        <input className={styles["form-input"]} type="password" name="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}></input>
+            <div className={`${gameCreationStyles["create-form-center"]} ${gameCreationStyles["create-form-column"]}`}>
+                <label>Email</label>
+                <input className={styles["form-input"]} type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+            </div>
 
-        <label>Email</label>
-        <input className={styles["form-input"]} type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-
-        <button className="submit" type="submit">Login</button>
-        <em style={{color: "rgb(69, 98, 74)"}}>Have an account? <strong onClick={() => setMode("login")}>Login here</strong> </em>
-    </form>
+            <button className={gameCreationStyles["create-form-submit"]} type="submit">Login</button>
+            <em style={{color: "rgb(69, 98, 74)"}}>Have an account? <strong onClick={() => setMode("login")}>Login here</strong> </em>
+        </form>
     )
 
     var login_form = (

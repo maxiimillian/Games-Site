@@ -1,7 +1,7 @@
 $small: 375px;
 
 $background: rgba(18, 18, 18, 0.95);
-$icon-colour: #A8BD92;
+$icon-colour: red;
 $yellow-colour: #cdce89;
 $green-box: #2C352E;
 
@@ -36,7 +36,8 @@ $text-primary: rgba(255, 255, 255, 0.7);
 $form-input-background: #C0D3C3;
 
 /* Buttons */
-$submit: #CAA472;
-$submit-hover: #dbb685;
+$submit: #ffe581;
+$submit-hover: #A6BD91;
+$submit-hover-text: black;
 $control-buttons: $submit;
 $control-buttons-on: #b9cfa1;

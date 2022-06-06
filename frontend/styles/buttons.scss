@@ -135,15 +135,17 @@ button {
 .submit {
     padding: 10px;
     margin: 20px 0;
-    color: black;
+    color: white;
     font-weight: 500;
     background-color: $submit;
     font-size: 1.3em;
 }
 
-.submit:hover {
-
+.control-button:hover, .submit:hover {
+    background-color: $submit-hover;
+    color: $submit-hover-text;
 }
+
 
 @keyframes active-text {
     0% {
