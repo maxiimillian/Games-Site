@@ -3,7 +3,7 @@ name: Deploy frontend to Amazon ECS
 on:
   push:
     branches:
-      - testing-actions-multiple-environments
+      - production
 
 env:
   AWS_REGION: us-east-2                  
