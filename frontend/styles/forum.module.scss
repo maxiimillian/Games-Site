@@ -1,0 +1,64 @@
+@import './variables.scss';
+
+.forum {
+    width: 40%;
+    margin: auto;
+}
+
+.tags-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 2em;
+    row-gap: 1em;
+}
+
+.tag-button {
+    padding: 10px;
+    background-color: $submit;
+}
+
+.search-bar {
+    background-color: $surface-solid;
+    padding: 10px;
+    border-radius: $border-radius;
+    margin: 20px 0;
+    display: flex;
+}
+
+.search-bar > input {
+    background-color: transparent;
+    width: 100%;
+}
+
+.post-container {
+    background-color: $green-box;
+    margin-bottom: 20px;
+    border-radius: $border-radius;
+    padding: 10px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.post-title {
+    color: $text-primary;
+    font-size: 1.4em;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.post-date {
+    color: rgba(255,255,255,0.4);
+}
+
+.post-content {
+    word-wrap: break-word;
+}
+
+.reply-count {
+    font-weight: 600;
+    color: $icon-colour;
+}

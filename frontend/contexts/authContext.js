@@ -16,6 +16,7 @@ export function AuthProvider({children}) {
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [token, setToken] = useState(user?.token);
 
     const router = useRouter();
 
@@ -53,6 +54,7 @@ export function AuthProvider({children}) {
         .then((user) => {
             console.log("USER => ", user);
             setUser(user.profile)
+            setToken(user.token);
             localStorage.setItem("token", user.token)
         })
         .catch((error) => console.log(error))
@@ -72,6 +74,7 @@ export function AuthProvider({children}) {
             login,
             register,
             logout,
+            token,
         }),
         [user, loading, error]
     );

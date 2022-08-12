@@ -2,7 +2,6 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
 export async function getUser() {
-    console.log("getting user...")
     await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/refresh`, {
         method: "POST",
         mode: "cors",
@@ -12,19 +11,17 @@ export async function getUser() {
         body: JSON.stringify({token: localStorage.getItem("token")}),
     })
     .then((data) => {
-        console.log("API REQUEST FRONTEND", publicRuntimeConfig.NEXT_PUBLIC_API_URL);
-        console.log(publicRuntimeConfig);
         return data.json();
     })
     .then((resp) => {
-        console.log("CURRENT TOKEN => ", localStorage.getItem("token"))
         if (resp.success) {
-            console.log("e", resp)
             localStorage.setItem("token", resp.token);
         } else {
-            console.log(resp);
             throw "Could not authenticate";
         }
+    })
+    .catch((err) => {
+        throw "Could not connect to the server";
     })
 
     return await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/profile`, {
@@ -42,8 +39,12 @@ export async function getUser() {
         if (!data.success) {
             throw data.message;
         } else {
+            data["token"] = localStorage.getItem("token");
             return data;
         }
+    })
+    .catch((err) => {
+        throw "Could not connect to the server";
     })
 
 }
@@ -69,6 +70,9 @@ export async function register(username, password, email) {
             return data;
         }
     })
+    .catch((err) => {
+        throw "Could not connect to the server";
+    })
 }
 
 export async function login(user, password) {
@@ -93,6 +97,9 @@ export async function login(user, password) {
             return data;
         }
     })
+    .catch((err) => {
+        throw "Could not connect to the server";
+    })
 }
 
 export async function logout(user, password) {
@@ -113,5 +120,8 @@ export async function logout(user, password) {
         } else {
             return data;
         }
+    })
+    .catch((err) => {
+        throw "Could not connect to the server";
     })
 }

@@ -21,6 +21,20 @@ h1 {
     color: $primary-color;
 }
 
+header {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    background-color: rgba(18, 18, 18, 1);
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+
 select {
     -webkit-appearance: none;
     background: transparent;
@@ -84,7 +98,7 @@ input {
     height: 90%;
     padding: 20px;
     display: grid;
-    grid-template: "sidebar main right";
+    grid-template: "sidebar option-container supporters" "sidebar option-container news";
     grid-template-columns: 20% 60% 20%;
 
     @media screen and (max-width: $small) {
@@ -94,6 +108,16 @@ input {
     }
   }
 
+.supporters-container {
+    grid-area: supporters;
+}
+.news-container {
+    grid-area: news;
+}
+
+.game_option-container{
+    grid-area: option-container;
+}
 
 .box {
     background-color: $surface-solid;
@@ -139,7 +163,6 @@ input {
     margin: 0px 10px;
     border-radius: 3px;
 }
-
 tr {
     border: $board-border solid thin;
     text-align: center;

@@ -374,6 +374,7 @@ module.exports = function(io, app) {
 			})
 		});
 
+
 		socket.on("disconnect", () => {
 			get_socket_information(socket, (token, user_id, user, room_code) => {
 				sudoku.to(room_track_sudoku[socket.id]).emit("user disconnected", user);

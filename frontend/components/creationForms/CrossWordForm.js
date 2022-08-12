@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import styles from "../../styles/gamecreator.module.scss";
 
-function CreationForm(props) {
+function CrosswordForm(props) {
     const [time, setTime] = useState(5);
     const [players, setPlayers] = useState(2);
     const [difficulty, setDifficulty] = useState("easy");
@@ -67,20 +67,4 @@ function CreationForm(props) {
     )
 }
 
-export default CreationForm;
-
-/* <div className={styles["block-container"]}>
-                <div className={styles["create-container"]}>
-                    <div style={{dispaly: "flex", flexDirection: "column"}}>
-                        <h2>Create Game</h2>
-                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className={styles["create-selector"]}>
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
-                            <option>Extreme</option>
-                            <option>Test</option>
-                        </select>
-                        <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button>Create</button></Link>
-                    </div>
-                </div>
-            </div>*/
+export default CrosswordForm;

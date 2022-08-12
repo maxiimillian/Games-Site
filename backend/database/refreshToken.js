@@ -5,6 +5,7 @@ var crypto = require("crypto");
 module.exports = async function refreshToken(token, callback) {
     try {
         if (token) {
+            console.log(token, TokenModel);
             TokenModel.findOne({token: token}, function (err, current_token) {
       
               if (err) {
