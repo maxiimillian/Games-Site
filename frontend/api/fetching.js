@@ -1,12 +1,17 @@
 import getConfig from 'next/config';
 import useAuth from "../contexts/authContext";
-
+const { publicRuntimeConfig } = getConfig();
 export const fetchSupporters = () => {
-  const { publicRuntimeConfig } = getConfig();
   const supportersPromise = fetcher(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/supporters`);
-
   return wrapPromise(supportersPromise);
 }
+
+//Params should be an object, api will accept values for sortBy, direction, tags, and query
+export const fetchForumPosts = (params) => {
+    const postsPromise = fetcher(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/forum/posts?` + new URLSearchParams(params))
+    return wrapPromise(postsPromise);
+}
+  
 
 const fetcher = async (url) => {
   try {

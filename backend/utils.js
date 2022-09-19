@@ -105,10 +105,31 @@ module.exports = {
             }
 
         });
+    },
+
+    is_valid_post: function(title, content, tags, callback) {
+        if (title.length > 150 || title.length == 0) {
+            callback("Invalid Title");
+        } else if (content.length > 500 || content.length == 0) {
+            callback("Invalid Content");
+        } else if (!this.is_valid_tags(tags)) {
+            callback("Invalid tags");
+        } else {
+            callback(null);
+        }
+        return;
+    },
+
+    is_valid_tags: function(tags) {
+        const VALID_TAGS = ["Sudoku", "Poker", "Crossword", "Tic-Tac-Toe", "Suggestions", "Bugs", "Other"];
+        if (!Array.isArray(tags)) {
+            return false;
+        }
+        tags.forEach((tag) => {
+            if (!VALID_TAGS.includes(tag)) {
+                return false;
+            }
+        })
+        return true;
     }
-
-
-
-    
-
 }

@@ -3,7 +3,7 @@ const GitHub = require('github-api');
 class MetaStore {
     constructor() {
         this.supporters = [];
-        //this.#getGithubData();
+        this.#getGithubData();
     }
 
     start() {
@@ -56,12 +56,13 @@ class MetaStore {
             commiters.push({ 
                 id: commit.sha, 
                 name: commit.author.login, 
-                url: commit.url,
+                url: commit.html_url,
                 date: commit.commit.committer.date,
+                type: "commit",
             })
         }
 
-        //this.#addSupporters(commiters);
+        this.#addSupporters(commiters);
         console.log("getting data");
         setTimeout(this.#getGithubData, 1000*60*30)
     }

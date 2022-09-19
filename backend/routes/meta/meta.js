@@ -18,7 +18,7 @@ router.get("/supporters", (req, res, next) => {
 
     try {
         const supporters = metaStore.getSupporters(amount);
-        console.log("returning supporters")
+        console.log("returning supporters", supporters);
         res.status(200).json({ supporters });
     } catch (err) {
         next(err);

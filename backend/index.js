@@ -7,12 +7,7 @@ const app = require("./app");
 
 const port = process.env.PORT || 3001;
 
-mongoose.connect(process.env.DB_PATH, {
-  useNewUrlParser: true,
-  ssl: true,
-  sslValidate: false,
-  sslCA: './rds-combined-ca-bundle.pem',
-});
+mongoose.connect(process.env.DB_PATH);
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));
 

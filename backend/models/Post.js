@@ -1,19 +1,18 @@
-var mongoose = require('mongoose'); 
+const mongoose = require('mongoose'); 
+const Schema = mongoose.Schema; 
 
-var Schema = mongoose.Schema; 
-
-var PostSchema = new Schema({
-    author_id: {type: String},
+const PostSchema = new Schema({
+    author: {type: Schema.Types.ObjectId, ref: "user"},
     title: {type: String, required: true},
     tags: [
         {type: String}
     ],
     date: {type: Date, default: Date.now},
     content: {type: String, required: true},
+    vote: {type: Number},
 
 });
-
-var PostModel = mongoose.model("post", PostSchema);
+const PostModel = mongoose.model("post", PostSchema);
 
 exports.PostSchema = PostSchema;
 module.exports = PostModel;

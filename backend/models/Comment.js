@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema; 
 
 var CommentSchema = new Schema({
-    post_id: {type: String},
+    post_id: {type: Schema.Types.ObjectId},
     author_id: {type: String},
     content: {type: String, required: true},
     date: {type: Date, default: Date.now},

@@ -1,6 +1,5 @@
 import SudokuForm from "./components/creationForms/SudokuForm";
 import PokerForm from "./components/creationForms/PokerForm";
-import CrosswordForm from "./components/creationForms/CrosswordForm";
 import ComingSoonForm from "./components/creationForms/ComingSoonForm";
 
 const gameIndex = [

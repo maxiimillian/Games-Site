@@ -13,10 +13,14 @@ function App() {
     <div className="page-container">
       {/* <FriendsList /> Maybe? */}
       <Home />
-      <NewsSkeleton />
 
-      <Supporters />    
+      <Suspense fallback={<SupportersSkeleton />}>
+        <Supporters />    
+      </Suspense>
 
+      <Suspense fallback={<NewsSkeleton />}>
+        <News />    
+      </Suspense>
 
     </div>
   )
