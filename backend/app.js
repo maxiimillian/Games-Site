@@ -2,11 +2,10 @@ const express = require('express');
 const cors = require("cors");
 
 const auth = require('./routes/auth')
-const poker = require('./routes/poker')
-const sudoku = require("./routes/sudoku");
 const meta = require("./routes/meta/meta");
 
 const app = express();
+
 app.use(cors({
   origin: "*",
 }));
@@ -19,8 +18,6 @@ app.use(express.urlencoded({
 
 
 app.use('/auth', auth);
-app.use('/poker', poker);
-app.use("/sudoku", sudoku);
 app.use("/meta", meta);
 
 app.get("/", (req, res) => {

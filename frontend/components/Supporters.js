@@ -3,7 +3,7 @@ import styles from "../styles/supporters.module.scss";
 
 import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fetchSupporters } from "../api/supporters";
+import { fetchSupporters } from "../api/fetching";
 import ErrorBox from "./common/ErrorBox";
 
 const resource = fetchSupporters();
@@ -25,45 +25,48 @@ function Supporters(props) {
 
     try {
         const data = resource.read();
-        supporters = data.supporters;    
+        console.log(data)
+        supporters = data.supporters;
+        if (supporters.length == 0) {
+            return (
+                <div suppressHydrationWarning className="supporters-container">
+                    <h3>Supporters</h3>
+                    <ErrorBox message={"There are no supporters"} />
+                </div>
+            )    
+        }  
     } catch (err) {
-        console.log(err)
-        return (
-            <div className="supporters-container">
-                <h3>Supporters</h3>
-                <ErrorBox message={"Something went wrong"} />
-            </div>
-        )
+        console.log("SUPPORTERS NOT FOUND", err)
     }
 
     return (
-        <section className="supporters-container">
+        <div suppressHydrationWarning className="supporters-container">
             <h3>Supporters</h3>
             {supporters.map(supporter => {
                 return (
-                <section className={styles["supporter-container"]}>
+                <div className={styles["supporter-container"]}>
                     <div className={styles["supporter-header"]}>
                         <span className={styles["supporter-name"]}>{supporter.name}</span>
                         <span className={styles["supporter-date"]}>{supporter.date}</span>
                     </div>
                     <div className={styles["supporter-link-container"]}>
                         <FontAwesomeIcon className="arrow" icon={faLevelUpAlt} rotation={90} size="lg" />
-                        <a href={supporter.url} className={styles["supporter-link"]}><span className="supporter-type">{supporter.type}</span></a>
+                        <a href={supporter.url} className={styles["supporter-link"]}>{supporter.type}</a>
                     </div>
-                </section>)
+                </div>)
             })}
-        </section>
+        </div>
     )
 }
 
 export function Skeleton() {
     const supporters = [{}, {}, {}, {}]
     return (
-        <section className="supporters-container">
+        <div suppressHydrationWarning className="supporters-container">
             <h3>Sspporters</h3>
             {supporters.map(supporter => {
                 return (
-                <section className={styles["supporter-container"]}>
+                <div suppressHydrationWarning className={styles["supporter-container"]}>
                     <div className={styles["supporter-header"]}>
                         <span className={styles["supporter-name"]}>Loading</span>
                         <span className={styles["supporter-date"]}>Loading</span>
@@ -72,9 +75,9 @@ export function Skeleton() {
                         <FontAwesomeIcon className="arrow" icon={faLevelUpAlt} rotation={90} size="lg" />
                         <a href="#" className={styles["supporter-link"]}><span className="supporter-type">Loading</span></a>
                     </div>
-                </section>)
+                </div>)
             })}
-        </section>
+        </div>
     )
 }
 

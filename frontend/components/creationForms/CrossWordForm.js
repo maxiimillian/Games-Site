@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from 'next/router'
 
 import styles from "../../styles/gamecreator.module.scss";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 function CrosswordForm(props) {
     const [time, setTime] = useState(5);
@@ -22,7 +24,7 @@ function CrosswordForm(props) {
             "auth": localStorage.getItem("token"),
         }
         
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/create`, {
+        fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/sudoku/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

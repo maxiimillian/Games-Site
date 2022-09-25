@@ -18,7 +18,7 @@ const post =  {
 function Post(props) {
 
     return (
-        <div className={}
+        <div />
     )
 
 }
