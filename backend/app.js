@@ -6,6 +6,7 @@ const poker = require('./routes/poker')
 const sudoku = require("./routes/sudoku");
 
 const app = express();
+
 app.use(cors({
   origin: "*",
 }));

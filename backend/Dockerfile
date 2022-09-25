@@ -1,5 +1,14 @@
-FROM node:16
+FROM node:16 as dependencies
 
+LABEL authors="maxiimillian"
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+FROM node:16 as runner
 ARG DB_PATH
 ARG BOARD_DB_PATH
 ARG ALLOWED_URL
@@ -10,16 +19,9 @@ ENV BOARD_DB_PATH=$BOARD_DB_PATH
 ENV ALLOWED_URL=$ALLOWED_URL
 ENV PORT=$PORT
 
-LABEL authors="maxiimillian"
-
-WORKDIR ./app
-
-COPY package*.json ./
-
-RUN npm install
-
+WORKDIR /app
 COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
 EXPOSE 3001
-
 
 CMD ["node", "index.js"]

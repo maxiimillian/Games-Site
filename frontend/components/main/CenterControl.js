@@ -50,6 +50,7 @@ function CenterControl(props) {
 
     return (
         <div style={{display: "flex", justifyContent: "center", flexDirection: "column"}}>
+            <h1>Currently Migrating to a new hosting service, some things may not work as usual.</h1>
             <Username className={styles["home-username"]}/>
             <div className={styles["options-sidebar-container"]}>
 

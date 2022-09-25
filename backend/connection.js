@@ -5,7 +5,7 @@ const Board = require("./modules/board");
 const { get_user_id, get_user_information } = require('./utils');
 
 module.exports = function(io, app) {
-
+	console.log("== IO LOADED == ");
 	let room_track_sudoku = {};
 	let room_track_poker = {};
 	let tables = [];
@@ -230,20 +230,25 @@ module.exports = function(io, app) {
 				console.log("room: ", room, room_code)
 				
 				if (room == null) {
+					console.log("TRYING TO JOIN1");
 					socket.emit("err", "Room not found");
 					console.log(4244);
 				} else if (user_id == null) {
+					console.log("TRYING TO JOIN2");
 					socket.emit("err", "user not found")
 					console.log(134);
 					// for rejoining after leaving the game, second condition to protect against user_id not existing and null room code	
-				} else if (room_track_sudoku[user_id] == room_code && room_code ) { 
+				} else if (room_track_sudoku[user_id] == room_code && room_code && boards[room_code].started ) { 
+					console.log("TRYING TO JOIN3");
 					socket.join(room_code);
 					send_game_state(socket, user_id, room_code);
 					boards[room_code].start();
 				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
+					console.log("TRYING TO JOIN4");
 					socket.emit("err", "Room is full");
 					console.log(421313);
 				} else if (user == null) {
+					console.log("TRYING TO JOIN5");
 					socket.emit("err", "User Information Error");
 					console.log(93243244);
 				} else {
