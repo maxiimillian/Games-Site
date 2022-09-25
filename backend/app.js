@@ -5,6 +5,7 @@ const auth = require('./routes/auth')
 const meta = require("./routes/meta/meta");
 
 const app = express();
+
 app.use(cors({
   origin: "*",
 }));
