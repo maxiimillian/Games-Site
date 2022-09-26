@@ -1,5 +1,5 @@
 import getConfig from 'next/config';
-import useAuth from "../contexts/authContext";
+import useAuth from "../contexts/AuthContext";
 const { publicRuntimeConfig } = getConfig();
 export const fetchSupporters = () => {
   const supportersPromise = fetcher(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/supporters`);

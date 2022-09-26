@@ -5,7 +5,7 @@ import Link from 'next/link';
 function Header() {
 
     return (
-        <header>
+        <header className={styles["header"]}>
             <Icon width={"80px"} height={"62px"}/>
             <nav>
                 <span className={styles["header-button"]}><Link href="/">Play</Link></span>

@@ -13,7 +13,7 @@ import Sidebar from "../components/main/Sidebar";
 
 import Blockpage from '../components/common/Blockpage';
 
-import useAuth from "./authContext";
+import useAuth from "./AuthContext";
 import { SoundProvider } from "./soundContext";
 import Loading from "../components/common/Loading";
 

@@ -1,6 +1,6 @@
 
 import React, { Suspense } from 'react';
-import useAuth, { AuthProvider } from "../contexts/authContext";
+import useAuth, { AuthProvider } from "../contexts/AuthContext";
 
 import Home from "../components/main/Home";
 import News, {Skeleton as NewsSkeleton} from "../components/News";

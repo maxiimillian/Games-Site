@@ -11,6 +11,7 @@ import ControlButton from "../../components/common/ControlButton";
 import NumberButton from "../../components/buttons/NumberButton";
 import Error from "../../components/common/Error";
 import { soundContext } from "../../contexts/soundContext";
+import useAuth from "../../contexts/AuthContext";
 import { isAdjacent } from "../../components/sudoku/sudokuUtils";
 
 import styles from "../../styles/chatbox.module.scss";
@@ -68,10 +69,10 @@ function Sudoku(props) {
     const [error, setError] = useState("");
 
     const sound = useContext(soundContext)
-
+    const { user, loading } = useAuth();
+    console.log("AUTH", user, loading);
     const router = useRouter();
     const { gameCode } = router.query;
-    console.log(props.gameDetails)
     const gameDetails = props.gameDetails.details;
 
     let scoreText;
@@ -233,9 +234,10 @@ function Sudoku(props) {
 
 
     useEffect(() => {
-        if (!gameCode) { //wait for gameCode to be ready
+        if (!gameCode || loading) { //wait for gameCode to be ready
             return;
         }
+        console.log("establishing connection", localStorage.getItem("token"))
         let socket_conn = io(`${process.env.NEXT_PUBLIC_API_URL}/sudoku`, {
             auth: {
                 token: localStorage.getItem("token")
@@ -323,7 +325,7 @@ function Sudoku(props) {
         return () => {
             socket_conn.disconnect();
         }
-    }, [rematch, router.isReady])
+    }, [rematch, router.isReady, loading])
     
     if (result == "win") {
         scoreText = 
@@ -347,6 +349,7 @@ function Sudoku(props) {
         
     }
 
+    //Injects meta data so that linking to the site will show the game details
     if (gameDetails) {
         console.log("gd", gameDetails)
         head = (<Head>
@@ -360,27 +363,23 @@ function Sudoku(props) {
     } else {
         return (
             <div className={boardStyles["board-top-container"]}>
-                <Sidebar />
                 <Error errorMessage={error} />
             </div>      
         )
     }
 
-
+    //Shows the invite screen
     if (waiting) {
-        return (
-            <div className={boardStyles["board-top-container"]}>
+        return (   
+            <Waiting code={gameCode} options={options} player_total={playerTotal} player_count={playerCount}> 
                 {head}
-                <Sidebar />
-                <Waiting code={gameCode} options={options} player_total={playerTotal} player_count={playerCount} />
-            </div>
+            </Waiting>
         )
     }
 
     return (
         <div className={boardStyles["board-top-container"]}>
             {head}
-            <Sidebar />
             <Board key={boardData} handleInput={handleInput} handleAnnotate={handleAnnotate} handleReset={handleReset} board={boardData} base={baseIndex} waiting={false}/>
 
                 {scoreText}

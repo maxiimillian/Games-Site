@@ -9,12 +9,13 @@ import React, {
 import { useRouter } from "next/router";
 import * as userApi from "../api/user";
 
-const AuthContext = createContext({});
+export const AuthContext = createContext();
 
 export function AuthProvider({children}) {
     const [user, setUser] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
+    const [loadingInitial, setLoadingInitial] = useState(true);
     const [loggedIn, setLoggedIn] = useState(false);
     const [token, setToken] = useState(user?.token);
 
@@ -26,7 +27,7 @@ export function AuthProvider({children}) {
 
     useEffect(() => {
         console.log("getting user...")
-        setLoading(true);
+        setLoading(true)
         userApi.getUser()
         .then((user) => setUser(user.profile))
         .then((response) => {
@@ -81,7 +82,7 @@ export function AuthProvider({children}) {
 
     return (
         <AuthContext.Provider value={memoedValue}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     )
 }

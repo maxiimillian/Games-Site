@@ -61,7 +61,7 @@ function SudokuForm(props) {
                     <label htmlFor="players">Players: <b>{players}</b></label>
                     <input type="range" name="players" value={players} min="1" max="4" onChange={(e) => setPlayers(e.target.value)}></input>
                 </div>
-                <button type="submit" className={styles["create-form-submit"]}>Create Game</button>
+                <button type="submit" className="submit">Create Game</button>
             </form>
         </section>
     )
