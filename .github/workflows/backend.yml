@@ -62,7 +62,6 @@ jobs:
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd app
+          cd /app
           docker login -u $USER -p ${{ secrets.DOCKER_TOKEN }}
-          docker pull $DOCKER_REPOSITORY:$IMAGE_TAG
-          sudo docker-compose -f docker-compose.yml up -d
+          docker-compose pull && docker-compose up -d 
