@@ -58,7 +58,7 @@ jobs:
     - name:  Deploy new container on linode
       uses: appleboy/ssh-action@master
       with:
-        host: {{ secrets.HOSTING_IP }}
+        host: ${{ secrets.HOSTING_IP }}
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
