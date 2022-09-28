@@ -1,16 +1,16 @@
-FROM arm32v7/node:14-buster as dependencies
+FROM node:14 as dependencies
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-FROM arm32v7/node:14-buster as builder
+FROM node:14 as builder
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 ARG NEXT_PUBLIC_API_URL
 RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
 
-FROM arm32v7/node:14-buster as runner
+FROM node:14 as runner
 WORKDIR /app
 
 ENV NODE_ENV production

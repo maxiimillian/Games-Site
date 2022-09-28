@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "../styles/login.module.scss";
 import gameCreationStyles from "../styles/gamecreator.module.scss";
-import useAuth from "../contexts/AuthContext";
+import useAuth from "../contexts/authContext";
 
 function Unauthenticated({handleSubmit}) {
     const [username, setUser] = useState("");

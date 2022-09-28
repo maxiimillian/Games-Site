@@ -11,7 +11,7 @@ import ControlButton from "../../components/common/ControlButton";
 import NumberButton from "../../components/buttons/NumberButton";
 import Error from "../../components/common/Error";
 import { soundContext } from "../../contexts/soundContext";
-import useAuth from "../../contexts/AuthContext";
+import useAuth from "../../contexts/authContext";
 import { isAdjacent } from "../../components/sudoku/sudokuUtils";
 
 import styles from "../../styles/chatbox.module.scss";

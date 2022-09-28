@@ -2,16 +2,16 @@ name: Deploy Backend to Amazon ECS
 
 on:
   push:
+    paths:
+      - backend/**
     branches:
       - production
 
 env:
-  AWS_REGION: us-east-2                  
-  ECR_REPOSITORY: playholdr_backend          
-  ECS_SERVICE: playholdr-backend                 
-  ECS_CLUSTER: playholdr                 
-  ECS_TASK_DEFINITION: back-ecs-task-definition.json
-  CONTAINER_NAME: playholdr-backend
+  $USER: maxiimillian
+  $DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN}}
+  DOCKER_REPOSITORY: maxiimillian/test                
+  IMAGE_TAG: backend
   DB_PATH: ${{ secrets.DB_PATH }}
   BOARD_DB_PATH: ${{secrets.BOARD_DB_PATH}}
   ALLOWED_URL: ${{ secrets.ALLOWED_URL }}
@@ -30,45 +30,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ECS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_ECS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: List files
-      run: ls -R
-
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Build, tag, and push image to Docker
       id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg PORT=$PORT --build-arg ALLOWED_URL=$ALLOWED_URL  ./backend/
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
+        # Build a docker container and push it to docker
+        docker build -t $DOCKER_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg PORT=$PORT --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg ALLOWED_URL: $ALLOWED_URL ./backend/
+        docker push $DOCKER_REPOSITORY/:$IMAGE_TAG
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        force-new-deployment: true
-        wait-for-service-stability: true
+      - name: Deploy new container on linode
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml root@${{ secrets.LINODE_IP_ADDRESS }}:/app
+          ssh -o StrictHostKeyChecking=no root@${{ secrets.LINODE_IP_ADDRESS }} << 'ENDSSH'
+            cd /app
+            docker login -u $USER -p $DOCKER_TOKEN
+            docker pull $DOCKER_REPOSITORY:$IMAGE_TAG
+            sudo docker-compose -f docker-compose.prod.yml up -d
+          ENDSSH

@@ -6,7 +6,7 @@ import React from 'react';
 import Head from "next/head";
 import { SoundProvider } from "../contexts/soundContext";
 import Header from "../components/main/Header";
-import useAuth, { AuthProvider } from "../contexts/AuthContext";
+import useAuth, { AuthProvider } from "../contexts/authContext";
 
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
