@@ -39,7 +39,7 @@ jobs:
       with:
         context: ./backend/
         build-args: |
-          DB_PATH=$DB_PATH
+          DB_PATH=${{ secrets.DB_PATH }}
           PORT=$PORT
           BOARD_DB_PATH=$BOARD_DB_PATH
           ALLOWED_URL=$ALLOWED_URL
