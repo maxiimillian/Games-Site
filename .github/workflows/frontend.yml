@@ -53,7 +53,8 @@ jobs:
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-        scp -o StrictHostKeyChecking=no ./docker-compose.yml root@${{ secrets.HOSTING_IP }}:/app
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.HOSTING_IP }} 'mkdir -p app' << 'ENDSSH'
+        scp -o StrictHostKeyChecking=no -r ./docker-compose.yml root@${{ secrets.HOSTING_IP }}:/app
         ssh -o StrictHostKeyChecking=no root@${{ secrets.HOSTING_IP }} << 'ENDSSH'
           cd /app
           docker login -u $USER -p $DOCKER_TOKEN
