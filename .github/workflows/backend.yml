@@ -6,8 +6,8 @@ on:
       - production
 
 env:
-  $USER: maxiimillian
-  $DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN}}
+  USER: maxiimillian
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN}}
   DOCKER_REPOSITORY: maxiimillian/test                
   IMAGE_TAG: backend
   DB_PATH: ${{ secrets.DB_PATH }}
@@ -59,7 +59,7 @@ jobs:
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-        scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml root@${{ secrets.HOSTING_IP }}:/app
+        scp -o StrictHostKeyChecking=no -r ./docker-compose.yml root@${{ secrets.HOSTING_IP }}:/app
         ssh -o StrictHostKeyChecking=no root@${{ secrets.HOSTING_IP }} << 'ENDSSH'
           cd /app
           docker login -u $USER -p $DOCKER_TOKEN
