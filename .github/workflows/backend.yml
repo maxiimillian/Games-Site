@@ -33,14 +33,19 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Build, tag, and push image to Docker
-      id: build-image
-      run: |
-        # Build a docker container and push it to docker
-        docker build -t $DOCKER_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg PORT=$PORT --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg ALLOWED_URL=$ALLOWED_URL ./backend/
-        docker push $DOCKER_REPOSITORY/:$IMAGE_TAG
-
+    
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: ./backend/
+        build-args: |
+          DB_PATH=$DB_PATH
+          PORT=$PORT
+          BOARD_DB_PATH=$BOARD_DB_PATH
+          ALLOWED_URL=$ALLOWED_URL
+        push: true
+        tags: $DOCKER_REPOSITORY:$IMAGE_TAG
+        
     - name: Deploy new container on linode
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
