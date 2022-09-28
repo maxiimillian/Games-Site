@@ -2,8 +2,6 @@ name: Deploy Backend to Amazon ECS
 
 on:
   push:
-    paths:
-      - backend/**
     branches:
       - production
 

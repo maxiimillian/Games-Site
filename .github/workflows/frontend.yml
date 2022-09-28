@@ -2,8 +2,6 @@ name: Deploy frontend to Amazon ECS
 
 on:
   push:
-    paths:
-      - frontend/**
     branches:
       - production
 
