@@ -37,14 +37,14 @@ jobs:
         docker build -t $DOCKER_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg PORT=$PORT --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg ALLOWED_URL: $ALLOWED_URL ./backend/
         docker push $DOCKER_REPOSITORY/:$IMAGE_TAG
 
-      - name: Deploy new container on linode
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml root@${{ secrets.LINODE_IP_ADDRESS }}:/app
-          ssh -o StrictHostKeyChecking=no root@${{ secrets.LINODE_IP_ADDRESS }} << 'ENDSSH'
-            cd /app
-            docker login -u $USER -p $DOCKER_TOKEN
-            docker pull $DOCKER_REPOSITORY:$IMAGE_TAG
-            sudo docker-compose -f docker-compose.prod.yml up -d
-          ENDSSH
+    - name: Deploy new container on linode
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml root@${{ secrets.LINODE_IP_ADDRESS }}:/app
+        ssh -o StrictHostKeyChecking=no root@${{ secrets.LINODE_IP_ADDRESS }} << 'ENDSSH'
+          cd /app
+          docker login -u $USER -p $DOCKER_TOKEN
+          docker pull $DOCKER_REPOSITORY:$IMAGE_TAG
+          sudo docker-compose -f docker-compose.prod.yml up -d
+        ENDSSH
