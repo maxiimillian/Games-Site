@@ -32,7 +32,7 @@ jobs:
       id: build-image
       run: |
         # Build a docker container and push it to docker
-        docker build -t $DOCKER_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg PORT=$PORT --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg ALLOWED_URL: $ALLOWED_URL ./backend/
+        docker build -t $DOCKER_REPOSITORY:$IMAGE_TAG --build-arg DB_PATH=$DB_PATH --build-arg PORT=$PORT --build-arg BOARD_DB_PATH=$BOARD_DB_PATH --build-arg ALLOWED_URL=$ALLOWED_URL ./backend/
         docker push $DOCKER_REPOSITORY/:$IMAGE_TAG
 
     - name: Deploy new container on linode
