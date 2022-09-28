@@ -54,7 +54,7 @@ jobs:
       with:
         host: ${{ secrets.HOSTING_IP }}
         username: root
-        key: ${{ secrets.KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "./docker-compose.yml"
         target: "/app"
 
