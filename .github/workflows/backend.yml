@@ -46,24 +46,24 @@ jobs:
         push: true
         tags: maxiimillian/test:backend
 
-    - name: Add the private SSH key to the ssh-agent
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      run: |
-        mkdir -p ~/.ssh
-        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+    - name: Set up the docker compose
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOSTING_IP }}
+        username: root
+        key: ${{ secrets.KEY }}
+        source: "./docker-compose.yml"
+        target: "/app"
 
-    - name: Deploy new container on linode
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      run: |
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.HOSTING_IP }} 'mkdir -p app' << 'ENDSSH'
-        scp -o StrictHostKeyChecking=no -r ./docker-compose.yml root@${{ secrets.HOSTING_IP }}:/app
-        ssh -o StrictHostKeyChecking=no root@${{ secrets.HOSTING_IP }} << 'ENDSSH'
+    - name:  Deploy new container on linode
+      uses: appleboy/ssh-action@master
+      with:
+        host: {{ secrets.HOSTING_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd app
           cd /app
           docker login -u $USER -p $DOCKER_TOKEN
           docker pull $DOCKER_REPOSITORY:$IMAGE_TAG
           sudo docker-compose -f docker-compose.yml up -d
-        ENDSSH
