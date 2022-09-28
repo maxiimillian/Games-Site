@@ -44,8 +44,8 @@ jobs:
           BOARD_DB_PATH=$BOARD_DB_PATH
           ALLOWED_URL=$ALLOWED_URL
         push: true
-        tags: $DOCKER_REPOSITORY:$IMAGE_TAG
-        
+        tags: maxiimillian/test:backend
+
     - name: Deploy new container on linode
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
