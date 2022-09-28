@@ -51,7 +51,7 @@ jobs:
       with:
         host: ${{ secrets.HOSTING_IP }}
         username: root
-        password: ${{ secrets.SSH_PASSWORD }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /app
           docker login -u $USER -p ${{ secrets.DOCKER_TOKEN }}
