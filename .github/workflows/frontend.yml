@@ -50,10 +50,14 @@ jobs:
         ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
 
     - name: Set up the docker compose
-      run: |
-        TEMP=$(mktemp)
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > $TEMP
-        ssh -o 'StrictHostKeyChecking no' -i $TEMP root@${{ secrets.HOSTING_IP }} 'bash -s' < docker-compose.yml
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOSTING_IP }}
+        username: root
+        port: 80
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "./docker-compose.yml"
+        target: "/app"
 
     - name:  Deploy new container on linode
       uses: appleboy/ssh-action@master
