@@ -1,10 +1,16 @@
 version: "3.7"
 services:
   frontend:
-    image: maxiimillian/test:frontend
+    image: index.docker.io/maxiimillian/test:frontend
     ports:
       - "3000:3000"
   backend:
-    image: maxiimillian/test:backend
+    image: index.docker.io/maxiimillian/test:backend
     ports:
       - "3002:3002"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock  
+     - /root/.docker/config.json:/config.json
+    command: --interval 30
