@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import styles from "../../styles/gamecreator.module.scss";
 
-function CreationForm(props) {
+function SudokuForm(props) {
     const [time, setTime] = useState(5);
     const [players, setPlayers] = useState(2);
     const [difficulty, setDifficulty] = useState("easy");
@@ -61,26 +61,10 @@ function CreationForm(props) {
                     <label htmlFor="players">Players: <b>{players}</b></label>
                     <input type="range" name="players" value={players} min="1" max="4" onChange={(e) => setPlayers(e.target.value)}></input>
                 </div>
-                <button type="submit" className={styles["create-form-submit"]}>Create Game</button>
+                <button type="submit" className="submit">Create Game</button>
             </form>
         </section>
     )
 }
 
-export default CreationForm;
-
-/* <div className={styles["block-container"]}>
-                <div className={styles["create-container"]}>
-                    <div style={{dispaly: "flex", flexDirection: "column"}}>
-                        <h2>Create Game</h2>
-                        <select value={difficulty} onChange={(e) => handleDifficulty(e)} className={styles["create-selector"]}>
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
-                            <option>Extreme</option>
-                            <option>Test</option>
-                        </select>
-                        <Link to={`/sudoku/create/?create=true&difficulty=${difficulty}`}><button>Create</button></Link>
-                    </div>
-                </div>
-            </div>*/
+export default SudokuForm;

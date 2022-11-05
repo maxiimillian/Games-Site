@@ -1,0 +1,31 @@
+@import url('https://css.gg/corner-down-right.css');
+@import './variables.scss';
+
+.supporter-name {
+    color: $text-primary;
+    font-size: 1.1em;
+}
+
+.supporter-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 95%;
+}
+
+.supporter-link-container {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 90%;
+    color: $icon-colour;
+}
+
+.supporter-date {
+    color: #cacaca;
+    margin-left: 10px;
+}
+
+.supporter-link {
+    margin-left: 10px;
+}

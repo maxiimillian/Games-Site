@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  frontend:
+    image: maxiimillian/test:frontend
+    ports:
+      - "3000:3000"
+  backend:
+    image: maxiimillian/test:backend
+    ports:
+      - "3002:3002"

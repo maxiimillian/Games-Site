@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 
-function Icon() {
+function Icon({ width, height}) {
     return (
         <div className="logo-container">
-            <Link href="/"><Image src="/logo.png" className="logo" width="100%" height="100%" alt="website icon" /></Link>
+            <Link href="/"><Image src="/logo.png" className="logo" width={width} height={height} alt="website icon" /></Link>
         </div>
     )
 }

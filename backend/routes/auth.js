@@ -1,12 +1,12 @@
-var express = require('express')
-var connection = require("../connection")
+const express = require('express')
+const connection = require("../connection")
 
 const createUser = require("../database/createUser");
 const refreshToken = require("../database/refreshToken");
 const loginUser = require("../database/loginUser");
 const getProfile = require("../database/getProfile");
 
-var router = express.Router()
+const router = express.Router()
 console.log("auth")
 
 router.use(function(req, res, next){

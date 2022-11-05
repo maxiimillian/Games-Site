@@ -5,12 +5,11 @@ var crypto = require("crypto");
 module.exports = async function refreshToken(token, callback) {
     try {
         if (token) {
+            console.log(token, TokenModel);
             TokenModel.findOne({token: token}, function (err, current_token) {
-      
               if (err) {
-                console.log("12");
-                throw err;
-
+                console.log("126", err);
+                return callback(err, null)
               } else if (current_token == null) {
 
                     let information = {token: crypto.randomBytes(20).toString('hex'), user_id: "GA"+crypto.randomBytes(20).toString('hex')}
@@ -18,7 +17,7 @@ module.exports = async function refreshToken(token, callback) {
                     TokenModel.create(information, (err, new_token) => {
                         if (err){
                             console.log("1");
-                            throw err;
+                            return callback(err, null)
                         }
                         console.log("12");
                         return callback(null, new_token.token)
@@ -35,7 +34,7 @@ module.exports = async function refreshToken(token, callback) {
             TokenModel.create(information, (err, token) => {
               if (err) {
                   console.log("13");
-                  throw err;
+                  return callback(err, null)
               }
               console.log("144442");
               return callback(null, token.token)

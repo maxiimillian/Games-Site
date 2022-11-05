@@ -2,9 +2,9 @@
 
 .waiting-container {
     margin: auto;
-    width: 80%;
+    width: 40%;
 
-    @media (min-width: $small) {
+    @media (max-width: $small) {
         width: 100%;
         box-sizing: border-box;
     }
@@ -12,11 +12,7 @@
 
 .waiting-subcontainer {
     margin: auto;
-    width: 50%;
-
-    @media (min-width: $small) {
-        width: 100%;
-    }
+    width: 100%;
 }
 
 .input-container {

@@ -2,7 +2,7 @@
 
 .create-container {
     background-color: $green-box;
-    width: 40%;
+    width: 30%;
     left: 0;
     right: 0;
     top: 5%;
@@ -45,21 +45,4 @@
 
 .create-form label {
     margin: 0px 10px 10px 0px;
-}
-
-.create-form-submit {
-    border-radius: $border-radius;
-    background-color: $submit;
-    color: black;
-    width: 90%;
-    margin: 20px auto;
-    padding: 10px;
-    font-size: 1.2em;
-    font-weight: 600;
-}
-
-.create-form-submit:hover {
-    opacity: 0.5;
-    background-color: $submit-hover;
-    color: $submit-hover-text;
 }

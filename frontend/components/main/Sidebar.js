@@ -10,7 +10,7 @@ function Sidebar() {
     return (
             <div className="left-top-container">
                 <div className="left-container">
-                    <Icon />
+                    <Icon width={"100%"} height={"100%"}/>
                 </div>
                 <div className={styles["left-subcontainer"]}>
                     <div className={styles["left-options-container"]}>

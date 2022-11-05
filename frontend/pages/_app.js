@@ -4,9 +4,13 @@ import "../styles/buttons.scss";
 import "../styles/slider.scss";
 import React from 'react';
 import Head from "next/head";
-
 import { SoundProvider } from "../contexts/soundContext";
+import Header from "../components/main/Header";
 import useAuth, { AuthProvider } from "../contexts/authContext";
+
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+config.autoAddCss = false;
 
 function baseApp({ Component, pageProps }) {
   
@@ -24,6 +28,7 @@ function baseApp({ Component, pageProps }) {
               <meta name="og:site_name" content={"Playholdr"} />
               <meta name="og:description" content={"Features several online games. Free-to-play, no accounts needed"} />
           </Head>
+        <Header />
         <div className="top-container">                 
             <Component {...pageProps} />
         </div>

@@ -133,15 +133,24 @@ button {
 }
 
 .submit {
-    padding: 10px;
-    margin: 20px 0;
-    color: white;
-    font-weight: 500;
+    border-radius: $border-radius;
     background-color: $submit;
-    font-size: 1.3em;
+    color: black;
+    width: 90%;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: 600;
+    border: 3px solid transparent;
 }
 
-.control-button:hover, .submit:hover {
+.submit:hover {
+    background-color: #bdac6c;
+    color: $submit-hover-text;
+    box-shadow: none;
+}
+
+.control-button:hover {
     background-color: $submit-hover;
     color: $submit-hover-text;
 }

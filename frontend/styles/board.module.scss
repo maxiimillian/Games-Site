@@ -4,8 +4,8 @@ $overlay-colour: #c6f0bd;
 
 .board-top-container {
     display: grid;
-    grid-template: "sidebar board rematch" "sidebar board chatbox" "sidebar board chatbox";
-    grid-template-columns: 20% 55% 25%;
+    grid-template: "board rematch" "board chatbox" "board chatbox";
+    grid-template-columns: 75% 25%;
     grid-template-rows: 100px;
     height: 100%;
     border-radius: 15px;
@@ -25,8 +25,8 @@ $overlay-colour: #c6f0bd;
     display: flex;
     flex-direction: column;
     background-color: #303030;
-    width: 30vw;
-    height: 30vw;
+    width: 35vw;
+    height: 35vw;
     font-size: 2em;
     border: solid black 3px;
     box-sizing: border-box;

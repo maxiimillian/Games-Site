@@ -16,7 +16,7 @@ module.exports = async function getProfile(token, callback) {
                 }
 
                 UserModel.findOne({user_id: tokenObj.user_id}, function(err, user) {
-                    console.log("TOK => ", tokenObj, "USER => ", user);
+                    console.log("TOK => ", tokenObj, "USERS => ", user);
                     if (err) {
                         throw err;
                     }
