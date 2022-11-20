@@ -34,18 +34,26 @@ function getIndex(board) {
 
 module.exports = 
     class Board {
-        constructor(host_id, difficulty, time, max_player_count) {
-            this.id = crypto.randomBytes(20).toString('hex');;
-            this.host = host_id;
-            this.players = {};
-            this.difficulty = difficulty;
-            this.board = null;
-            this.index = null;
-            this.boards = {};
-            this.started = false;
-            this.rematch = [];
-            this.max_player_count = max_player_count;
-            this.time = time;
+        constructor({unsolved = null, solved = null, baseClues = null}) {
+            this.unsolved = unsolved;
+            this.solved = solved
+            this.baseClues = baseClues;
+        }
+
+        create(difficulty) {
+            try {
+                utils.get_board(difficulty, (err, board) => {
+                    if (err || board == null) {
+                        throw err;
+                    } else {
+                        this.unsolved = board.unsolved;
+                        this.solved = board.solved;
+                        this.baseClues = getIndex(board.unsolved);
+                    }
+                })
+            } catch (err) {
+                this.set_default();
+            }
         }
 
         init(player_ids, callback) {
@@ -97,111 +105,5 @@ module.exports =
             }
         }
 
-        add_player(user_id, callback) {
-            if (Object.keys(this.players).length >= this.max_player_count) {
-                callback(new Error("Player limit reached")); 
 
-            } else {
-                this.players[user_id] = 0;
-                this.boards[user_id] = this.board.unsolved;
-                try {
-                    utils.get_user_information(user_id, (err, user) => {
-                        if (err) {
-                            throw err;
-                        }
-                        callback(null, user)
-                    })
-                } catch (err) {
-                    callback(err);
-                }
-                
-            }
-        }
-
-        remove_player(user_id) {
-            delete this.players[user_id];
-        }
-
-        make_move(user_id, index, value, callback) {;
-
-            if (DEFAULT_INDEX.includes(index)) {
-                callback(new Error("Cannot change base number"));
-
-            } else if (value < 0 || value > 9) {
-                callback(new Error("Invalid value"));
-
-            } else if (typeof this.players[user_id] == "int"){
-
-                console.log("CANT FIND ", user_id, this.players);
-                callback(new Error("Unknown Player"));
-            
-            } else if (this.boards[user_id][parseInt(index)] == value) {
-                callback(new Error("Nothing Changed"), null);
-            } else {
-                let current_board = this.boards[user_id];
-                this.boards[user_id] = setCharAt(current_board, parseInt(index), value);
-
-                if (value == 0) {
-                    this.players[user_id] -= 1;
-                } else {
-                    this.players[user_id] += 1;
-                }
-
-                if (this.boards[user_id] == this.board.solved) {
-                    callback(null, true);
-                } else {
-                    callback(null, null);
-                }
-                
-            }
-        }
-
-        add_rematch(user_id, callback) {
-            if (!Object.keys(this.rematch).includes(user_id)) {
-                if (this.rematch.length+1 == PLAYER_LIMIT) {
-                    callback(false, true);
-                } else {
-                    this.rematch.push(user_id);
-                    callback(false, false);
-                }
-
-            } else {
-                this.rematch = {};
-                callback(true, false);
-            }
-        }
-
-        remove_rematch(user_id) {
-            if (this.rematch.includes(user_id)) {
-                this.rematch.findIndex(x => this.rematch.splice(x, 1));
-            }
-        }
-
-        get_opponent(user_id, callback) {
-            let opponent = {}
-            
-            Object.keys(this.players).map(player_id => {
-                console.log(player_id);
-                if (player_id != user_id) {
-                    get_user_information(player_id, (err, user) => {
-                        if (err) {
-                            callback({});
-                        } else {
-                            opponent = {"score": this.players[player_id], "user": user};
-                            callback(opponent)
-                        }
-                    })
-                    
-                } 
-            });
-
-        }
-
-        start() {
-            this.started = true;
-        }
-
-        end() {
-            this.started = false;
-        }
     }
