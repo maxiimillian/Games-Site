@@ -1,6 +1,7 @@
 const TokenModel = require('../models/Token');
 const utils = require("../utils");
 const Board = require("../modules/board");
+const SudokuGame = require("../modules/games/SudokuGame");
 const { get_user_information } = require('../utils');
 
 
@@ -41,9 +42,9 @@ module.exports = function(io, app, server) {
 			callback(null, null)
 			return;
 		}
-
-		let board = new Board(user_id, difficulty, time, player_count);
-		let room_code = utils.generate_room_code(6);
+		
+		let sudokuGame = new SudokuGame(user_id, player_count, difficulty, time);
+		let roomCode = server.addGame(sudokuGame);
 
 		callback(null, board, room_code);
 	}
@@ -114,15 +115,8 @@ module.exports = function(io, app, server) {
 							res.status(400).json({success:false, message: "400 <Something went wrong>"});
 							res.end();
 						} else {
-							room_track_sudoku[user_id] = room_code;
-							
-							board.init([], async () => {
-								boards[room_code] = board;
-								room_track_sudoku[user_id] = room_code;
-
-								res.status(200).json({success:true, message: room_code, code: room_code});
-								res.end();
-							});
+							res.status(200).json({success:true, message: room_code, code: room_code});
+							res.end();
 						}
 					});
 				}
@@ -134,14 +128,11 @@ module.exports = function(io, app, server) {
 
 	app.get("/sudoku/details/:code", (req, res) => {
 		let code = req.params["code"];
-		console.log("requesting code => ", code);
-		let details = {"time": null, "players": null, "difficulty": null, "host": null}
+		let board = server.room_tracker[code];
 
-		let board = boards[code];
-		console.log("getting details");
 		if (board) {
 			details["time"] = board.time;
-			details["players"] = board.max_player_count;
+			details["players"] = board.playerLimit;
 			details["difficulty"] = board.difficulty;
 
 			console.log(details);
@@ -152,31 +143,11 @@ module.exports = function(io, app, server) {
 				} else {
 					details["host"] = user.username;
 				}
-				console.log(details);
 				res.status(200).json({success:true, details: details})
 			})
-			
-
-			
 		} else {
 			res.status(400).json({success:false, message: "Game not found"});
 		}
-	});
-
-	io.use((socket, next) => {
-		let token = socket.handshake.auth.token;
-
-        TokenModel.findOne({token: token}, function (err, tokenObj) {
-            if (err || tokenObj == null) {
-                next(new Error("Invalid Token"));
-            } else {
-				get_socket_information(socket, (token, userId, user) => {
-					socket.data = {"token": token, "userId": userId, "user": user};
-					next();
-				})
-			}
-
-        });
 	});
 
 	io.on("connection", socket => {
@@ -209,65 +180,12 @@ module.exports = function(io, app, server) {
 
 		});*/
 
+		//NOTE: It might be better to have add_player in the game class
+		//And server could offer methods like is_player_in_game to do the 
+		//checks. Game could also user server.io directly but im not sure if
+		//its a good idea to have it used like that
 		socket.on("join", (room_code) => {
-			//console.log(room_track_sudoku);
-			socket.emit("err", "test");
-			get_socket_information(socket, (token, user_id, user) => {
-				let room = io.adapter.rooms.get(room_code);
-
-				//For when game is created but no ones joined, meaning the socket room doesnt yet exist
-				//Need to check that room_code isn't null incase user_id also doesnt exist in room track
-				if (!room && room_track_sudoku[user_id] == room_code && room_code) { 
-					console.log(room_track_sudoku);
-					socket.join(room_code);
-					room = io.adapter.rooms.get(room_code);
-					//console.log("r", room);
-				}
-
-				console.log("room: ", room, room_code)
-				
-				if (room == null) {
-					socket.emit("err", "Room not found");
-					console.log(4244);
-				} else if (user_id == null) {
-					socket.emit("err", "user not found")
-					console.log(134);
-					// for rejoining after leaving the game, second condition to protect against user_id not existing and null room code	
-				} else if (room_track_sudoku[user_id] == room_code && room_code ) { 
-					socket.join(room_code);
-					send_game_state(socket, user_id, room_code);
-					boards[room_code].start();
-				} else if (room.length >= SUDOKU_PLAYER_LIMIT) {
-					socket.emit("err", "Room is full");
-					console.log(421313);
-				} else if (user == null) {
-					socket.emit("err", "User Information Error");
-					console.log(93243244);
-				} else {
-					console.log(4);
-					let board = boards[room_code];
-					boards[room_code].add_player(user_id, (err, user) => {
-						if (err) {
-							console.log("ERR", err, user);
-							socket.emit("err", "error");
-							console.log(129012);
-						} else {
-							console.log(6);
-							socket.join(room_code);
-							room_track_sudoku[user_id] = room_code;
-
-							io.to(room_code).emit("joined", user);
-
-							if (io.adapter.rooms.get(room_code).size == SUDOKU_PLAYER_LIMIT) {
-								console.log(8);
-								boards[room_code].start();
-								io.to(room_code).emit("start", {"board": board.board.unsolved, "base": board.index})
-							}
-						}
-					})
-					
-				}
-			});
+			server.add_player_to_game(room_code);
 		});
 
 		socket.on("move", ( index, value) => {

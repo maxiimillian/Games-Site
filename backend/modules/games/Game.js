@@ -6,21 +6,20 @@ module.exports =
     //Things like joining/leaving/chat/room_codes/hosts/etc
     //Some of these methods should be overridden by the class that implements this
     class Game {
-        constructor(io, roomCode, nameSpace, hostId, playerLimit) {
+        constructor(io, hostId, playerLimit) {
             if (this.constructor == Game) {
                 throw new Error("This class should not be created on its own. Implement it in another class")
             }
             //add errors for player limit = 0 etc
-            this.roomCode = roomCode;
-            this.nameSpace = nameSpace;
-            this.hostId = hostId;
-            this.playerLimit = playerLimit;
+            this.roomCode;
+            this.host_id = hostId;
+            this.player_limit = playerLimit;
             this.players = [];
             this.status = "pending";
             this.io = io;
         }
 
-        sendMessage(socket, message) {
+        send_message(socket, message) {
             if (message.length > 230) {
                 return false;
             }
@@ -30,15 +29,10 @@ module.exports =
             return true;
         }
 
-        addPlayer(socket) {
+        add_player(user_id) {
             if (this.player.length != this.playerLimit) {
-                players.push(socket.user.id);
-                socket.join(this.room_code);
-                if (this.handleJoin(socket)) {
-                    io.to(room_code).emit("joined", {"user": socket.user});
-                }
-
-                return true; 
+                players.push(user_id);
+                return true;
             }
             return false;
         }
@@ -46,11 +40,16 @@ module.exports =
         //This can/should be overridden by the implementing class
         //Should return a boolean value to make sure addPlayer informs 
         //The rest of the room
-        handleJoin() {
-            throw new Error("handleJoin has not been implemented");t
+        handle_join(socket) {
+            let user = socket.user;
+            let success = this.addPlayer(user.id);
+            if (success) {
+
+            }
+            throw new Error("handleJoin has not been implemented");
         }
 
-        removePlayer() {
+        remove_player() {
             let index = this.players.indexOf(playerId);
             if (index > -1) {
                 this.players.splice(index, 1);
@@ -61,12 +60,12 @@ module.exports =
         }
 
         //This can/should be ovverriden by implementing class
-        handleLeave () {
+        handle_leave () {
             throw new Error("handleLeave has not been implemented");
         }
 
 
-        isReady() {
+        is_ready() {
             return this.players.length == this.playerLimit;
         }
 
@@ -75,7 +74,7 @@ module.exports =
             this.handleStart();
         }
 
-        handleStart() {
+        handle_start() {
             throw new Error("handleStart has not been implemented");
         }
 
@@ -89,4 +88,12 @@ module.exports =
             throw new Error("handleEnd has not been implemented");
         }
 
+        hasPlayer(userId) {
+            this.players.forEach(playerId => {
+                if (userId == playerId) {
+                    return true;
+                }
+            })
+            return false;
+        }
     }

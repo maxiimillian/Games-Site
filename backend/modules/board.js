@@ -41,19 +41,21 @@ module.exports =
         }
 
         create(difficulty) {
-            try {
-                utils.get_board(difficulty, (err, board) => {
-                    if (err || board == null) {
-                        throw err;
-                    } else {
-                        this.unsolved = board.unsolved;
-                        this.solved = board.solved;
-                        this.baseClues = getIndex(board.unsolved);
+                return new Promise((resolve, reject) => {
+                    try {
+                        utils.get_board(difficulty, (err, board) => {
+                            if (err || board == null) {
+                                throw err;
+                            } else {
+                                this.unsolved = board.unsolved;
+                                this.solved = board.solved;
+                                this.baseClues = getIndex(board.unsolved);
+                            }
+                        })
+                    } catch (err) {
+                        this.set_default();
                     }
-                })
-            } catch (err) {
-                this.set_default();
-            }
+                }) 
         }
 
         init(player_ids, callback) {

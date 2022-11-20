@@ -15,17 +15,15 @@ function get_socket_information(socket, callback) {
 		if (err || tokenObj == null) {
 			next(new Error("Invalid Token"));
 		} else {
-			get_socket_information(socket, (token, userId, user) => {
-				socket.data.user = {"token": token, "id": userId, "profile": user};
-				next();
-			})
+			socket.data.user = {"token": token, "id": userId, "profile": user};
+			next();
 		}
 
 	});
 }
 
 module.exports = function(io, app) {
-	const server = new ServerInformation();
+	const server = new ServerInformation(io);
 
 	io.use((socket, next) => {
 		let token = socket.handshake.auth.token;

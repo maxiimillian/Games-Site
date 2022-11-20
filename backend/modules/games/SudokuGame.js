@@ -1,4 +1,5 @@
 const Game = require("./Game");
+const utils = require("../utils");
 
 function send_game_state(socket, board, opponents) {
     socket.emit("state", board, opponents);
@@ -14,7 +15,7 @@ module.exports =
             this.time = time;
         }
 
-        getOpponents(playerId) {
+        get_opponents(playerId) {
             let opponents = [];
             this.players.forEach(opponentId => {
                 if (opponentId != playerId) {
@@ -25,7 +26,7 @@ module.exports =
         }
 
         //takes in a time in milliseconds and will return after a timeout or the board has been created
-        waitForBoard(timeout) {
+        wait_for_board(timeout) {
             const start = Date.now();
 
             function waitForBoardPromise(resolve, reject) {
@@ -41,9 +42,13 @@ module.exports =
             return new Promise(waitForBoardPromise);
         }
 
-        handleJoin(socket) {
+        handle_join(socket) {
+            let success = super().handleJoin(socket);
+            if (success) {
+
+            }
             //Board might not exist yet
-            this.waitForBoard(10000).then(() => {
+            this.wait_for_board(10000).then(() => {
                 if (this.boards[socket.user.id]) {
                     let opponents = this.getOpponents(user.id);
 					send_game_state(socket, this.boards[socket.user.id], opponents);
@@ -55,7 +60,7 @@ module.exports =
             return false;
         }
 
-        handleLeave(socket) {
+        handle_leave(socket) {
             let userId = socket.user.id;
             if (this.boards[userId]) {
                 delete this.boards[userId];
@@ -66,7 +71,7 @@ module.exports =
             
         }
 
-        handleStart() {
+        handle_start() {
             //Board must always be created before this 
             //Since players need to join so no need to wait
             this.io.to(this.roomCode).emit("start", {"board": this.puzzle.unsolved, "base": this.puzzle.baseClues})
