@@ -22,6 +22,6 @@ ENV PORT=$PORT
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
-EXPOSE 3001
+EXPOSE 3002
 
 CMD ["node", "index.js"]

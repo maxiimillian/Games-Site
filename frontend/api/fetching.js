@@ -1,6 +1,12 @@
 import getConfig from 'next/config';
 import useAuth from "../contexts/authContext";
 const { publicRuntimeConfig } = getConfig();
+
+export const fetchData = (path, params) => {
+  const newPromise = fetcher(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/${path}?` + new URLSearchParams(params));
+  return wrapPromise(supportersPromise);
+}
+
 export const fetchSupporters = () => {
   const supportersPromise = fetcher(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/supporters`);
   return wrapPromise(supportersPromise);

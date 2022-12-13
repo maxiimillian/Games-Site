@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = require("./app");
 const port = process.env.PORT || 3001;
-console.log(process.env.DB_PATH);
+process.env.TZ = "Canada/Eastern";
 mongoose.connect(process.env.DB_PATH, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let server = app.listen(port, () => console.log('yoooo App listening on port ' + port));

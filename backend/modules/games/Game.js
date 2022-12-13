@@ -1,5 +1,5 @@
-const { get_user_information } = require("../utils");
-const utils = require("../utils");
+const { get_user_information } = require("../../utils");
+const utils = require("../../utils");
 
 module.exports =
     //Parent class to implement shared functionality among different game types

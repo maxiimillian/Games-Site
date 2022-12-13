@@ -12,41 +12,35 @@ module.exports = function(io, app, server) {
 	const SUDOKU_PLAYER_LIMIT = 2;
 	const DIFFICULTIES = ["easy", "medium", "hard", "extreme", "test"];
 
-    function get_socket_information(socket, callback) {
-
+	function get_socket_information(socket, callback) {
 		let token = socket.handshake.auth.token;
-
-		TokenModel.findOne({token: token}, (err, tokenObj) => {
-			let room_code = room_track_sudoku[tokenObj.user_id];
-
-			if (!err && tokenObj) {
-				utils.get_user_information(tokenObj.user_id, (err, user) => {
-					if (err || user == null) {
-						callback(tokenObj.token, tokenObj.user_id, null, room_code);
-					} else {
-						callback(tokenObj.token, tokenObj.user_id, user, room_code);
-					}
-				});
-				return;
-				
+	
+		TokenModel.findOne({token: token}, function (err, token_obj) {
+			let user_id = token_obj.user_id;
+	
+			if (err || token_obj == null) {
+				callback(new Error("Invalid Token"));
+			} else {
+				socket.data.user = {"token": token, "id": user_id};
+				callback();
 			}
-
-			callback(null, null, null, room_code);
-		})
+	
+		});
 	}
 
 	function create_game(user_id, difficulty, time, player_count, callback) {
 		difficulty = difficulty.toLowerCase()
-
+		
 		if (!DIFFICULTIES.includes(difficulty)) {
 			callback(null, null)
 			return;
 		}
-		
-		let sudokuGame = new SudokuGame(user_id, player_count, difficulty, time);
-		let roomCode = server.addGame(sudokuGame);
+		console.log("C D: ", difficulty);
 
-		callback(null, board, room_code);
+		let sudoku_game = new SudokuGame(io, user_id, player_count, difficulty, time);
+		let room_code = server.add_game(sudoku_game);
+
+		callback(null, room_code);
 	}
 
 	function cleanup_game(room_code) {
@@ -98,6 +92,7 @@ module.exports = function(io, app, server) {
 		let player_count = req.body.player_count;
 		let token = req.body.auth;
 
+		console.log("S D: ", difficulty);
 		if (token == null) {
 			res.status(401).json({success:false, message: "401 <Missing Authentication>"});
 			res.end();
@@ -110,7 +105,7 @@ module.exports = function(io, app, server) {
 					res.status(400).json({success:false, message: "400 <Something went wrong>"});
 					res.end();
 				} else {
-					create_game(user_id, difficulty, time, player_count, (game_err, board, room_code) => {
+					create_game(user_id, difficulty, time, player_count, (game_err, room_code) => {
 						if (game_err) {
 							res.status(400).json({success:false, message: "400 <Something went wrong>"});
 							res.end();
@@ -127,17 +122,16 @@ module.exports = function(io, app, server) {
 
 
 	app.get("/sudoku/details/:code", (req, res) => {
-		let code = req.params["code"];
-		let board = server.room_tracker[code];
+		let room_code = req.params["code"];
+		let game = server.get_game(room_code);
 
-		if (board) {
-			details["time"] = board.time;
-			details["players"] = board.playerLimit;
-			details["difficulty"] = board.difficulty;
+		if (game) {
+			details = {};
+			details["time"] = game.time;
+			details["players"] = game.player_limit;
+			details["difficulty"] = game.difficulty;
 
-			console.log(details);
-
-			get_user_information(board.host, (err, user) => {
+			get_user_information(game.host_id, (err, user) => {
 				if (err) {
 					details["host"] = "Unknown";
 				} else {
@@ -148,6 +142,17 @@ module.exports = function(io, app, server) {
 		} else {
 			res.status(400).json({success:false, message: "Game not found"});
 		}
+	});
+
+	io.use((socket, next) => {
+		get_socket_information(socket, (err) => {
+			if (err) {
+				next(new Error("Could not authenticate"));
+			} else {
+				next();
+			}
+		})
+
 	});
 
 	io.on("connection", socket => {
@@ -185,7 +190,7 @@ module.exports = function(io, app, server) {
 		//checks. Game could also user server.io directly but im not sure if
 		//its a good idea to have it used like that
 		socket.on("join", (room_code) => {
-			server.add_player_to_game(room_code);
+			server.add_player_to_game(room_code, socket);
 		});
 
 		socket.on("move", ( index, value) => {

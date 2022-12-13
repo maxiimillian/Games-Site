@@ -1,0 +1,142 @@
+@import './variables.scss';
+
+
+
+.calender {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+
+.day-container:nth-last-child(-n+6) {
+  visibility: hidden;
+}
+
+.day-container {
+    position: relative;
+    width: 12%;
+    height: 0;
+    padding-bottom: 12%;
+    background-color: #2A5333;
+    border:1px solid black;
+    display: flex;
+    justify-content: center;
+    border-radius: $border-radius;
+    margin: 10px;
+    transition: ease-in-out 0.3s;
+    border: 10px solid $cancel-red;
+    border-image: repeating-linear-gradient(
+        45deg,
+        $cancel-red,
+        $cancel-red 10px,
+        white 10px,
+        white 20px
+      )
+      10;
+    color: white;
+    overflow: hidden;
+    @media screen and (max-width: 1500px) {
+      width: 100%;
+      padding-bottom: 100%;
+  }
+}
+
+.day-container:hover {
+    box-shadow: -11px 10px 2px -3px $green-box;
+    transform: translate(0, -10px);
+    cursor: pointer;
+}
+
+.day-container:hover > .snow {
+    display: unset;
+}
+
+.day-image {
+    max-width:100%;
+}
+
+.day-number {
+    font-size: 1.5em;
+    position: absolute;
+    top: 50%;
+    margin-top: -1em;
+}
+
+.open-animation {
+  animation: shake 1s;
+}
+
+.advent-title {
+  margin-left: 20px;
+}
+
+.snow {
+    position: absolute;
+    width: 100%;
+    height: 99%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 50 50' style='enable-background:new 0 0 50 50%3B' xml:space='preserve'%3E%3Cstyle type='text/css'%3E.st1%7Bopacity:0.3%3Bfill:%23FFFFFF%3B%7D.st3%7Bopacity:0.1%3Bfill:%23FFFFFF%3B%7D%3C/style%3E%3Ccircle class='st1' cx='5' cy='8' r='1'/%3E%3Ccircle class='st1' cx='38' cy='3' r='1'/%3E%3Ccircle class='st1' cx='12' cy='4' r='1'/%3E%3Ccircle class='st1' cx='16' cy='16' r='1'/%3E%3Ccircle class='st1' cx='47' cy='46' r='1'/%3E%3Ccircle class='st1' cx='32' cy='10' r='1'/%3E%3Ccircle class='st1' cx='3' cy='46' r='1'/%3E%3Ccircle class='st1' cx='45' cy='13' r='1'/%3E%3Ccircle class='st1' cx='10' cy='28' r='1'/%3E%3Ccircle class='st1' cx='22' cy='35' r='1'/%3E%3Ccircle class='st1' cx='3' cy='21' r='1'/%3E%3Ccircle class='st1' cx='26' cy='20' r='1'/%3E%3Ccircle class='st1' cx='30' cy='45' r='1'/%3E%3Ccircle class='st1' cx='15' cy='45' r='1'/%3E%3Ccircle class='st1' cx='34' cy='36' r='1'/%3E%3Ccircle class='st1' cx='41' cy='32' r='1'/%3E%3C/svg%3E");
+    background-position: 0px 0px;
+    animation: animatedBackground 5s linear infinite;
+    display: none;
+  }
+  
+  @keyframes animatedBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 0px 300px;
+    }
+  }
+  @keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg) scale(105%); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg) scale(110%); }
+    20% { transform: translate(-3px, 0px) rotate(1deg) scale(115%); }
+    30% { transform: translate(3px, 2px) rotate(0deg) scale(120%); }
+    40% { transform: translate(1px, -1px) rotate(1deg) scale(120%); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg) scale(120%); }
+    60% { transform: translate(-3px, 1px) rotate(0deg) scale(120%); }
+    70% { transform: translate(3px, 1px) rotate(-1deg) scale(120%); }
+    80% { transform: translate(-1px, -1px) rotate(1deg) scale(120%); }
+    90% { transform: translate(1px, 2px) rotate(0deg) scale(120%); }
+    100% { transform: translate(1px, -2px) rotate(-1deg) scale(120%); }
+  }
+
+  .day-expand {
+    position: absolute;
+    bottom: 10px;
+    right:25%;
+    left:50%;
+    margin-left:-38px;
+    width: 50px;
+    background-color: $cancel-red;
+    text-align: center;
+    padding: 10px;
+    opacity: 0.7;
+    border-radius: $border-radius;
+}
+
+.day-expand:hover {
+    opacity: 1;
+}
+  
+.advent-big-picture {
+    max-height: 44vw;
+    border: 10px solid $cancel-red;
+    border-image: repeating-linear-gradient(
+        45deg,
+        $cancel-red,
+        $cancel-red 10px,
+        white 10px,
+        white 20px
+      )
+      10;
+    margin: auto;
+}
+  
+.advent-big-picture-container {
+    display: flex;
+    justify-content: center;
+}

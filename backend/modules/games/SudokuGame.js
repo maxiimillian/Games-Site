@@ -1,5 +1,6 @@
 const Game = require("./Game");
-const utils = require("../utils");
+const utils = require("../../utils");
+const Board = require ("../board");
 
 function send_game_state(socket, board, opponents) {
     socket.emit("state", board, opponents);
@@ -7,19 +8,20 @@ function send_game_state(socket, board, opponents) {
 
 module.exports = 
     class SudukoGame extends Game {
-        constructor(roomCode, nameSpace, hostId, playerLimit, difficulty, time) {
-            super(roomCode, nameSpace, hostId, playerLimit);
+        constructor(nameSpace, host_id, player_limit, difficulty, time) {
+            super(nameSpace, host_id, player_limit);
+            console.log("SG D: ", difficulty);
             this.boards = {};
-            this.puzzle = new Board().create();
+            this.puzzle = new Board().create(difficulty);
             this.difficulty = difficulty;
             this.time = time;
         }
 
-        get_opponents(playerId) {
+        get_opponents(player_id) {
             let opponents = [];
-            this.players.forEach(opponentId => {
-                if (opponentId != playerId) {
-                    opponents.push(opponentId);
+            this.players.forEach(opponent_id => {
+                if (opponent_id != player_id) {
+                    opponents.push(opponent_id);
                 }
             })
             return opponents;
@@ -43,9 +45,9 @@ module.exports =
         }
 
         handle_join(socket) {
-            let success = super().handleJoin(socket);
+            let success = super.handleJoin(socket);
             if (success) {
-
+                e = ""
             }
             //Board might not exist yet
             this.wait_for_board(10000).then(() => {
@@ -53,7 +55,7 @@ module.exports =
                     let opponents = this.getOpponents(user.id);
 					send_game_state(socket, this.boards[socket.user.id], opponents);
                 } else {
-                    this.boards[socket.user.id] = new Board(this.puzzle.unsolved, null, this.puzzle.baseClues);
+                    this.boards[socket.user.id] = new Board(this.puzzle.unsolved, null, this.puzzle.base_clues);
                 }
                 return true;
             });
@@ -61,9 +63,9 @@ module.exports =
         }
 
         handle_leave(socket) {
-            let userId = socket.user.id;
-            if (this.boards[userId]) {
-                delete this.boards[userId];
+            let user_id = socket.user.id;
+            if (this.boards[useruser_idId]) {
+                delete this.boards[user_id];
                 return true;
             } else {
                 return false;
@@ -74,7 +76,7 @@ module.exports =
         handle_start() {
             //Board must always be created before this 
             //Since players need to join so no need to wait
-            this.io.to(this.roomCode).emit("start", {"board": this.puzzle.unsolved, "base": this.puzzle.baseClues})
+            this.io.to(this.roomCode).emit("start", {"board": this.puzzle.unsolved, "base": this.puzzle.base_clues})
         }
 
         //make a Board class that has a boards unsolved state, its indexes, and its solution.

@@ -34,10 +34,10 @@ function getIndex(board) {
 
 module.exports = 
     class Board {
-        constructor({unsolved = null, solved = null, baseClues = null}) {
+        constructor(unsolved = null, solved = null, base_clues = null) {
             this.unsolved = unsolved;
             this.solved = solved
-            this.baseClues = baseClues;
+            this.base_clues = base_clues;
         }
 
         create(difficulty) {
@@ -49,7 +49,7 @@ module.exports =
                             } else {
                                 this.unsolved = board.unsolved;
                                 this.solved = board.solved;
-                                this.baseClues = getIndex(board.unsolved);
+                                this.base_clues = getIndex(board.unsolved);
                             }
                         })
                     } catch (err) {
