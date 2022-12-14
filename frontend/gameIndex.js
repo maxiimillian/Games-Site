@@ -4,7 +4,7 @@ import ComingSoonForm from "./components/creationForms/ComingSoonForm";
 import AdventForm from "./components/creationForms/AdventForm";
 
 const gameIndex = [
-    {name: "Sudoku", imagePath: "/sudoku_board.png", render: () => <SudokuForm />},
+    {name: "Sudoku", imagePath: "/coming_soon.png", render: () => <ComingSoonForm />},
     {name: "Advent", imagePath: "/advent.png", render: () => <AdventForm />},
     {name: "Poker", imagePath: "/coming_soon.png", render: () => <ComingSoonForm />},
     {name: "Crossword", imagePath: "/coming_soon.png", render: () => <ComingSoonForm />},
