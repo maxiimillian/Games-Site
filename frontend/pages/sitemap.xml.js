@@ -1,9 +1,9 @@
 function Sitemap() {
-    return null;
+  return null;
 }
 
 export function getServerSideProps({ res }) {
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
             <loc>https://playholdr.com/</loc>
@@ -14,13 +14,13 @@ export function getServerSideProps({ res }) {
 
     </urlset>`;
 
-    res.setHeader('Content-Type', 'text/xml');
-    res.write(sitemap);
-    res.end();
+  res.setHeader("Content-Type", "text/xml");
+  res.write(sitemap);
+  res.end();
 
-    return {
-        props: {},
-    }
+  return {
+    props: {},
+  };
 }
 
 export default Sitemap;

@@ -5,10 +5,10 @@ on:
     branches:
       - production
 
-env:             
+env:
   $USER: maxiimillian
   $DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN}}
-  DOCKER_REPOSITORY: maxiimillian/test                
+  DOCKER_REPOSITORY: maxiimillian/test
   IMAGE_TAG: frontend
   NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
 
@@ -22,31 +22,31 @@ jobs:
     environment: production
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        context: ./frontend/
-        build-args: |
-          NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-        push: true
-        tags: maxiimillian/test:frontend
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend/
+          build-args: |
+            NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+          push: true
+          tags: maxiimillian/test:frontend
 
-    - name:  Deploy new container on linode
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOSTING_IP }}
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /app
-          docker login -u $USER -p ${{ secrets.DOCKER_TOKEN }}
-          docker-compose pull && docker-compose up -d 
+      - name: Deploy new container on linode
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTING_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /app
+            docker login -u $USER -p ${{ secrets.DOCKER_TOKEN }}
+            docker-compose pull && docker-compose up -d

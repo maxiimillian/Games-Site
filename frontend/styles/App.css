@@ -25,7 +25,6 @@ button:hover {
 
 .right-sub-container {
   padding: 10px;
-
 }
 
 .profile {
@@ -49,7 +48,6 @@ button:hover {
 .main-user-info {
   width: 74%;
   margin: 10px auto;
-
 }
 
 .main-user-container {
@@ -65,7 +63,7 @@ button:hover {
 }
 
 .settings {
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   align-self: center;
   padding: 0px 10px;
 }

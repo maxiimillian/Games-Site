@@ -1,16 +1,24 @@
 const CommentModel = require("../models/Comment");
 const PostModel = require("../models/Post");
-const VALID_TAGS = ["Sudoku", "Poker", "Crossword", "Tic-Tac-Toe", "Suggestions", "Bugs", "Other"];
+const VALID_TAGS = [
+  "Sudoku",
+  "Poker",
+  "Crossword",
+  "Tic-Tac-Toe",
+  "Suggestions",
+  "Bugs",
+  "Other",
+];
 /**
- * Class to fetch posts based of various parameters and 
+ * Class to fetch posts based of various parameters and
  * methods to make it easier to sort and format a response
  */
 class Posts {
-  constructor({ sortBy = 'date', direction = 'asc', query = '', tags = [] }) {
+  constructor({ sortBy = "date", direction = "asc", query = "", tags = [] }) {
     this.sortBy = sortBy.toLowerCase();
     this.direction = direction.toLowerCase();
     this.query = query;
-    this.tags = tags
+    this.tags = tags;
     this.posts = [];
   }
 
@@ -18,7 +26,7 @@ class Posts {
    * Takes in a value and inverts it if the order should be descending
    */
   _determineSortOrder(value) {
-    if (this.sortBy == 'desc') {
+    if (this.sortBy == "desc") {
       return value * -1;
     }
     return value;
@@ -30,18 +38,18 @@ class Posts {
   async getPosts() {
     let matchQuery = {
       $match: {
-        $or : [
-          {content: { "$regex": this.query, "$options": "i" }},
-          {title: { "$regex": this.query, "$options": "i" }}
-        ]
-      }
-    }
+        $or: [
+          { content: { $regex: this.query, $options: "i" } },
+          { title: { $regex: this.query, $options: "i" } },
+        ],
+      },
+    };
     if (this.tags.length != 0) {
       let tagsQuery = {
         $elemMatch: {
-            $in: this.tags
-        }
-      }
+          $in: this.tags,
+        },
+      };
       matchQuery["$match"]["tags"] = tagsQuery;
     }
     let posts = await PostModel.aggregate([
@@ -51,10 +59,10 @@ class Posts {
           from: "comments",
           let: { postId: "$_id" },
           pipeline: [{ $match: { $expr: { $eq: ["$$postId", "$post_id"] } } }],
-          as: "comment_count"
-        }
+          as: "comment_count",
+        },
       },
-      { $addFields: { comment_count: { $size: "$comment_count" }}}
+      { $addFields: { comment_count: { $size: "$comment_count" } } },
     ]).exec();
     this.posts = posts;
   }
@@ -117,26 +125,29 @@ class Posts {
   formatPosts() {
     for (let i = 0; i < this.posts.length; i++) {
       const tags = this.posts[i].tags;
-      this.posts[i].tags = tags.split(',');
+      this.posts[i].tags = tags.split(",");
     }
   }
 }
 
+module.exports = async function getFormPosts(
+  query,
+  sortBy,
+  direction,
+  tags,
+  callback
+) {
+  try {
+    const posts = new Posts({
+      query: query,
+      sortBy: sortBy,
+      direction: direction,
+      tags: tags,
+    });
 
-module.exports = async function getFormPosts(query, sortBy, direction, tags, callback) {
-
-    try {
-        const posts = new Posts({
-            query: query,
-            sortBy: sortBy,
-            direction: direction,
-            tags: tags,
-        })
-        
-        await posts.getPosts();
-        callback(null, posts.posts);
-
-    } catch (err) {
-        callback(err, null);
-    }
-}
+    await posts.getPosts();
+    callback(null, posts.posts);
+  } catch (err) {
+    callback(err, null);
+  }
+};

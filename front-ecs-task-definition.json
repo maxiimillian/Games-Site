@@ -1,24 +1,22 @@
 {
-    "family": "playholdr-frontend",
-    "executionRoleArn": "arn:aws:iam::598513850756:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "containerDefinitions": [
+  "family": "playholdr-frontend",
+  "executionRoleArn": "arn:aws:iam::598513850756:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "playholdr-frontend",
+      "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_frontend",
+      "portMappings": [
         {
-            "name": "playholdr-frontend",
-            "image": "598513850756.dkr.ecr.us-east-2.amazonaws.com/playholdr_frontend",
-            "portMappings": [
-                {
-                    "containerPort": 3000,
-                    "hostPort": 3000,
-                    "protocol": "tcp"
-                }
-            ],
-            "essential": true
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
         }
-    ],
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "512",
-    "memory": "2048"
+      ],
+      "essential": true
+    }
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "2048"
 }

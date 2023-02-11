@@ -8,7 +8,8 @@ WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 ARG NEXT_PUBLIC_API_URL
-RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+RUN npm run build
 
 FROM node:14 as runner
 WORKDIR /app

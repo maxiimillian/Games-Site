@@ -2,11 +2,11 @@
 import styles from "../../styles/blockpage.module.scss";
 
 function Blockpage(props) {
-    return (
-        <div onClick={props.handleClick} className={styles["block-container"]}>
-            {props.children}
-        </div>
-    )
+  return (
+    <div onClick={props.handleClick} className={styles["block-container"]}>
+      {props.children}
+    </div>
+  );
 }
 
 export default Blockpage;

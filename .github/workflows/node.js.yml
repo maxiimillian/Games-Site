@@ -5,16 +5,15 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 defaults:
   run:
     working-directory: ./backend
 
 jobs:
-
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -22,36 +21,36 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
-        mongodb-version: ['4.0', '4.2', '4.4']
+        mongodb-version: ["4.0", "4.2", "4.4"]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: create env file
-      run: |
-        touch .env
-        echo BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH}} >> .env
-        echo API_URL=${{ secrets.API_URL}} >> .env
-        
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: create env file
+        run: |
+          touch .env
+          echo BOARD_DB_PATH=${{ secrets.BOARD_DB_PATH}} >> .env
+          echo API_URL=${{ secrets.API_URL}} >> .env
 
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.6.0
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Test Backend
-      run: | 
-        npm install
-        npm ci  
-        npm run build --if-present
-        npm test --verbose --maxWorkers=2
-    
-    - name: Test Frontend
-      working-directory: frontend
-      run: |
-        npm install
-        npm test --verbose --maxWorkers=2
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+
+      - name: Test Backend
+        run: |
+          npm install
+          npm ci  
+          npm run build --if-present
+          npm test --verbose --maxWorkers=2
+
+      - name: Test Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm test --verbose --maxWorkers=2

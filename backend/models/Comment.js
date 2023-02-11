@@ -1,12 +1,12 @@
-var mongoose = require('mongoose'); 
+var mongoose = require("mongoose");
 
-var Schema = mongoose.Schema; 
+var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
-    post_id: {type: Schema.Types.ObjectId},
-    author_id: {type: String},
-    content: {type: String, required: true},
-    date: {type: Date, default: Date.now},
+  post_id: { type: Schema.Types.ObjectId },
+  author_id: { type: String },
+  content: { type: String, required: true },
+  date: { type: Date, default: Date.now },
 });
 
 var CommentModel = mongoose.model("comment", CommentSchema);

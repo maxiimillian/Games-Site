@@ -1,4 +1,4 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .options-container {
   display: flex;
@@ -7,42 +7,40 @@
 }
 
 .options-sidebar-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .game-option {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    margin: 0px 0px 40px 20px;
-    background: #212121;
-    align-items: center;
-    border-radius: $border-radius;
-    opacity: 0.8;
-    transition: ease-in-out 0.1s;
-    width: 20%;
-    @media screen and (max-width: $small) {
-        width: 100%;
-    }
-}
-  
-.game-option:hover {
-    opacity: 1;
-    transform: scale(1.2);
-    cursor: pointer;
-}
-  
-.game-icon {
-    height: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin: 0px 0px 40px 20px;
+  background: #212121;
+  align-items: center;
+  border-radius: $border-radius;
+  opacity: 0.8;
+  transition: ease-in-out 0.1s;
+  width: 20%;
+  @media screen and (max-width: $small) {
     width: 100%;
-  
+  }
 }
-  
+
+.game-option:hover {
+  opacity: 1;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.game-icon {
+  height: auto;
+  width: 100%;
+}
+
 .game-name {
-    padding: 5px;
-    font-size: 1.3em;
-    font-weight: 500;
-    color: $primary-color;
+  padding: 5px;
+  font-size: 1.3em;
+  font-weight: 500;
+  color: $primary-color;
 }
-  

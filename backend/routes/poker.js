@@ -1,3 +1,3 @@
-module.exports = function(io, app, server) {
-    return
-}
+module.exports = function (io, app, server) {
+  return;
+};

@@ -1,48 +1,47 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .create-container {
-    background-color: $green-box;
-    width: 30%;
-    left: 0;
-    right: 0;
-    top: 5%;
-    margin: auto;
-    position: absolute;
-    color: $form-color;
-    z-index: 1;
+  background-color: $green-box;
+  width: 30%;
+  left: 0;
+  right: 0;
+  top: 5%;
+  margin: auto;
+  position: absolute;
+  color: $form-color;
+  z-index: 1;
 
-    @media screen and (max-width: $small) {
-        width: 100%;
-    }
+  @media screen and (max-width: $small) {
+    width: 100%;
+  }
 }
 
 .create-form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .create-form-header {
-    border-bottom: $form-header-border;
-    text-align: center;
+  border-bottom: $form-header-border;
+  text-align: center;
 }
 
 .create-form-center {
-    text-align: center;
-    margin-top: 10px;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .create-form-column {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 }
 
-
-.create-form input[type=range] {
-    width: 80%;
-    margin: 0 auto;
+.create-form input[type="range"] {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .create-form label {
-    margin: 0px 10px 10px 0px;
+  margin: 0px 10px 10px 0px;
 }

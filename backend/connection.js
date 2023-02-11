@@ -6,44 +6,17 @@ Server() {
 }
 */
 const ServerInformation = require("./modules/server");
+const createNamespace = require("./routes/createNamespace.js");
 
-function get_socket_information(socket, callback) {
+module.exports = function (io, app) {
+  const server = new ServerInformation();
+  const namespaces = [
+    { file: "./routes/sudoku.js", route: "/sudoku" },
+    { file: "./routes/poker.js", route: "/poker" },
+  ];
 
-	let token = socket.handshake.auth.token;
-	console.log("ST: ", token);
-
-	TokenModel.findOne({token: token}, function (err, token_obj) {
-		let user_id = token_obj.user_id;
-
-		if (err || token_obj == null) {
-			callback(new Error("Invalid Token"));
-		} else {
-			socket.data.user = {"token": token, "id": user_id};
-			callback();
-		}
-
-	});
-}
-
-module.exports = function(io, app) {
-	console.log("Dsd: ", io.adapter.rooms);
-	const server = require("./modules/server.js")(io);
-
-	io.use((socket, next) => {
-		console.log("MIDDLE WARE");
-		let token = socket.handshake.auth.token;
-		get_socket_information(socket, (err) => {
-			if (err) {
-				console.log("SET SOCKET ERROR: ", err);
-				next(new Error("Could not authenticate"));
-			} else {
-				console.log("SET SOCKET ID: ", socket.data.user);
-				next();
-			}
-		})
-
-	});
-
-	require("./routes/sudoku.js")(io.of("/sudoku"), app, server);
-	require("./routes/poker.js")(io.of("/poker"), app, server);
-}
+  namespaces.forEach((namespace) => {
+    const conn = createNamespace(io.of(namespace.route), app, server);
+    require(namespace.file)(conn, app, server);
+  });
+};

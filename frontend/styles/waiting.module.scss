@@ -1,47 +1,47 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .waiting-container {
-    margin: auto;
-    width: 40%;
+  margin: auto;
+  width: 40%;
 
-    @media (max-width: $small) {
-        width: 100%;
-        box-sizing: border-box;
-    }
+  @media (max-width: $small) {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .waiting-subcontainer {
-    margin: auto;
-    width: 100%;
+  margin: auto;
+  width: 100%;
 }
 
 .input-container {
-    display: flex;
-    width: 100%;
-    margin-bottom: 10px;
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .invite-input {
-    width: 100%;
-    font-size: 1.1em;
+  width: 100%;
+  font-size: 1.1em;
 }
 
 .waiting-header {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .waiting-header > * {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .waiting-player-count {
-    color: $icon-colour;
+  color: $icon-colour;
 }
 
 .waiting-options {
-    list-style: circle;
-    color: $icon-colour;
-    padding: 0px 15px;
-    font-style: italic;
+  list-style: circle;
+  color: $icon-colour;
+  padding: 0px 15px;
+  font-style: italic;
 }

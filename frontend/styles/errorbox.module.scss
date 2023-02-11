@@ -1,20 +1,20 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .error-box {
-    background-color: rgba(17, 17, 17, 0.603);
-    border: 3px solid rgb(39, 38, 38);
-    border-radius: $border-radius;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: rgb(39, 38, 38);
-    font-size: 1.6em;
+  background-color: rgba(17, 17, 17, 0.603);
+  border: 3px solid rgb(39, 38, 38);
+  border-radius: $border-radius;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgb(39, 38, 38);
+  font-size: 1.6em;
 }
 
 .error-box > span {
-    @media screen and (max-width: $small) {
-       display: none;
-    }
+  @media screen and (max-width: $small) {
+    display: none;
+  }
 }

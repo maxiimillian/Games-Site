@@ -1,0 +1,59 @@
+@import "./variables.scss";
+
+.codex-page-container {
+  height: 900px;
+}
+
+.codex-container {
+  background-color: $green-box;
+  width: 20%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  @media screen and (max-width: $small) {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.codex-container > input {
+  background-color: $icon-colour;
+  width: 90%;
+  box-sizing: border-box;
+  color: black;
+}
+
+.codex-container > span {
+  margin-top: 20px;
+  width: 90%;
+  color: #cacaca;
+  margin-bottom: 3px;
+}
+
+.codex-failed {
+  background-color: $cancel-red;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 90%;
+}
+
+.codex-success {
+  background-color: #3c8b50;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  width: 90%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+}
+
+.codex-success > button {
+  background-color: $submit;
+  width: 30%;
+}
