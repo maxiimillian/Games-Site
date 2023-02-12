@@ -7,6 +7,13 @@ import Supporters, {
   Skeleton as SupportersSkeleton,
 } from "../components/Supporters";
 
+export async function getServerSideProps(context) {
+  return {
+    props: {
+    },
+  };
+}
+
 function App() {
   const { user, loading, error } = useAuth();
 

@@ -2,6 +2,13 @@ import styles from "../../styles/forum.module.scss";
 import { useState } from "react";
 import Tag from "../../components/forum/Tag";
 
+export async function getServerSideProps(context) {
+  return {
+    props: {
+    },
+  };
+}
+
 function ForumCreate(props) {
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
@@ -36,7 +43,7 @@ function ForumCreate(props) {
       content: content,
       token: localStorage.getItem("token"),
     };
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meta/forum/create`, {
+    await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/forum/create`, {
       method: "POST",
       mode: "cors",
       headers: {

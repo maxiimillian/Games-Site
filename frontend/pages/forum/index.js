@@ -7,6 +7,13 @@ import Tag from "../../components/forum/Tag";
 import PostPreview from "../../components/forum/PostPreview";
 import Link from "next/link";
 
+export async function getServerSideProps(context) {
+  return {
+    props: {
+    },
+  };
+}
+
 const testResponse = [
   {
     title: "This is a title",
@@ -171,7 +178,7 @@ function ForumPage(props) {
 
   async function getPosts() {
     await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/meta/forum/posts?` +
+      `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/forum/posts?` +
         new URLSearchParams({
           tags: tags,
           sortBy: sortBy,

@@ -11,12 +11,13 @@ function Chatbox({ messages }) {
           .slice(0)
           .reverse()
           .map((message) => {
+            console.log(message)
             numbers = numbers + 1;
             return (
               <li className={styles["message-item"]}>
                 <Message
                   key={numbers}
-                  user={message.user}
+                  user={message.user.username}
                   content={message.content}
                   author={message.author}
                 />

@@ -1,11 +1,16 @@
 import styles from "../../styles/advent.module.scss";
-import { useState, useEffect } from "react";
 import AdventDay from "../../components/advent/AdventDay";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
+export async function getServerSideProps(context) {
+  return {
+    props: {
+    },
+  };
+}
+
 function AdventPage(props) {
-  const [tags, setTags] = useState([]);
   let days = Array.from({ length: 31 }, (_, i) => i + 1);
   return (
     <div>

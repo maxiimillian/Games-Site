@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  backend:
+    build:
+      dockerfile:
+        Dockerfile
+    ports:
+      - "3002:3002"
+    enviroment:
+      BOARD_DB_PATH=${BOARD_DB_PATH}
+      DB_PATH=${DB_PATH}
+      ALLOWED_URL=${ALLOWED_URL}
+      PORT=${PORT}
+      GITHUB_TOKEN=${GITHUB_TOKEN}

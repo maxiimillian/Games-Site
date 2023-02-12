@@ -1,8 +1,9 @@
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
+console.log(3, publicRuntimeConfig, process.env.NEXT_PUBLIC_API_URL);
 
 export async function getUser() {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+  await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/refresh`, {
     method: "POST",
     mode: "cors",
     headers: {
@@ -24,7 +25,7 @@ export async function getUser() {
       throw "Could not connect to the server";
     });
 
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
+  return await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/profile`, {
     method: "POST",
     mode: "cors",
     headers: {
@@ -49,7 +50,7 @@ export async function getUser() {
 }
 
 export async function register(username, password, email) {
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+  return await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/register`, {
     method: "POST",
     mode: "cors",
     headers: {
@@ -77,7 +78,7 @@ export async function register(username, password, email) {
 }
 
 export async function login(user, password) {
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+  return await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/login`, {
     method: "POST",
     mode: "cors",
     headers: {
@@ -102,7 +103,7 @@ export async function login(user, password) {
 
 export async function logout(user, password) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+    `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/auth/login`,
     {
       method: "DELETE",
       mode: "cors",

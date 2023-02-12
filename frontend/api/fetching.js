@@ -11,6 +11,7 @@ export const fetchData = (path, params) => {
 };
 
 export const fetchSupporters = () => {
+  console.log(3, "FETCHING SUPPORTERS222?: ", publicRuntimeConfig, process.env)
   const supportersPromise = fetcher(
     `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/supporters`
   );

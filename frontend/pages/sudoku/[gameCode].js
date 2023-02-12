@@ -16,9 +16,10 @@ import { isAdjacent } from "../../components/sudoku/sudokuUtils";
 
 import styles from "../../styles/chatbox.module.scss";
 import boardStyles from "../../styles/board.module.scss";
+import getConfig from "next/config";
 
 const BOARD_DEFAULT_INDEX = "0404";
-
+const { publicRuntimeConfig } = getConfig();
 class Cell {
   constructor(value, annotations) {
     this.value = value;
@@ -28,7 +29,7 @@ class Cell {
 
 export async function getServerSideProps(context) {
   let response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${context.query.gameCode}`
+    `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/sudoku/details/${context.query.gameCode}`
   );
   let responseJson = await response.json();
 
@@ -102,7 +103,7 @@ function Sudoku(props) {
   async function getDetails(code) {
     let detailsList = [];
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sudoku/details/${code}`)
+    await fetch(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/sudoku/details/${code}`)
       .then((response) => response.json())
       .then((response) => {
         if (response.details == undefined) {
@@ -221,24 +222,16 @@ function Sudoku(props) {
   }
 
   useEffect(() => {
-    if (!gameCode || loading || !process.env.NEXT_PUBLIC_API_URL) {
+    if (!gameCode || loading || !publicRuntimeConfig.NEXT_PUBLIC_API_URL) {
       //wait for gameCode to be ready
       return;
     }
-    const connection_url = `${process.env.NEXT_PUBLIC_API_URL}/`;
 
-    //const sudoku_conn = io("/sudoku");
-    const game_conn = io("http://localhost:3002/sudoku", {
+    const game_conn = io(`${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/sudoku`, {
       auth: {
         token: localStorage.getItem("token"),
       },
     });
-
-    /*const sudoku_conn = io("http://localhost:3002/sudoku", {
-      auth: {
-        token: localStorage.getItem("token"),
-      },
-    });*/
 
     game_conn.on("connect", () => {
       game_conn.emit("join", gameCode);

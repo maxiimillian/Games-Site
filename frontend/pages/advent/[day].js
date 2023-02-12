@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import AdventDay from "../../components/advent/AdventDay";
 
 export async function getServerSideProps(context) {
-  let link = `${process.env.NEXT_PUBLIC_API_URL}/advent/picture/${context.query.day}`;
+  let link = `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/advent/picture/${context.query.day}`;
 
   return {
     props: {

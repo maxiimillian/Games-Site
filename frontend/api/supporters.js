@@ -3,6 +3,7 @@ import useAuth from "../contexts/authContext";
 
 export const fetchSupporters = () => {
   const { publicRuntimeConfig } = getConfig();
+  console.log(3, "FETCHING SUPPORTERS?: ", publicRuntimeConfig, process.env)
   const supportersPromise = fetcher(
     `${publicRuntimeConfig.NEXT_PUBLIC_API_URL}/meta/supporters`
   );

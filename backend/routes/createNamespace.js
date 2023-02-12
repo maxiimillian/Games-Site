@@ -58,11 +58,14 @@ module.exports = createNameSpace = (io, app, server) => {
   const get_socket_information = (socket, callback) => {
     const token = socket.handshake.auth.token;
     TokenModel.findOne({ token }, function (err, token_obj) {
-      if (err || token_obj == null) {
+      if (err || !token_obj) {
         callback(new Error("Invalid Token"));
       } else {
         const user_id = token_obj.user_id;
-        callback(null, { token: token, id: user_id });
+        utils.get_user_information(user_id, (err, user) => {
+          if (err || !user) callback(new Error("Invalid User Id"))
+          else callback(null, { token: token, id: user_id, profile: user})
+        })
       }
       return;
     });
@@ -186,10 +189,11 @@ module.exports = createNameSpace = (io, app, server) => {
       if (!roomExists(roomCode)) {
         return;
       }
+      console.log(user);
       socket.broadcast
         .to(roomCode)
-        .emit("chat", { user: user.id, content: message, author: false });
-      socket.emit("chat", { user: user.id, content: message, author: true });
+        .emit("chat", { user: user.profile, content: message, author: false });
+      socket.emit("chat", { user: user.profile, content: message, author: true });
     });
 
     socket.on("disconnect", () => {
