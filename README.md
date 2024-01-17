@@ -2,6 +2,8 @@
 
 Multiplayer Games Website
 
+** being rewritten and refactored with typescript @ https://github.com/maxiimillian/playholdr
+
 ## Games
 
 - Sudoku V.S.
