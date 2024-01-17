@@ -3,6 +3,7 @@
 Multiplayer Games Website
 
 ** being rewritten and refactored with typescript @ https://github.com/maxiimillian/playholdr
+** some bugs may exist within this version but they will be fixed in the rewrite
 
 ## Games
 
